@@ -20,7 +20,7 @@ export class LoginComponent {
   onSubmit(form: NgForm) {
     if (form.valid) {
       // Simulating login logic (replace with actual API call)
-      if (this.email === 'user@example.com' && this.password === 'password123') {
+      if (this.email === 'it@gmail.com' && this.password === '224477') {
         // Successful login - redirect to the dashboard or home page
         this.router.navigate(['/dashboard']);
       } else {
@@ -29,4 +29,6 @@ export class LoginComponent {
       }
     }
   }
+
+
 }
