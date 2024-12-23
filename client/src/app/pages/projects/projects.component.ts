@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';  // Import Router
 
@@ -10,7 +11,8 @@ export interface Project {
   selector: 'app-projects',
   templateUrl: './projects.component.html',
   styleUrls: ['./projects.component.css'],
-  standalone: true
+  standalone: true,
+  imports: [CommonModule]
 })
 export class ProjectsComponent {
 
