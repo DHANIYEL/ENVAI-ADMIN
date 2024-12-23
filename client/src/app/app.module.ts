@@ -19,12 +19,14 @@ import { HeaderComponent } from './pages/dashboard/header/header.component';
 import { SidebarComponent } from './pages/dashboard/sidebar/sidebar.component';
 import { ProjectsComponent } from './pages/projects/projects.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
+import { ProfileComponent } from './pages/profile/profile.component';
 
 registerLocaleData(en);
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    ProfileComponent
   ],
   imports: [
     BrowserModule,

@@ -1,1 +1,37 @@
-<p>projects works!</p>
+<div class="overflow-y-auto h-screen p-6">
+  <div class="flex justify-between items-center mb-8">
+    <h1 class="text-xl font-semibold text-gray-600">Projects</h1>
+    <button
+      class="px-4 py-2 bg-black text-white rounded hover:bg-gray-800 transition-colors"
+      (click)="addProject()"
+    >
+      Add Project
+    </button>
+  </div>
+
+  <!-- Project List -->
+  <div class="bg-white rounded-lg shadow-sm p-6">
+    <h2 class="text-xl font-medium mb-6">Project List</h2>
+    <div class="space-y-4">
+      <div *ngFor="let project of projects" class="flex justify-between items-center border-b py-3">
+        <div class="flex items-center">
+          <span class="font-medium text-gray-700">{{ project.name }}</span>
+        </div>
+        <div class="flex space-x-4">
+          <button
+            class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+            (click)="editProject(project)"
+          >
+            Edit
+          </button>
+          <button
+            class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
+            (click)="deleteProject(project)"
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
