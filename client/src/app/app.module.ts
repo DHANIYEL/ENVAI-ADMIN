@@ -15,6 +15,10 @@ import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
 import { LoginComponent } from './pages/auth/login/login.component';
 import { ForgetPasswordComponent } from './pages/auth/forget-password/forget-password.component';
+import { HeaderComponent } from './pages/dashboard/header/header.component';
+import { SidebarComponent } from './pages/dashboard/sidebar/sidebar.component';
+import { ProjectsComponent } from './pages/projects/projects.component';
+import { DashboardComponent } from './pages/dashboard/dashboard.component';
 
 registerLocaleData(en);
 
@@ -32,8 +36,10 @@ registerLocaleData(en);
     NzLayoutModule,
     NzMenuModule,
     LoginComponent,
-    ForgetPasswordComponent
-
+    ForgetPasswordComponent,
+    ProjectsComponent,
+    HeaderComponent,
+    SidebarComponent,
   ],
   providers: [
     { provide: NZ_I18N, useValue: en_US }
