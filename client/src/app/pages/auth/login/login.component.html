@@ -1,0 +1,55 @@
+<div class="flex items-center justify-center min-h-screen bg-gray-100">
+  <form
+    nz-form
+    [formGroup]="validateForm"
+    class="w-full max-w-sm p-6 bg-white rounded-lg shadow-md"
+    (ngSubmit)="submitForm()"
+  >
+    <nz-form-item>
+      <nz-form-control nzErrorTip="Please input your username!">
+        <nz-input-group nzPrefixIcon="user">
+          <input
+            type="text"
+            nz-input
+            formControlName="username"
+            placeholder="Username"
+            class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+          />
+        </nz-input-group>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-control nzErrorTip="Please input your Password!">
+        <nz-input-group nzPrefixIcon="lock">
+          <input
+            type="password"
+            nz-input
+            formControlName="password"
+            placeholder="Password"
+            class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+          />
+        </nz-input-group>
+      </nz-form-control>
+    </nz-form-item>
+    <main></main>
+    <div class="flex items-center justify-between mt-4">
+      <label class="flex items-center">
+        <input type="checkbox" formControlName="remember" class="w-4 h-4 text-blue-600 border-gray-300 rounded" />
+        <span class="ml-2 text-sm text-gray-600">Remember me</span>
+      </label>
+      <a
+        (click)="navigateToForgotPassword()"
+        class="text-sm text-blue-600 hover:underline cursor-pointer"
+      >
+        Forgot password?
+      </a>
+    </div>
+    <button
+      nz-button
+      class="w-full px-4 py-2 mt-4 text-white bg-blue-600 rounded hover:bg-blue-700"
+      [nzType]="'primary'"
+    >
+      Log in
+    </button>
+  </form>
+</div>
