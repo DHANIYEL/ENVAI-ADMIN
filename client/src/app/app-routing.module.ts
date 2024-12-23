@@ -8,10 +8,10 @@ import { ProfileComponent } from './pages/profile/profile.component';
 import { AddProjectsComponent } from './pages/projects/add-projects/add-projects.component';
 
 const routes: Routes = [
-  { path: '', pathMatch: 'full', redirectTo: '/dashboard' },
+  { path: '', pathMatch: 'full', redirectTo: '/login' },
   { path: 'login', component: LoginComponent },
   { path: 'forgot-password', component: ForgetPasswordComponent },
-  { path: 'dashboard', component: DashboardComponent },
+  { path: 'dashboard', redirectTo: '/projects'},
   { path: 'projects', component: ProjectsComponent },
   { path: 'projects/add', component: AddProjectsComponent },
   { path: 'profile', component: ProfileComponent },
