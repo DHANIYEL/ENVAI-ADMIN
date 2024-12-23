@@ -14,14 +14,13 @@ import { IconsProviderModule } from './icons-provider.module';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
 import { LoginComponent } from './pages/auth/login/login.component';
-import { ForgotPasswordComponent } from './pages/auth/forgot-password/forgot-password.component';
+import { ForgetPasswordComponent } from './pages/auth/forget-password/forget-password.component';
 
 registerLocaleData(en);
 
 @NgModule({
   declarations: [
-    AppComponent,
-    ForgotPasswordComponent
+    AppComponent
   ],
   imports: [
     BrowserModule,
@@ -33,6 +32,7 @@ registerLocaleData(en);
     NzLayoutModule,
     NzMenuModule,
     LoginComponent,
+    ForgetPasswordComponent
 
   ],
   providers: [
