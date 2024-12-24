@@ -1,12 +1,10 @@
-import { NgIf } from '@angular/common';
 import { Component } from '@angular/core';
-import { FormsModule, NgForm } from '@angular/forms'; // Ensure FormsModule is imported here
-import { Router, RouterModule } from '@angular/router';
+import { NgForm } from '@angular/forms'; // Ensure FormsModule is imported here
+import { Router } from '@angular/router';
+import { AuthService } from '../../../auth.service'; // Adjust the path as necessary
 
 @Component({
   selector: 'app-login',
-  standalone: true,
-  imports: [FormsModule, NgIf, RouterModule], // Include FormsModule here
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
 })
@@ -15,20 +13,25 @@ export class LoginComponent {
   password: string = '';
   loginError: boolean = false;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private authService: AuthService) {}
 
   onSubmit(form: NgForm) {
     if (form.valid) {
-      // Simulating login logic (replace with actual API call)
-      if (this.email === 'it@gmail.com' && this.password === '224477') {
-        // Successful login - redirect to the dashboard or home page
-        this.router.navigate(['/dashboard']);
-      } else {
-        // Invalid login
-        this.loginError = true;
-      }
+      this.authService.login(this.email, this.password).subscribe(
+        (response) => {
+          // Handle successful login
+          if (response && response.token) {
+            // Store the token (or any other user info) in localStorage or state
+            localStorage.setItem('token', response.token);
+            this.router.navigate(['/dashboard']);
+          }
+        },
+        (error) => {
+          // Handle error (wrong credentials, server issues, etc.)
+          this.loginError = true;
+          console.log(error)
+        }
+      );
     }
   }
-
-
 }

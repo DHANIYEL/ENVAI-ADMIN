@@ -26,7 +26,9 @@ registerLocaleData(en);
 @NgModule({
   declarations: [
     AppComponent,
-    ProfileComponent
+    ProfileComponent,
+    LoginComponent,
+
   ],
   imports: [
     BrowserModule,
@@ -37,7 +39,6 @@ registerLocaleData(en);
     IconsProviderModule,
     NzLayoutModule,
     NzMenuModule,
-    LoginComponent,
     ForgetPasswordComponent,
     ProjectsComponent,
     HeaderComponent,
