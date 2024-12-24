@@ -24,6 +24,11 @@ export class ProfileComponent implements OnInit {
   oldPasswordError: string = '';
   newPasswordError: string = '';
 
+  // Password visibility flags
+  showOldPassword: boolean = false;
+  showNewPassword: boolean = false;
+  showConfirmPassword: boolean = false;
+
   constructor(private apiService: ApiService, private router: Router) {}
 
   ngOnInit(): void {
@@ -47,7 +52,18 @@ export class ProfileComponent implements OnInit {
     }
   }
 
+  // Toggle password visibility
+  togglePasswordVisibility(type: 'old' | 'new' | 'confirm'): void {
+    if (type === 'old') {
+      this.showOldPassword = !this.showOldPassword;
+    } else if (type === 'new') {
+      this.showNewPassword = !this.showNewPassword;
+    } else if (type === 'confirm') {
+      this.showConfirmPassword = !this.showConfirmPassword;
+    }
+  }
 
+  // Update profile details
   updateProfile(): void {
     const userId = localStorage.getItem('userId'); // Get userId from localStorage
     if (userId) {

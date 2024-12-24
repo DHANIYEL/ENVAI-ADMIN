@@ -105,48 +105,81 @@
   </div>
 
   <!-- Change Password Section -->
-  <div class="bg-white rounded-lg shadow-sm p-6">
-    <h2 class="text-xl font-medium mb-6">Change Password</h2>
-    <div class="max-w-md space-y-6">
-      <div class="space-y-2">
-        <label class="block text-sm text-gray-600">Old Password:</label>
+<div class="bg-white rounded-lg shadow-sm p-6">
+  <h2 class="text-xl font-medium mb-6">Change Password</h2>
+  <div class="max-w-md space-y-6">
+
+    <!-- Old Password -->
+    <div class="space-y-2">
+      <label class="block text-sm text-gray-600">Old Password:</label>
+      <div class="relative">
         <input
-          type="password"
+          [type]="showOldPassword ? 'text' : 'password'"
           [(ngModel)]="oldPassword"
           placeholder="Enter your old password"
           class="w-full p-2 border rounded"
         />
-        <p *ngIf="oldPasswordError" class="text-red-500 text-sm">{{ oldPasswordError }}</p>
+        <button
+          type="button"
+          class="absolute inset-y-0 right-3 flex items-center"
+          (click)="togglePasswordVisibility('old')"
+        >
+          <i [class]="showOldPassword ? 'fa fa-eye-slash' : 'fa fa-eye'"></i>
+        </button>
       </div>
+      <p *ngIf="oldPasswordError" class="text-red-500 text-sm">{{ oldPasswordError }}</p>
+    </div>
 
-      <div class="space-y-2">
-        <label class="block text-sm text-gray-600">New Password:</label>
+    <!-- New Password -->
+    <div class="space-y-2">
+      <label class="block text-sm text-gray-600">New Password:</label>
+      <div class="relative">
         <input
-          type="password"
+          [type]="showNewPassword ? 'text' : 'password'"
           [(ngModel)]="newPassword"
           placeholder="Enter your new password"
           class="w-full p-2 border rounded"
         />
+        <button
+          type="button"
+          class="absolute inset-y-0 right-3 flex items-center"
+          (click)="togglePasswordVisibility('new')"
+        >
+          <i [class]="showNewPassword ? 'fa fa-eye-slash' : 'fa fa-eye'"></i>
+        </button>
       </div>
+    </div>
 
-      <div class="space-y-2">
-        <label class="block text-sm text-gray-600">Confirm Password:</label>
+    <!-- Confirm Password -->
+    <div class="space-y-2">
+      <label class="block text-sm text-gray-600">Confirm Password:</label>
+      <div class="relative">
         <input
-          type="password"
+          [type]="showConfirmPassword ? 'text' : 'password'"
           [(ngModel)]="confirmPassword"
           placeholder="Confirm password"
           class="w-full p-2 border rounded"
         />
-        <p *ngIf="newPasswordError" class="text-red-500 text-sm">{{ newPasswordError }}</p>
+        <button
+          type="button"
+          class="absolute inset-y-0 right-3 flex items-center"
+          (click)="togglePasswordVisibility('confirm')"
+        >
+          <i [class]="showConfirmPassword ? 'fa fa-eye-slash' : 'fa fa-eye'"></i>
+        </button>
       </div>
-
-      <button
-        (click)="updatePassword()"
-        class="px-4 py-2 bg-black text-white rounded hover:bg-gray-800 transition-colors"
-      >
-        Update Password
-      </button>
-
+      <p *ngIf="newPasswordError" class="text-red-500 text-sm">{{ newPasswordError }}</p>
     </div>
+
+    <!-- Submit Button -->
+    <button
+      (click)="updatePassword()"
+      class="px-4 py-2 bg-black text-white rounded hover:bg-gray-800 transition-colors"
+    >
+      Update Password
+    </button>
+
   </div>
+</div>
+
 </div>
