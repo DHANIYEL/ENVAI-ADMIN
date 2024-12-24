@@ -11,6 +11,12 @@ import { ApiService } from 'src/app/services/api.service';
   imports: [FormsModule],
 })
 export class AddProjectsComponent {
+
+  imageFile: File | null = null;
+  iconFile: File | null = null;
+  imagePreview: string | null = null;  // Variable to store image preview URL
+
+
   @ViewChild('projectForm') projectForm!: NgForm; // Access the form directly using ViewChild
 
   constructor(private apiService: ApiService, private router: Router) {}
@@ -58,13 +64,58 @@ export class AddProjectsComponent {
     );
   }
 
-  onFileSelect(event: any, fieldName: string): void {
-    const file = event.target.files[0];
+  onFileSelect(event: Event, type: string): void {
+    const input = event.target as HTMLInputElement;
+    const file = input?.files?.[0];
     if (file) {
-      this.projectForm.form.patchValue({
-        [fieldName]: file,
-      });
-      this.projectForm.form.get(fieldName)?.updateValueAndValidity();
+      if (type === 'image') {
+        this.imageFile = file;
+        console.log('Image file selected:', file);
+      } else if (type === 'icon') {
+        this.iconFile = file;
+        console.log('Icon file selected:', file);
+      }
+    }
+  }
+
+
+  previewImage(file: File): void {
+    const reader = new FileReader();
+    reader.onload = (e: any) => {
+      this.imagePreview = e.target.result;  // Set image preview URL
+    };
+    reader.readAsDataURL(file);
+  }
+
+
+  // Method to trigger file input for image or icon
+  triggerFileInput(type: string): void {
+    const fileInput = type === 'image' ? document.querySelector('#imageInput') : document.querySelector('#iconInput');
+    if (fileInput) {
+      (fileInput as HTMLInputElement).click();
+    }
+  }
+
+  // Drag-over event to prevent default behavior
+  onDragOver(event: DragEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+  }
+
+  // Drop event for handling file drag and drop
+  onDrop(event: DragEvent, type: string): void {
+    event.preventDefault();
+    event.stopPropagation();
+    const file = event.dataTransfer?.files[0];
+    if (file) {
+      if (type === 'image') {
+        this.imageFile = file;
+        this.previewImage(file);  // Display image preview
+        console.log('Image file dropped:', file);
+      } else if (type === 'icon') {
+        this.iconFile = file;
+        console.log('Icon file dropped:', file);
+      }
     }
   }
 }
