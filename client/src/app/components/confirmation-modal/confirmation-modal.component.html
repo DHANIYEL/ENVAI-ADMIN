@@ -1,12 +1,26 @@
-<!-- confirmation-modal.component.html -->
 <div class="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
   <div class="bg-white p-6 rounded-lg shadow-lg w-96">
-    <h2 class="text-lg font-semibold text-center mb-6">Are you sure you want to logout?</h2>
+    <!-- Dynamic Title -->
+    <h2 class="text-lg font-semibold text-center mb-2">{{ title }}</h2>
+    <!-- Dynamic Description -->
+    <p class="text-sm text-gray-600 text-center mb-6" *ngIf="description">{{ description }}</p>
     <div class="flex gap-2 justify-end">
       <!-- Cancel Button -->
-      <button (click)="cancelLogout()" class="px-6 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 focus:outline-none transition duration-200">Cancel</button>
+      <button
+        (click)="cancelAction()"
+        class="px-6 py-2 text-white rounded-lg hover:opacity-90 focus:outline-none transition duration-200"
+        [ngClass]="cancelButtonColor"
+      >
+        {{ cancelButtonText }}
+      </button>
       <!-- Confirm Button -->
-      <button (click)="confirmLogout()" class="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 focus:outline-none transition duration-200">Logout</button>
+      <button
+        (click)="confirmAction()"
+        class="px-6 py-2 text-white rounded-lg hover:opacity-90 focus:outline-none transition duration-200"
+        [ngClass]="confirmButtonColor"
+      >
+        {{ confirmButtonText }}
+      </button>
     </div>
   </div>
 </div>

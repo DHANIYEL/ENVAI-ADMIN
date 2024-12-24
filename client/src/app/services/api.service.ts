@@ -71,6 +71,10 @@ resetPassword(email: string, newPassword: string, confirmPassword: string): Obse
     confirmPassword,
   });
 }
+  // Delete a project by ID
+  deleteProject(projectId: string): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/projects/${projectId}`);
+  }
 
 }
 

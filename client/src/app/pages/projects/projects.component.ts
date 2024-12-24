@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router'; // Import Router
+import { Router } from '@angular/router';
 import { ApiService } from 'src/app/services/api.service';
 
 export interface Project {
@@ -17,7 +17,7 @@ export interface Project {
   templateUrl: './projects.component.html',
   styleUrls: ['./projects.component.css'],
   standalone: true,
-  imports: [CommonModule]
+  imports: [CommonModule],
 })
 export class ProjectsComponent implements OnInit {
   projects: Project[] = []; // Array to store projects
@@ -46,5 +46,21 @@ export class ProjectsComponent implements OnInit {
   // Navigate to add project page
   addProject(): void {
     this.router.navigate(['/projects/add']);
+  }
+
+  // Delete a project by ID
+  deleteProject(projectId: string): void {
+    if (confirm('Are you sure you want to delete this project?')) {
+      this.apiService.deleteProject(projectId).subscribe(
+        () => {
+          // Remove the project from the local array after successful deletion
+          this.projects = this.projects.filter((project) => project.id !== projectId);
+          console.log('Project deleted successfully');
+        },
+        (error) => {
+          console.error('Failed to delete project:', error);
+        }
+      );
+    }
   }
 }

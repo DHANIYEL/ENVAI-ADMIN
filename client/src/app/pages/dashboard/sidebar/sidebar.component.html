@@ -88,10 +88,16 @@
 
     <!-- Confirmation Modal Component -->
     <app-confirmation-modal
-      *ngIf="showLogoutModal"
-      (confirm)="logout()"
-      (cancel)="cancelLogout()"
-    >
-    </app-confirmation-modal>
+    *ngIf="showLogoutModal"
+    [title]="'Confirm Logout'"
+    [confirmButtonText]="'Logout'"
+    [description]="'Are you sure you want to log out? This action will end your current session.'"
+    [cancelButtonText]="'Cancel'"
+    [confirmButtonColor]="'bg-red-500'"
+    [cancelButtonColor]="'bg-gray-500'"
+    (confirm)="logout()"
+    (cancel)="cancelLogout()"
+  >
+  </app-confirmation-modal>
   </nav>
 </aside>
