@@ -7,7 +7,6 @@ import { ApiService } from 'src/app/services/api.service';
   selector: 'app-add-projects',
   templateUrl: './add-projects.component.html',
   styleUrls: ['./add-projects.component.css'],
-
   standalone: true,
   imports: [FormsModule],
 })
