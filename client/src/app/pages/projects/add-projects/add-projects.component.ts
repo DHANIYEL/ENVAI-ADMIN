@@ -2,13 +2,14 @@ import { Component, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule, NgForm } from '@angular/forms';
 import { ApiService } from 'src/app/services/api.service';
+import { NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-add-projects',
   templateUrl: './add-projects.component.html',
   styleUrls: ['./add-projects.component.css'],
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, NgIf],
 })
 export class AddProjectsComponent {
 
