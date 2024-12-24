@@ -1,0 +1,18 @@
+<!-- layout.component.html -->
+<div *ngIf="!hideLayout" class="flex flex-col h-screen overflow-hidden">
+  <!-- Header -->
+  <app-header class="w-full"></app-header>
+
+  <div class="flex flex-1">
+    <!-- Sidebar -->
+    <app-sidebar class="w-64"></app-sidebar>
+
+    <!-- Main Content -->
+    <div class="flex-1">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>
+
+<!-- Show only if hideLayout is true (i.e., on login/forgot password/verify otp) -->
+<router-outlet *ngIf="hideLayout"></router-outlet>
