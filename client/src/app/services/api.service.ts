@@ -54,4 +54,25 @@ export class ApiService {
       return this.http.patch<any>(`${this.baseUrl}/users/${userId}`, userData);
     }
 
+    // Check old password
+// Check old password
+checkOldPassword(email: string, oldPassword: string): Observable<any> {
+  return this.http.post<any>(`${this.baseUrl}/auth/check-old-password`, {
+    email,
+    oldPassword,
+  });
 }
+
+// Reset password
+resetPassword(email: string, newPassword: string, confirmPassword: string): Observable<any> {
+  return this.http.post<any>(`${this.baseUrl}/auth/reset-password`, {
+    email,
+    newPassword,
+    confirmPassword,
+  });
+}
+
+}
+
+
+

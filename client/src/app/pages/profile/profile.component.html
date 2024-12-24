@@ -116,6 +116,7 @@
           placeholder="Enter your old password"
           class="w-full p-2 border rounded"
         />
+        <p *ngIf="oldPasswordError" class="text-red-500 text-sm">{{ oldPasswordError }}</p>
       </div>
 
       <div class="space-y-2">
@@ -136,13 +137,16 @@
           placeholder="Confirm password"
           class="w-full p-2 border rounded"
         />
+        <p *ngIf="newPasswordError" class="text-red-500 text-sm">{{ newPasswordError }}</p>
       </div>
 
       <button
+        (click)="updatePassword()"
         class="px-4 py-2 bg-black text-white rounded hover:bg-gray-800 transition-colors"
       >
         Update Password
       </button>
+
     </div>
   </div>
 </div>

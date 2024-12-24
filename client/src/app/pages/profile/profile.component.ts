@@ -20,21 +20,23 @@ export class ProfileComponent implements OnInit {
   newPassword: string = '';
   confirmPassword: string = '';
 
+  // Error Messages
+  oldPasswordError: string = '';
+  newPasswordError: string = '';
+
   constructor(private apiService: ApiService, private router: Router) {}
 
   ngOnInit(): void {
-    // Get the logged-in user's ID (stored in localStorage)
     const userId = localStorage.getItem('userId');
 
     if (userId) {
-      // If the userId exists in localStorage, use it to fetch user data
       this.apiService.getUserById(userId).subscribe(
         (response) => {
           this.firstName = response.firstName;
           this.lastName = response.lastName;
           this.phoneNumber = response.phoneNumber;
           this.email = response.email;
-          this.profileImage = response.profileImage || '';  // If profile image exists
+          this.profileImage = response.profileImage || '';
         },
         (error) => {
           console.error('Error fetching user details:', error);
@@ -45,7 +47,7 @@ export class ProfileComponent implements OnInit {
     }
   }
 
-  // Method to update the user profile
+
   updateProfile(): void {
     const userId = localStorage.getItem('userId'); // Get userId from localStorage
     if (userId) {
@@ -69,6 +71,42 @@ export class ProfileComponent implements OnInit {
     }
   }
 
+  // Validate and update the password
+  updatePassword(): void {
+    this.oldPasswordError = '';
+    this.newPasswordError = '';
+
+    // Check if new password and confirm password match
+    if (this.newPassword !== this.confirmPassword) {
+      this.newPasswordError = 'New password and confirm password do not match.';
+      return;
+    }
+
+    // Validate old password with backend
+    this.apiService.checkOldPassword(this.email, this.oldPassword).subscribe(
+      (response: any) => {
+        if (response.message === 'Old password is correct') {
+          // Proceed to change the password
+          this.apiService.resetPassword(this.email, this.newPassword, this.confirmPassword).subscribe(
+            (resetResponse: any) => {
+              alert('Password changed successfully!');
+              this.oldPassword = '';
+              this.newPassword = '';
+              this.confirmPassword = '';
+            },
+            (resetError) => {
+              console.error('Error resetting password:', resetError);
+              alert('Failed to change password. Please try again.');
+            }
+          );
+        }
+      },
+      (error) => {
+        console.error('Old password is incorrect:', error);
+        this.oldPasswordError = 'The old password you entered is incorrect.';
+      }
+    );
+  }
 
   // Handle file selection for profile image
   onFileSelected(event: Event): void {
@@ -90,13 +128,11 @@ export class ProfileComponent implements OnInit {
     }
   }
 
-  // Handle drag over event for the file drop area
   onDragOver(event: DragEvent): void {
     event.preventDefault();
     event.stopPropagation();
   }
 
-  // Handle drop event for the file drop area
   onDrop(event: DragEvent): void {
     event.preventDefault();
     event.stopPropagation();
