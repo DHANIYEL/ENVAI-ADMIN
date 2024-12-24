@@ -50,9 +50,8 @@ export class ApiService {
     return this.http.get(`${this.baseUrl}/users/${userId}`);
   }
 
-    // Update user profile data
-    updateUserProfile(userData: any): Observable<any> {
-      return this.http.put(`${this.baseUrl}/users`, userData);
+    updateUserProfile(userId: string, userData: any): Observable<any> {
+      return this.http.patch<any>(`${this.baseUrl}/users/${userId}`, userData);
     }
 
 }

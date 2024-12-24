@@ -45,35 +45,30 @@ export class ProfileComponent implements OnInit {
     }
   }
 
-
   // Method to update the user profile
   updateProfile(): void {
-    const userData = {
-      firstName: this.firstName,
-      lastName: this.lastName,
-      phoneNumber: this.phoneNumber,
-      email: this.email,
-      profileImage: this.profileImage
-    };
+    const userId = localStorage.getItem('userId'); // Get userId from localStorage
+    if (userId) {
+      const userData = {
+        firstName: this.firstName,
+        lastName: this.lastName,
+        phoneNumber: this.phoneNumber,
+        email: this.email,
+        profileImage: this.profileImage
+      };
 
-    this.apiService.updateUserProfile(userData).subscribe(
-      (response) => {
-        alert('Profile updated successfully!');
-      },
-      (error) => {
-        alert('Failed to update profile. Please try again.');
-        console.error('Error updating profile:', error);
-      }
-    );
-  }
-
-
-  triggerFileInput(): void {
-    const fileInput = document.querySelector('#fileInput') as HTMLInputElement;
-    if (fileInput) {
-      fileInput.click();
+      this.apiService.updateUserProfile(userId, userData).subscribe(
+        (response) => {
+          alert('Profile updated successfully!');
+        },
+        (error) => {
+          alert('Failed to update profile. Please try again.');
+          console.error('Error updating profile:', error); // Log the full error details
+        }
+      );
     }
   }
+
 
   // Handle file selection for profile image
   onFileSelected(event: Event): void {
@@ -85,6 +80,13 @@ export class ProfileComponent implements OnInit {
         this.profileImage = e.target.result;
       };
       reader.readAsDataURL(file);
+    }
+  }
+
+  triggerFileInput(): void {
+    const fileInput = document.querySelector('#fileInput') as HTMLInputElement;
+    if (fileInput) {
+      fileInput.click();
     }
   }
 
