@@ -32,7 +32,7 @@ export class LoginComponent {
             console.log('Token stored in localStorage:', localStorage.getItem('token'));
 
             // Navigate to the dashboard
-            this.router.navigate(['/dashboard']);
+            this.router.navigate(['/projects']);
           }
         },
         (error) => {

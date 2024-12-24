@@ -20,4 +20,8 @@ export class ApiService {
   verifyOtp(payload: { email: string, otp: string }): Observable<any> {
     return this.http.post(`${this.baseUrl}auth/verify-otp`, payload);
   }
+
+  addProject(formData: FormData): Observable<any> {
+    return this.http.post(`${this.baseUrl}/projects`, formData);
+  }
 }

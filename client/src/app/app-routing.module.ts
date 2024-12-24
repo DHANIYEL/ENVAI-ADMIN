@@ -9,6 +9,7 @@ import { LayoutComponent } from './layout/layout.component'; // Import LayoutCom
 import { VerifyOtpComponent } from './pages/auth/verify-otp/verify-otp.component';
 import { OtpVerifiedGuard } from './services/otp-veryfied.guard';
 import { AuthGuard } from './services/auth.guard';
+import { AddProjectsComponent } from './pages/projects/add-projects/add-projects.component';
 
 const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: '/login' },
@@ -20,10 +21,11 @@ const routes: Routes = [
   { path: 'verify-otp', component: VerifyOtpComponent },  // Add your verify otp component
   {
     path: '',
-    canActivate: [AuthGuard], // Protect the route with AuthGuard
+    // canActivate: [AuthGuard], // Protect the route with AuthGuard
     children: [
       { path: 'dashboard', component: ProjectsComponent },
       { path: 'projects', component: ProjectsComponent },
+      { path: 'projects/add', component: AddProjectsComponent },
       { path: 'profile', component: ProfileComponent },
       // Add other routes that need sidebar and header here
     ]
