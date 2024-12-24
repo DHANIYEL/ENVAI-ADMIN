@@ -10,27 +10,52 @@
     </button>
   </div>
 
-  <div class="h-full ">
+  <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
     <!-- Loading Indicator -->
-    <div *ngIf="loading" class="text-center text-gray-500">
+    <div *ngIf="loading" class="text-center text-gray-500 p-4">
       Loading projects...
     </div>
 
-    <!-- Project List -->
-    <div *ngIf="!loading && projects.length > 0" class="overflow-y-auto pb-32">
-      <div *ngFor="let project of projects" class="border p-4 rounded-md mb-4 shadow-md">
-        <h2 class="text-lg font-semibold">{{ project.title }}</h2>
-        <p class="text-sm text-gray-700 mb-2">{{ project.smallDescription }}</p>
-        <p class="text-xs text-gray-500">{{ project.detailedDescription }}</p>
-        <div *ngIf="project.image">
-          <img [src]="project.image" alt="{{ project.title }}" class="mt-2 max-w-full rounded-md" />
-        </div>
-      </div>
-    </div>
+    <!-- Project Table -->
+    <table *ngIf="!loading && projects.length > 0" class="w-full text-sm text-left text-gray-700">
+      <thead class="text-xs uppercase bg-gray-300 text-gray-900">
+        <tr>
+          <th scope="col" class="px-6 py-3">Title</th>
+          <th scope="col" class="px-6 py-3">Small Description</th>
+          <th scope="col" class="px-6 py-3">Detailed Description</th>
+          <th scope="col" class="px-6 py-3">Image</th>
+          <th scope="col" class="px-6 py-3 text-right">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let project of projects" class="bg-gray-100 border-b hover:bg-gray-200">
+          <td class="px-6 py-4 font-medium text-gray-900">
+            {{ project.title }}
+          </td>
+          <td class="px-6 py-4">
+            {{ project.smallDescription }}
+          </td>
+          <td class="px-6 py-4">
+            {{ project.detailedDescription }}
+          </td>
+          <td class="px-6 py-4">
+            <img *ngIf="project.image" [src]="project.image" alt="{{ project.title }}" class="w-16 h-16 rounded-md" />
+            <span *ngIf="!project.image" class="text-gray-500">No image</span>
+          </td>
+
+          <td class="px-6 py-4 text-right flex  justify-center items-center gap-4">
+            <a href="#" class="font-medium text-blue-600 hover:underline">Edit</a>
+            <a href="#" class="font-medium text-red-600 hover:underline">Delete</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
 
     <!-- No Projects Found -->
-    <div *ngIf="!loading && projects.length === 0" class="text-center text-gray-500">
+    <div *ngIf="!loading && projects.length === 0" class="text-center text-gray-500 p-4">
       No projects found.
     </div>
   </div>
+
+
 </div>
