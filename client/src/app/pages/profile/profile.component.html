@@ -1,6 +1,6 @@
 <div class="overflow-y-auto h-screen pb-32 p-10">
   <!-- Settings Header -->
-  <div class="flex items-center gap-2 text-gray-600 mb-8 ">
+  <div class="flex items-center gap-2 text-gray-600 mb-8">
     <h1 class="text-xl">Settings</h1>
     <div class="flex items-center gap-2">
       <a href="/" class="hover:underline">Home</a>
@@ -20,9 +20,9 @@
           <input
             type="text"
             [(ngModel)]="firstName"
-            placeholder="ADMIN"
-            class="w-full p-2 border rounded  "
-          >
+            [placeholder]="firstName ? firstName : 'Enter first name'"
+            class="w-full p-2 border rounded"
+          />
         </div>
 
         <div class="space-y-2">
@@ -30,9 +30,9 @@
           <input
             type="text"
             [(ngModel)]="lastName"
-            placeholder="Account"
-            class="w-full p-2 border rounded  "
-          >
+            [placeholder]="lastName ? lastName : 'Enter last name'"
+            class="w-full p-2 border rounded"
+          />
         </div>
 
         <div class="space-y-2">
@@ -40,9 +40,9 @@
           <input
             type="tel"
             [(ngModel)]="phoneNumber"
-            placeholder="Enter your Phone number"
-            class="w-full p-2 border rounded  "
-          >
+            [placeholder]="phoneNumber ? phoneNumber : 'Enter your Phone number'"
+            class="w-full p-2 border rounded"
+          />
         </div>
 
         <div class="space-y-2">
@@ -50,23 +50,24 @@
           <input
             type="email"
             [(ngModel)]="email"
-            value="isap@yopmail.com"
+            [placeholder]="email ? email : 'Enter your email'"
             disabled
             class="w-full p-2 bg-gray-100 border rounded text-gray-500"
-          >
+          />
         </div>
 
         <button
-          (click)="updateProfile()"
           class="px-4 py-2 bg-black text-white rounded hover:bg-gray-800 transition-colors"
         >
           Update
         </button>
       </div>
 
+
+
       <!-- Profile Image Upload -->
       <div class="space-y-2">
-        <label class="block text-sm text-gray-600">Profile Image :</label>
+        <label class="block text-sm text-gray-600">Profile Image:</label>
         <div
           class="border-2 border-dashed rounded-lg p-8 text-center cursor-pointer hover:border-gray-400 transition-colors"
           (click)="triggerFileInput()"
@@ -97,7 +98,7 @@
           hidden
           accept="image/jpeg,image/png,image/jpg"
           (change)="onFileSelected($event)"
-        >
+        />
       </div>
     </div>
   </div>
@@ -112,8 +113,8 @@
           type="password"
           [(ngModel)]="oldPassword"
           placeholder="Enter your old password"
-          class="w-full p-2 border rounded  "
-        >
+          class="w-full p-2 border rounded"
+        />
       </div>
 
       <div class="space-y-2">
@@ -122,8 +123,8 @@
           type="password"
           [(ngModel)]="newPassword"
           placeholder="Enter your new password"
-          class="w-full p-2 border rounded  "
-        >
+          class="w-full p-2 border rounded"
+        />
       </div>
 
       <div class="space-y-2">
@@ -132,12 +133,11 @@
           type="password"
           [(ngModel)]="confirmPassword"
           placeholder="Confirm password"
-          class="w-full p-2 border rounded  "
-        >
+          class="w-full p-2 border rounded"
+        />
       </div>
 
       <button
-        (click)="updatePassword()"
         class="px-4 py-2 bg-black text-white rounded hover:bg-gray-800 transition-colors"
       >
         Update Password

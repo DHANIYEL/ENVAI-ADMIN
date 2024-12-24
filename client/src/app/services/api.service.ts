@@ -22,6 +22,11 @@ export class ApiService {
 
   constructor(private http: HttpClient) {}
 
+
+  login(loginData: { username: string; password: string }): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/login`, loginData);
+  }
+
   // API call to send OTP
   sendOtp(payload: { email: string }): Observable<any> {
     return this.http.post(`${this.baseUrl}auth/forgot-password`, payload);
@@ -38,5 +43,16 @@ export class ApiService {
   getProjects(): Observable<Project[]> {
     return this.http.get<Project[]>(`${this.baseUrl}/projects`);
   }
+
+  // Method to get user details by ID
+  // Method to get user details by _id (MongoDB ObjectId)
+  getUserById(userId: string): Observable<any> {
+    return this.http.get(`${this.baseUrl}/users/${userId}`);
+  }
+
+    // Update user profile data
+    updateUserProfile(userData: any): Observable<any> {
+      return this.http.put(`${this.baseUrl}/users`, userData);
+    }
 
 }

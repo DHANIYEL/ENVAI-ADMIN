@@ -25,13 +25,15 @@ export class LoginComponent {
           console.log('Login successful', response);
 
           if (response && response.token) {
-            // Store the token (or any other user info) in localStorage or state
+            // Store the token and userId in localStorage
             localStorage.setItem('token', response.token);
+            localStorage.setItem('userId', response.userId);  // Store userId as well
 
-            // Log the token to check if it's saved correctly
+            // Log the token and userId to check if they are saved correctly
             console.log('Token stored in localStorage:', localStorage.getItem('token'));
+            console.log('User ID stored in localStorage:', localStorage.getItem('userId'));
 
-            // Navigate to the dashboard
+            // Navigate to the dashboard or profile page
             this.router.navigate(['/projects']);
           }
         },
