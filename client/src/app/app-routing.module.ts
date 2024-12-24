@@ -6,12 +6,13 @@ import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { ProjectsComponent } from './pages/projects/projects.component';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { LayoutComponent } from './layout/layout.component'; // Import LayoutComponent
+import { VerifyOtpComponent } from './pages/auth/verify-otp/verify-otp.component';
 
 const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: '/login' },
   { path: 'login', component: LoginComponent },
   { path: 'forgot-password', component: ForgetPasswordComponent },
-  { path: 'verify-otp', component: ForgetPasswordComponent },  // Add your verify otp component
+  { path: 'verify-otp', component: VerifyOtpComponent },  // Add your verify otp component
   {
     path: '', // Wrap dashboard and other protected routes inside LayoutComponent
     // component: ,
