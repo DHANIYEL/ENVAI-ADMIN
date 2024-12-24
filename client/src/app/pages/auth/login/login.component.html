@@ -13,7 +13,6 @@
           name="email"
           [(ngModel)]="email"
           #emailCtrl="ngModel"
-          required
           class="w-full px-4 py-2 mt-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           placeholder="Enter your email"
         />
@@ -24,10 +23,10 @@
       </div>
 
       <!-- Password -->
-      <div class="form-group">
+      <div class="form-group relative">
         <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
         <input
-          type="password"
+          [type]="passwordVisible ? 'text' : 'password'"
           id="password"
           name="password"
           [(ngModel)]="password"
@@ -37,6 +36,13 @@
           class="w-full px-4 py-2 mt-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           placeholder="Enter your password"
         />
+        <button
+          type="button"
+          (click)="togglePasswordVisibility()"
+          class="absolute right-3 top-8 text-gray-600"
+        >
+          <i [class]="passwordVisible ? 'fa fa-eye-slash' : 'fa fa-eye'"></i>
+        </button>
         <div *ngIf="passwordCtrl.invalid && passwordCtrl.touched" class="text-sm mt-2 text-red-500">
           <p *ngIf="passwordCtrl.errors?.['required']">Password is required.</p>
           <p *ngIf="passwordCtrl.errors?.['minlength']">

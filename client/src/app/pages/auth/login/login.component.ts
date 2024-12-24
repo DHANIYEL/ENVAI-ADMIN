@@ -13,6 +13,7 @@ export class LoginComponent {
   email: string = '';
   password: string = '';
   loginError: boolean = false;
+  passwordVisible: boolean = false; // Track visibility of the password
 
   constructor(private router: Router, private authService: AuthService) {}
 
@@ -46,5 +47,10 @@ export class LoginComponent {
     } else {
       console.log('Form is invalid');
     }
+  }
+
+  // Toggle password visibility
+  togglePasswordVisibility(): void {
+    this.passwordVisible = !this.passwordVisible;
   }
 }
