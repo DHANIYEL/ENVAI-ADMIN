@@ -39,6 +39,7 @@ export class AuthService {
 
   // Logout method to clear authentication data
   logout(): void {
-    localStorage.removeItem('authToken'); // Remove token from localStorage
+    localStorage.removeItem('authToken'); // Remove the token from local storage
+    console.log('User logged out successfully');
   }
 }

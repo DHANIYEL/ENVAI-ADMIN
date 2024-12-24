@@ -1,3 +1,4 @@
+import { NgIf } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
@@ -8,7 +9,7 @@ import { ApiService } from 'src/app/services/api.service';
   templateUrl: './verify-otp.component.html',
   styleUrls: ['./verify-otp.component.css'],
   standalone: true,
-  imports: [RouterModule, FormsModule]
+  imports: [RouterModule, FormsModule, NgIf]
 })
 export class VerifyOtpComponent {
   email: string = '';
