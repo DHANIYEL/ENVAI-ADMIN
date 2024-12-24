@@ -10,8 +10,7 @@ import { FormsModule } from '@angular/forms';
   imports:[NgIf, FormsModule]
 })
 export class ForgetPasswordComponent {
-  email: string = '';
-  otp: string = '';
+
   newPassword: string = '';
   confirmPassword: string = '';
   showNewPassword: boolean = false;

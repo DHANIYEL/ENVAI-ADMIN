@@ -7,11 +7,15 @@ import { ProjectsComponent } from './pages/projects/projects.component';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { LayoutComponent } from './layout/layout.component'; // Import LayoutComponent
 import { VerifyOtpComponent } from './pages/auth/verify-otp/verify-otp.component';
+import { OtpVerifiedGuard } from './services/otp-veryfied.guard';
 
 const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: '/login' },
   { path: 'login', component: LoginComponent },
-  { path: 'forgot-password', component: ForgetPasswordComponent },
+  { path: 'forgot-password', component: ForgetPasswordComponent,
+    //  canActivate: [OtpVerifiedGuard]
+  },
+
   { path: 'verify-otp', component: VerifyOtpComponent },  // Add your verify otp component
   {
     path: '', // Wrap dashboard and other protected routes inside LayoutComponent
