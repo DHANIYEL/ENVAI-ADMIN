@@ -207,4 +207,32 @@ router.post("/reset-password", async (req, res) => {
   }
 });
 
+router.post("/check-old-password", async (req, res) => {
+  const { email, oldPassword } = req.body;
+
+  if (!email || !oldPassword) {
+    return res.status(400).json({ error: "Email and old password are required" });
+  }
+
+  try {
+    // Find user by email
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Compare the old password with the hashed password in the database
+    const isMatch = await bcrypt.compare(oldPassword, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ error: "Old password is incorrect" });
+    }
+
+    // Old password matches, allow for password change
+    res.status(200).json({ message: "Old password is correct" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to verify old password" });
+  }
+});
+
 module.exports = router;
