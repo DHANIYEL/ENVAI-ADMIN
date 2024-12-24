@@ -2,6 +2,17 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
+
+
+export interface Project {
+  id: string;
+  title: string;
+  smallDescription: string;
+  detailedDescription: string;
+  image?: string;
+  icon?: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -24,4 +35,8 @@ export class ApiService {
   addProject(formData: FormData): Observable<any> {
     return this.http.post(`${this.baseUrl}/projects`, formData);
   }
+  getProjects(): Observable<Project[]> {
+    return this.http.get<Project[]>(`${this.baseUrl}/projects`);
+  }
+
 }

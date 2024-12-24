@@ -1,10 +1,15 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-import { Router } from '@angular/router';  // Import Router
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router'; // Import Router
+import { ApiService } from 'src/app/services/api.service';
 
 export interface Project {
-  id: number;
-  name: string;
+  id: string;
+  title: string;
+  smallDescription: string;
+  detailedDescription: string;
+  image?: string;
+  icon?: string;
 }
 
 @Component({
@@ -14,32 +19,32 @@ export interface Project {
   standalone: true,
   imports: [CommonModule]
 })
-export class ProjectsComponent {
+export class ProjectsComponent implements OnInit {
+  projects: Project[] = []; // Array to store projects
+  loading: boolean = true; // Loading indicator
 
-  constructor(private router: Router) {}  // Inject Router into the constructor
+  constructor(private apiService: ApiService, private router: Router) {}
 
+  ngOnInit(): void {
+    this.getProjects(); // Fetch projects on component initialization
+  }
 
-  projects: Project[] = [
-    { id: 1, name: 'Project A' },
-    { id: 2, name: 'Project B' },
-    { id: 3, name: 'Project C' },
-  ];
+  // Fetch projects from the API
+  getProjects(): void {
+    this.apiService.getProjects().subscribe(
+      (data) => {
+        this.projects = data;
+        this.loading = false;
+      },
+      (error) => {
+        console.error('Failed to fetch projects:', error);
+        this.loading = false;
+      }
+    );
+  }
 
-  addProject() {
-    console.log('Add Project clicked');
+  // Navigate to add project page
+  addProject(): void {
     this.router.navigate(['/projects/add']);
-
-  }
-
-  // Explicitly type the project parameter as Project
-  editProject(project: Project) {
-    console.log('Edit Project clicked for', project);
-    // Handle edit project functionality
-  }
-
-  // Explicitly type the project parameter as Project
-  deleteProject(project: Project) {
-    console.log('Delete Project clicked for', project);
-    // Handle delete project functionality
   }
 }
