@@ -18,7 +18,7 @@ export interface Project {
 })
 export class ApiService {
 
-  private baseUrl: string = 'http://localhost:5000/api'; // API base URL
+  private baseUrl: string = 'https://admin.envaiprojects.com/api'; // API base URL
 
   constructor(private http: HttpClient) {}
 
