@@ -12,28 +12,29 @@ import { ApiService } from 'src/app/services/api.service';
   imports: [RouterModule, FormsModule, NgIf]
 })
 export class VerifyOtpComponent {
-  email: string = '';
-  otp: string = '';
-  otpSent: boolean = false;
-  otpVerified: boolean = false;
-  strEmail: string = ''; // Declare the property
+  strEmail: string = ''; // User's email (from input)
+  otp: string = ''; // OTP from user
+  newPassword: string = ''; // New password
+  confirmPassword: string = ''; // Confirm password
+  otpSent: boolean = false; // To track if OTP was sent
+  otpVerified: boolean = false; // To track OTP verification
+  showNewPassword: boolean = false; // For password visibility toggle
+  showConfirmPassword: boolean = false; // For confirm password visibility toggle
+
 
   constructor(private apiService: ApiService, private router: Router) {}
 
   // Method to send OTP to email
   sendOtp(): void {
-    const payload = { strEmail: this.strEmail };
+    const payload = { strEmail: this.strEmail }; // Send email to API
 
     this.apiService.sendOtp(payload).subscribe(
       (response: any) => {
-        console.log(response);
-
-        if (response.success) { // Assuming 'success' is the key in the response
+        if (response.success) {
+          this.otpSent = true; // OTP sent successfully
           console.log('OTP sent successfully!');
-          this.otpSent = true;
         } else {
-          console.log('OTP already sent or expired.');
-          this.otpSent = true; // Mark as true to indicate an OTP has already been sent
+          console.log('Error sending OTP');
         }
       },
       (error) => {
@@ -45,17 +46,24 @@ export class VerifyOtpComponent {
 
 
   // Method to handle OTP verification
+
+  // Function to verify OTP and reset password
   onSubmit(): void {
-    const payload = { email: this.email, otp: this.otp };
+    const payload = {
+      strEmail: this.strEmail, // Email remains same
+      strOTP: this.otp,         // OTP from user input
+      strNewPaswd: this.newPassword, // New password
+    };
 
     this.apiService.verifyOtp(payload).subscribe(
       (response: any) => {
-        if (response.message === 'OTP verified successfully') {
-          this.otpVerified = true;
+        console.log(response);
+        if (response.success) {
+          this.otpVerified = true; // OTP verified successfully
           console.log('OTP verified successfully!');
 
-          // Navigate to the next step (e.g., password reset)
-          this.router.navigate(['/forgot-password']);
+          // Navigate to the login page after successful verification
+          this.router.navigate(['/login']);
         } else {
           console.log('Invalid OTP');
         }
@@ -65,4 +73,16 @@ export class VerifyOtpComponent {
       }
     );
   }
+
+
+
+togglePasswordVisibility(type: string): void {
+  if (type === 'new') {
+    this.showNewPassword = !this.showNewPassword;
+  } else if (type === 'confirm') {
+    this.showConfirmPassword = !this.showConfirmPassword;
+  }
+}
+
+
 }

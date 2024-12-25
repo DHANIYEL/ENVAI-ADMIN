@@ -14,7 +14,7 @@ import { AddProjectsComponent } from './pages/projects/add-projects/add-projects
 const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: '/login' },
   { path: 'login', component: LoginComponent },
-  { path: 'forgot-password', component: ForgetPasswordComponent,
+  { path: 'reset-password', component: ForgetPasswordComponent,
     //  canActivate: [OtpVerifiedGuard]
   },
 

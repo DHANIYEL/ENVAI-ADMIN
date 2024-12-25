@@ -1,37 +1,39 @@
 <div class="flex justify-center items-center min-h-screen bg-gray-100 max-md:mx-4">
   <div class="w-full max-w-md p-8 space-y-6 bg-white shadow-md rounded-lg">
     <h2 class="text-2xl font-bold text-center text-gray-800">Forgot Password</h2>
+<!-- Step 1: Email input and Send OTP -->
+<div *ngIf="!otpSent">
+  <label for="email" class="block text-sm font-medium text-gray-700">Enter your email</label>
+  <input
+    type="email"
+    id="email"
+    name="email"
+    class="w-full px-4 py-2 mt-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+    [(ngModel)]="strEmail"
+    required
+    #emailModel="ngModel"
+    placeholder="Enter your email"
+  />
+  <div *ngIf="emailModel.invalid && (emailModel.dirty || emailModel.touched)" class="text-red-500 text-sm mt-1">
+    <div *ngIf="emailModel.errors?.['required']">Email is required.</div>
+    <div *ngIf="emailModel.errors?.['email']">Please enter a valid email address.</div>
+  </div>
 
-    <!-- Email Section -->
-    <div *ngIf="!otpSent">
-      <label for="email" class="block text-sm font-medium text-gray-700">Enter your email</label>
-      <input
-        type="email"
-        id="email"
-        name="email"
-        class="w-full px-4 py-2 mt-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-        [(ngModel)]="strEmail"
-        required
-        #emailModel="ngModel"
-        placeholder="Enter your email"
-      />
-      <div *ngIf="emailModel.invalid && (emailModel.dirty || emailModel.touched)" class="text-red-500 text-sm mt-1">
-        <div *ngIf="emailModel.errors?.['required']">Email is required.</div>
-        <div *ngIf="emailModel.errors?.['email']">Please enter a valid email address.</div>
-      </div>
+  <button
+    type="button"
+    (click)="sendOtp()"
+    class="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-700 mt-4"
+  >
+    Send OTP
+  </button>
+</div>
 
-      <button
-        type="button"
-        (click)="sendOtp()"
-        class="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-700 mt-4"
-      >
-        Send OTP
-      </button>
-    </div>
-
+<!-- Step 2: OTP input, Password, and Confirm Password -->
+<div *ngIf="otpSent && !otpVerified">
+  <form (ngSubmit)="onSubmit()" #resetPasswordForm="ngForm" class="space-y-4">
 
     <!-- OTP Section -->
-    <div *ngIf="otpSent && !otpVerified">
+    <div class="form-group">
       <label for="otp" class="block text-sm font-medium text-gray-700">Enter OTP</label>
       <input
         type="text"
@@ -46,18 +48,82 @@
       <div *ngIf="otpModel.invalid && (otpModel.dirty || otpModel.touched)" class="text-red-500 text-sm mt-1">
         <div *ngIf="otpModel.errors?.['required']">OTP is required.</div>
       </div>
-
-      <button
-        type="submit"
-        (click)="onSubmit()"
-        class="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-700 mt-4"
-      >
-        Verify OTP
-      </button>
     </div>
 
+    <!-- New Password Section -->
+    <div class="form-group">
+      <label for="newPassword" class="block text-sm font-medium text-gray-700">New Password</label>
+      <div class="relative">
+        <input
+          [type]="showNewPassword ? 'text' : 'password'"
+          id="newPassword"
+          name="newPassword"
+          class="w-full px-4 py-2 mt-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          [(ngModel)]="newPassword"
+          required
+          #newPasswordModel="ngModel"
+          placeholder="Enter new password"
+        />
+        <button
+          type="button"
+          class="absolute inset-y-0 top-2 right-3 flex items-center"
+          (click)="togglePasswordVisibility('new')"
+        >
+          <i [class]="showNewPassword ? 'fa fa-eye-slash' : 'fa fa-eye'"></i>
+        </button>
+      </div>
+      <div *ngIf="newPasswordModel.invalid && (newPasswordModel.dirty || newPasswordModel.touched)" class="text-red-500 text-sm mt-1">
+        <div *ngIf="newPasswordModel.errors?.['required']">New password is required.</div>
+      </div>
+    </div>
+
+    <!-- Confirm Password Section -->
+    <div class="form-group">
+      <label for="confirmPassword" class="block text-sm font-medium text-gray-700">Confirm Password</label>
+      <div class="relative">
+        <input
+          [type]="showConfirmPassword ? 'text' : 'password'"
+          id="confirmPassword"
+          name="confirmPassword"
+          class="w-full px-4 py-2 mt-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          [(ngModel)]="confirmPassword"
+          required
+          #confirmPasswordModel="ngModel"
+          placeholder="Confirm your new password"
+        />
+        <button
+          type="button"
+          class="absolute inset-y-0 top-2 right-3 flex items-center"
+          (click)="togglePasswordVisibility('confirm')"
+        >
+          <i [class]="showConfirmPassword ? 'fa fa-eye-slash' : 'fa fa-eye'"></i>
+        </button>
+      </div>
+      <div *ngIf="confirmPasswordModel.invalid && (confirmPasswordModel.dirty || confirmPasswordModel.touched)" class="text-red-500 text-sm mt-1">
+        <div *ngIf="confirmPasswordModel.errors?.['required']">Confirm password is required.</div>
+        <div *ngIf="newPassword !== confirmPassword" class="text-red-500 text-sm mt-1">Passwords do not match!</div>
+      </div>
+    </div>
+
+    <!-- Submit Button -->
+    <div class="form-group">
+      <button
+        type="submit"
+        [disabled]="resetPasswordForm.invalid || (newPassword !== confirmPassword)"
+        class="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-700"
+      >
+        Reset Password
+      </button>
+    </div>
+  </form>
+</div>
+
+
+
+
+
     <!-- OTP Verified Section -->
-    <div *ngIf="otpVerified">
+    <div *ngIf="">
     </div>
   </div>
 </div>

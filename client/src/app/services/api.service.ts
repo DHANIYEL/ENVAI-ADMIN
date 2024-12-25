@@ -41,14 +41,14 @@ export class ApiService {
 
   // API call to send OTP
   sendOtp(payload: { strEmail: string }): Observable<any> {
+    return this.http.post(`${this.baseUrl}/otp/send_otp_for_reset`, payload);
+  }
+
+  verifyOtp(payload: { strEmail: string; strOTP: string; strNewPaswd: string }): Observable<any> {
     return this.http.post(`${this.baseUrl}/otp/verify_otp_and_passwd_reset`, payload);
   }
 
 
-  // API call to verify OTP
-  verifyOtp(payload: { email: string; otp: string }): Observable<any> {
-    return this.http.post(`${this.baseUrl}/otp/verify_otp_and_passwd_reset`, payload);
-  }
 
   addProject(formData: FormData): Observable<any> {
     return this.http.post(`${this.baseUrl}/projects`, formData);
