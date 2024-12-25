@@ -1,4 +1,4 @@
-<div class="container mx-auto p-6 h-screen overflow-y-auto  ">
+<div class="container mx-auto p-6 h-screen overflow-y-auto">
   <h1 class="text-2xl font-bold mb-6">Projects</h1>
 
   <div class="flex justify-end mb-4">
@@ -21,9 +21,9 @@
       <thead class="text-xs uppercase bg-gray-300 text-gray-900">
         <tr>
           <th scope="col" class="px-6 py-3">Title</th>
-          <th scope="col" class="px-6 py-3">Small Description</th>
+          <th scope="col" class="px-6 py-3">Short Description</th>
           <th scope="col" class="px-6 py-3">Detailed Description</th>
-          <th scope="col" class="px-6 py-3">Image</th>
+          <th scope="col" class="px-6 py-3">Images</th>
           <th scope="col" class="px-6 py-3 text-right">Actions</th>
         </tr>
       </thead>
@@ -39,15 +39,22 @@
             {{ project.detailedDescription }}
           </td>
           <td class="px-6 py-4">
-            <img *ngIf="project.image" [src]="project.image" alt="{{ project.title }}" class="w-16 h-16 rounded-md" />
-            <span *ngIf="!project.image" class="text-gray-500">No image</span>
+            <div class="flex flex-wrap gap-2">
+              <img
+                *ngFor="let image of project.images"
+                [src]="image"
+                alt="Project Image"
+                class="w-16 h-16 rounded-md"
+              />
+            </div>
           </td>
-
-          <td class="px-6 py-4 text-right flex  justify-center items-center gap-4">
+          <td class="px-6 py-4 text-right flex justify-center items-center gap-4">
             <a href="#" class="font-medium text-blue-600 hover:underline">Edit</a>
             <a
-            (click)="deleteProject(project.id)"
-            class="font-medium text-red-600 hover:underline">Delete</a>
+              (click)="deleteProject(project.id)"
+              class="font-medium text-red-600 hover:underline"
+              >Delete</a
+            >
           </td>
         </tr>
       </tbody>
@@ -59,9 +66,10 @@
     </div>
   </div>
 
-
   <div class="absolute bottom-3 right-4">
-    <p>created by <a href="https://isap.investments/" target="_blank"><u>iSap Groups</u></a></p>
+    <p>
+      created by
+      <a href="https://isap.investments/" target="_blank"><u>iSap Groups</u></a>
+    </p>
   </div>
 </div>
-

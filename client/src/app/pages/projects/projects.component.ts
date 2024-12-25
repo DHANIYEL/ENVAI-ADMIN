@@ -3,14 +3,14 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApiService } from 'src/app/services/api.service';
 
-export interface Project {
+interface Project {
   id: string;
   title: string;
   smallDescription: string;
   detailedDescription: string;
-  image?: string;
-  icon?: string;
+  images: string[]; // Array of image URLs
 }
+
 
 @Component({
   selector: 'app-projects',
@@ -20,28 +20,42 @@ export interface Project {
   imports: [CommonModule],
 })
 export class ProjectsComponent implements OnInit {
-  projects: Project[] = []; // Array to store projects
-  loading: boolean = true; // Loading indicator
+  projects: any[] = []; // Holds the list of projects
+  loading: boolean = true;
+  errorMessage: string = '';// Loading indicator
 
   constructor(private apiService: ApiService, private router: Router) {}
 
   ngOnInit(): void {
-    this.getProjects(); // Fetch projects on component initialization
+    this.getAllProjects(); // Fetch projects on component initialization
   }
 
   // Fetch projects from the API
-  getProjects(): void {
-    this.apiService.getProjects().subscribe(
-      (data) => {
-        this.projects = data;
+  getAllProjects(): void {
+    this.apiService.getAllProjects().subscribe(
+      (response) => {
+        if (response && response.data) {
+          // Map the response data to match the required fields
+          this.projects = response.data.map((project: any) => ({
+            title: project.strTitle,
+            smallDescription: project.short_Description,
+            detailedDescription: project.long_Description,
+            images: project.details.map((detail: any) => detail.iconUrl), // Collect all image URLs
+            id: project.fkProjectId, // Assuming this is the unique identifier
+          }));
+        } else {
+          this.projects = [];
+        }
         this.loading = false;
       },
       (error) => {
         console.error('Failed to fetch projects:', error);
+        this.errorMessage = 'Could not load projects. Please try again later.'; // Set the error message
         this.loading = false;
       }
     );
   }
+
 
   // Navigate to add project page
   addProject(): void {

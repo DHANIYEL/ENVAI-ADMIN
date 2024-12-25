@@ -24,14 +24,20 @@ export class LoginComponent {
         (response) => {
           console.log('Login successful', response);
 
-          if (response) {
-            localStorage.setItem('token', response.token);
-            localStorage.setItem('userId', response.userId);
+          // Check if response has data and token
+          if (response && response.data && response.data.token) {
+            // Store the token in localStorage
+            localStorage.setItem('token', response.data.token);
+            localStorage.setItem('userId', response.data.fkAdminId); // assuming fkAdminId is userId
 
+            // Log to check if the token and userId are saved correctly
             console.log('Token:', localStorage.getItem('token'));
             console.log('UserId:', localStorage.getItem('userId'));
 
+            // Navigate to the projects page
             this.router.navigate(['/projects']);
+          } else {
+            console.log('No token found in the response data');
           }
         },
         (error) => {
@@ -43,6 +49,7 @@ export class LoginComponent {
       console.log('Form is invalid');
     }
   }
+
 
 
 
