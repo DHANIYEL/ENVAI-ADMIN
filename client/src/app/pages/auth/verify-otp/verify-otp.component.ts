@@ -20,6 +20,7 @@ export class VerifyOtpComponent {
   otpVerified: boolean = false; // To track OTP verification
   showNewPassword: boolean = false; // For password visibility toggle
   showConfirmPassword: boolean = false; // For confirm password visibility toggle
+  passwordMismatch: boolean = false; // Flag to track password mismatch
 
 
   constructor(private apiService: ApiService, private router: Router) {}
@@ -47,12 +48,18 @@ export class VerifyOtpComponent {
 
   // Method to handle OTP verification
 
-  // Function to verify OTP and reset password
   onSubmit(): void {
+    // Check if passwords match before submitting
+    if (this.newPassword !== this.confirmPassword) {
+      this.passwordMismatch = true; // Show password mismatch error
+      return;
+    }
+
+    // If passwords match, proceed with the API call
     const payload = {
-      strEmail: this.strEmail, // Email remains same
-      strOTP: this.otp,         // OTP from user input
-      strNewPaswd: this.newPassword, // New password
+      strEmail: this.strEmail,
+      strOTP: this.otp,
+      strNewPaswd: this.newPassword
     };
 
     this.apiService.verifyOtp(payload).subscribe(
@@ -61,9 +68,7 @@ export class VerifyOtpComponent {
         if (response.success) {
           this.otpVerified = true; // OTP verified successfully
           console.log('OTP verified successfully!');
-
-          // Navigate to the login page after successful verification
-          this.router.navigate(['/login']);
+          this.router.navigate(['/login']); // Navigate to login page
         } else {
           console.log('Invalid OTP');
         }
@@ -73,6 +78,7 @@ export class VerifyOtpComponent {
       }
     );
   }
+
 
 
 

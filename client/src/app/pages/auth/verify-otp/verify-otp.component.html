@@ -101,15 +101,16 @@
       </div>
       <div *ngIf="confirmPasswordModel.invalid && (confirmPasswordModel.dirty || confirmPasswordModel.touched)" class="text-red-500 text-sm mt-1">
         <div *ngIf="confirmPasswordModel.errors?.['required']">Confirm password is required.</div>
-        <div *ngIf="newPassword !== confirmPassword" class="text-red-500 text-sm mt-1">Passwords do not match!</div>
       </div>
+      <!-- Display mismatch error only after submit attempt -->
+      <div *ngIf="passwordMismatch" class="text-red-500 text-sm mt-1">Passwords do not match!</div>
     </div>
 
     <!-- Submit Button -->
     <div class="form-group">
       <button
         type="submit"
-        [disabled]="resetPasswordForm.invalid || (newPassword !== confirmPassword)"
+        [disabled]="resetPasswordForm.invalid || newPassword !== confirmPassword"
         class="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-700"
       >
         Reset Password
