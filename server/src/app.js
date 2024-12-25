@@ -17,6 +17,12 @@ const PORT = process.env.PORT || 5000; // Default to 5000 if PORT is not set
 const MONGO_URI = process.env.MONGO_URI;
 
 // Basic route for health check
+
+app.use(express.static(path.join(__dirname, "dist")));
+    // Catch all other routes and return the index file
+    app.get("*", function (req, res) {
+      res.sendFile(path.join(__dirname, "dist/index.html"));
+    });
 app.get('/', (req, res) => {
   res.status(200).json({ message: 'Server is running...' });
 });
