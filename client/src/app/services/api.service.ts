@@ -18,7 +18,7 @@ export interface Project {
 })
 export class ApiService {
 
-  private baseUrl: string = 'https://admin.envaiprojects.com/api'; // API base URL
+  private baseUrl: string = 'https://adminenvaiprojectsapi.vercel.app/api'; // API base URL
 
   constructor(private http: HttpClient) {}
 
