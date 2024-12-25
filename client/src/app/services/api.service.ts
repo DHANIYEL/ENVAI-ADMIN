@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { tap } from 'rxjs/operators';  // Add this import at the top of your service file
 
 
@@ -82,9 +82,30 @@ export class ApiService {
 
 
   // Method to get user details by ID
-  // Method to get user details by _id (MongoDB ObjectId)
-  getUserById(userId: string): Observable<any> {
-    return this.http.get(`${this.baseUrl}/users/${userId}`);
+  getUserById(): Observable<any> {
+    // Get the token from localStorage
+    const token = localStorage.getItem('token');
+
+    if (!token) {
+      // Handle case where token is missing (e.g., redirect to login)
+      console.error('No token found');
+      return of(null);  // Return an empty observable with 'null' or any fallback data
+    }
+
+    // Set the token in the request headers
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+    });
+
+    // Call the API with the token in the header
+    return this.http.get(`${this.baseUrl}/admin/get_all_admins`, { headers })
+      .pipe(
+        tap(response => {
+          console.log('User data fetched successfully:', response);
+        }, error => {
+          console.error('Error fetching user data:', error);
+        })
+      );
   }
 
   updateUserProfile(userId: string, userData: any): Observable<any> {

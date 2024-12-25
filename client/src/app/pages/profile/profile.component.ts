@@ -32,25 +32,25 @@ export class ProfileComponent implements OnInit {
   constructor(private apiService: ApiService, private router: Router) {}
 
   ngOnInit(): void {
-    const userId = localStorage.getItem('userId');
-
-    if (userId) {
-      this.apiService.getUserById(userId).subscribe(
-        (response) => {
-          this.firstName = response.firstName;
-          this.lastName = response.lastName;
-          this.phoneNumber = response.phoneNumber;
-          this.email = response.email;
-          this.profileImage = response.profileImage || '';
-        },
-        (error) => {
-          console.error('Error fetching user details:', error);
+    this.apiService.getUserById().subscribe(
+      (response) => {
+        if (response.success && response.data && response.data.length > 0) {
+          const userData = response.data[0]; // Assuming only one user exists
+          this.firstName = userData.strFirstName;
+          this.lastName = userData.strLastName;
+          this.email = userData.strEmail;
+          this.profileImage = ''; // Set this to the profile image URL if available
+        } else {
+          console.error('No user data found');
         }
-      );
-    } else {
-      console.error('No user ID found in localStorage');
-    }
+      },
+      (error) => {
+        console.error('Error fetching user details:', error);
+      }
+    );
   }
+
+
 
   // Toggle password visibility
   togglePasswordVisibility(type: 'old' | 'new' | 'confirm'): void {
