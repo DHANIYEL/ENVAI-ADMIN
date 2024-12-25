@@ -34,9 +34,11 @@ router.post('/', upload.fields([{ name: 'image' }, { name: 'icon' }]), async (re
 
 
 // GET route to fetch all projects
-router.get('/', async (req, res) => {
-    try {
-      const projects = await Project.find();  // Fetch all projects
+router.post('/get', async (req, res) => {
+  try {
+    console.log("projects")
+      const projects = await Project.find();
+      // Fetch all projects
       res.status(200).json(projects);
     } catch (error) {
       console.error(error);

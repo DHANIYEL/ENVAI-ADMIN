@@ -18,8 +18,8 @@ export interface Project {
 })
 export class ApiService {
 
-  private baseUrl: string = 'https://admin.envaiprojects.com/api'; // API base URL
-
+  // private baseUrl: string = 'https://admin.envaiprojects.com/api'; // API base URL
+  private baseUrl: string = 'http://localhost:5000/api'; // API base URL
   constructor(private http: HttpClient) {}
 
 
@@ -40,8 +40,8 @@ export class ApiService {
   addProject(formData: FormData): Observable<any> {
     return this.http.post(`${this.baseUrl}/projects`, formData);
   }
-  getProjects(): Observable<Project[]> {
-    return this.http.get<Project[]>(`${this.baseUrl}/projects`);
+  getProjects(formData: FormData): Observable<Project[]> {
+    return this.http.post<Project[]>(`${this.baseUrl}/projects/get`, formData);
   }
 
   // Method to get user details by ID

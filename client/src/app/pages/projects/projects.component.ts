@@ -31,17 +31,39 @@ export class ProjectsComponent implements OnInit {
 
   // Fetch projects from the API
   getProjects(): void {
-    this.apiService.getProjects().subscribe(
+    // Create a FormData object and populate it with the required data
+    const formData = new FormData();
+    formData.append('id_ID', 'name'); // Add your data to FormData
+
+    this.loading = true; // Set loading state to true before making the request
+
+    // Call the apiService method with the FormData
+    this.apiService.getProjects(formData).subscribe(
       (data) => {
-        this.projects = data;
+        // Check if the response is in the expected format
+        if (data && Array.isArray(data)) {
+          this.projects = data;
+        } else {
+          console.error('Unexpected response format:', data);
+        }
         this.loading = false;
       },
       (error) => {
+        // Enhanced error logging
         console.error('Failed to fetch projects:', error);
+        if (error.status) {
+          console.error('Error Status:', error.status); // Log the error status (e.g., 404, 500)
+        }
+        if (error.message) {
+          console.error('Error Message:', error.message); // Log the error message
+        }
         this.loading = false;
       }
     );
   }
+
+
+
 
   // Navigate to add project page
   addProject(): void {

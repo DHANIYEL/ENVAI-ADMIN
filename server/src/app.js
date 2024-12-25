@@ -5,8 +5,22 @@ const cors = require('cors');
 const authRoutes = require('./routes/authRoutes');
 const projectRoutes = require('./routes/projects'); // Import the project routes
 const userRoutes = require('./routes/userRoutes');
+const path = require('path'); 
 
 const app = express();
+
+app.use(function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Methods",
+    "PUT, GET, POST, DELETE, HEAD, OPTIONS"
+  );
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  next();
+});
 
 // Middleware
 app.use(cors());
@@ -30,6 +44,7 @@ app.get('/', (req, res) => {
 // Auth routes
 app.use('/api/auth', authRoutes);
 app.use('/api/projects', projectRoutes);
+console.log("prjects view")
 app.use('/api/users', userRoutes);
 
 // Database connection
@@ -50,7 +65,7 @@ const connectDB = async () => {
 const startServer = async () => {
   await connectDB();
   app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+    console.log(`Server is running on http://localhostin:${PORT}`);
   });
 };
 
