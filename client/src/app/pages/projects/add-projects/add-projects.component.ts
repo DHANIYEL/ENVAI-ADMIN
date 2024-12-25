@@ -12,56 +12,53 @@ import { CommonModule } from '@angular/common';
   imports: [FormsModule, CommonModule],
 })
 export class AddProjectsComponent {
-  imageFile: File | null = null;
-  iconFile: File | null = null;
-  imagePreview: string | null = null; // Variable to store image preview URL
-  details: { icon: string; description: string }[] = []; // Details array initialized empty
 
-  @ViewChild('projectForm') projectForm!: NgForm; // Access the form directly using ViewChild
+  @ViewChild('projectForm') projectForm!: NgForm; // ViewChild for form reference
+
+  details: { icon: string; description: string }[] = [];  // Initialize the details array
+  projectImages: File[] = [];  // This property will hold the files selected for project images
 
   constructor(private apiService: ApiService, private router: Router) {}
 
+  // Submit the form with all data
   onSubmit(): void {
     const formData = new FormData();
 
-    // Append form values
-    formData.append('title', this.projectForm.value.title);
-    formData.append(
-      'smallDescription',
-      this.projectForm.value.smallDescription
-    );
-    formData.append(
-      'detailedDescription',
-      this.projectForm.value.detailedDescription
-    );
+    // Append text data from the form
+    formData.append('strTitle', this.projectForm.value.title);
+    formData.append('short_Description', this.projectForm.value.smallDescription);
+    formData.append('long_Description', this.projectForm.value.detailedDescription);
 
-    // Append files if available
-    if (this.projectForm.value.image) {
-      formData.append('image', this.projectForm.value.image);
-    }
-    if (this.projectForm.value.icon) {
-      formData.append('icon', this.projectForm.value.icon);
+    // Append project images (if any)
+    if (this.projectImages.length > 0) {
+      this.projectImages.forEach((file) => {
+        formData.append('projectImages', file, file.name);
+      });
     }
 
-    // Append details array
-    this.details.forEach((detail, i) => {
-      formData.append(`detail[${i}][icon]`, detail.icon);
-      formData.append(`detail[${i}][description]`, detail.description);
+    // Append details as a JSON string (the format you showed earlier)
+    if (this.details.length > 0) {
+      const detailsJson = JSON.stringify(this.details);
+      formData.append('details', detailsJson);
+    }
+
+    // Log the FormData to check its contents using forEach
+    formData.forEach((value, key) => {
+      console.log(key + ': ' + value);
     });
 
-    // Call the addProject API
+    // Send the formData containing text data, images, and details as JSON
     this.apiService.addProject(formData).subscribe(
       (response) => {
-        console.log('Project added successfully:', response);
-        alert('Project added successfully!');
-
-        // Reset the form
-        this.projectForm.reset();
-
-        // Navigate to projects page after 500ms
-        setTimeout(() => {
+        if (response && response.success === true) {
+          console.log('Project added successfully:', response);
+          alert('Project added successfully!');
+          this.projectForm.reset();
           this.router.navigate(['/projects']);
-        }, 500);
+        } else {
+          console.error('Failed to add project:', response);
+          alert('Failed to add project. Please try again.');
+        }
       },
       (error) => {
         console.error('Error adding project:', error);
@@ -70,76 +67,22 @@ export class AddProjectsComponent {
     );
   }
 
-  // Add New Detail (empty by default)
-  addDetail() {
-    this.details.push({ icon: '', description: '' });
-  }
 
-  // Remove Detail by Index
-  removeDetail(index: number) {
-    this.details.splice(index, 1);
-  }
-
-  // File List for Project Images
-  projectImages: File[] = [];
-
+  // Handle file input change
   onFileChange(event: Event) {
     const input = event.target as HTMLInputElement;
-    if (input.files) {
+    if (input?.files) {
       this.projectImages = Array.from(input.files);
     }
   }
 
-  onFileSelect(event: Event, type: string): void {
-    const input = event.target as HTMLInputElement;
-    const file = input?.files?.[0];
-    if (file) {
-      if (type === 'image') {
-        this.imageFile = file;
-        console.log('Image file selected:', file);
-      } else if (type === 'icon') {
-        this.iconFile = file;
-        console.log('Icon file selected:', file);
-      }
-    }
+  // Add a new detail object to the details array
+  addDetail() {
+    this.details.push({ icon: '', description: '' });
   }
 
-  previewImage(file: File): void {
-    const reader = new FileReader();
-    reader.onload = (e: any) => {
-      this.imagePreview = e.target.result; // Set image preview URL
-    };
-    reader.readAsDataURL(file);
-  }
-
-  // Method to trigger file input for image or icon
-  triggerFileInput(type: string): void {
-    const fileInput = type === 'image' ? document.querySelector('#imageInput') : document.querySelector('#iconInput');
-    if (fileInput) {
-      (fileInput as HTMLInputElement).click();
-    }
-  }
-
-  // Drag-over event to prevent default behavior
-  onDragOver(event: DragEvent): void {
-    event.preventDefault();
-    event.stopPropagation();
-  }
-
-  // Drop event for handling file drag and drop
-  onDrop(event: DragEvent, type: string): void {
-    event.preventDefault();
-    event.stopPropagation();
-    const file = event.dataTransfer?.files[0];
-    if (file) {
-      if (type === 'image') {
-        this.imageFile = file;
-        this.previewImage(file); // Display image preview
-        console.log('Image file dropped:', file);
-      } else if (type === 'icon') {
-        this.iconFile = file;
-        console.log('Icon file dropped:', file);
-      }
-    }
+  // Remove a detail object by index
+  removeDetail(index: number) {
+    this.details.splice(index, 1);
   }
 }

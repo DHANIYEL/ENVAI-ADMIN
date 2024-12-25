@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { tap } from 'rxjs/operators';  // Add this import at the top of your service file
-
+import { tap } from 'rxjs/operators'; // Add this import at the top of your service file
 
 export interface Project {
   id: string;
@@ -18,40 +17,56 @@ export interface Project {
 })
 export class ApiService {
   private baseUrl: string = 'https://admin.envaiprojects.com/v1/api';
+  private baseUrl2: string = 'https://admin.envaiprojects.com/v2/api';
   constructor(private http: HttpClient) {}
 
   login(email: string, password: string): Observable<any> {
     const loginData = { strEmail: email, strPassword: password };
-    return this.http.post<any>(`${this.baseUrl}/admin/admin_login`, loginData).pipe(
-      tap(response => {
-        console.log('Response:', response);
-        if (response && response.data && response.data.token) {
-          localStorage.setItem('token', response.data.token);
-          console.log('Token stored:', response.data.token);
-        } else {
-          console.log('Login failed or no token in response');
-        }
-      })
-
-    );
+    return this.http
+      .post<any>(`${this.baseUrl}/admin/admin_login`, loginData)
+      .pipe(
+        tap((response) => {
+          console.log('Response:', response);
+          if (response && response.data && response.data.token) {
+            localStorage.setItem('token', response.data.token);
+            console.log('Token stored:', response.data.token);
+          } else {
+            console.log('Login failed or no token in response');
+          }
+        })
+      );
   }
-
-
-
 
   // API call to send OTP
   sendOtp(payload: { strEmail: string }): Observable<any> {
     return this.http.post(`${this.baseUrl}/otp/send_otp_for_reset`, payload);
   }
 
-  verifyOtp(payload: { strEmail: string; strOTP: string; strNewPaswd: string }): Observable<any> {
-    return this.http.post(`${this.baseUrl}/otp/verify_otp_and_passwd_reset`, payload);
+  verifyOtp(payload: {
+    strEmail: string;
+    strOTP: string;
+    strNewPaswd: string;
+  }): Observable<any> {
+    return this.http.post(
+      `${this.baseUrl}/otp/verify_otp_and_passwd_reset`,
+      payload
+    );
   }
 
-
-
+  // api.service.ts
   addProject(formData: FormData): Observable<any> {
-    return this.http.post(`${this.baseUrl}/projects`, formData);
+    // Get the token from localStorage or any other service
+    const token = localStorage.getItem('token'); // Or use a token service to get the token
+
+    // Set up the headers with Authorization token
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+    });
+
+    // Send the POST request with the form data and headers
+    return this.http.post(`${this.baseUrl2}/project/add_project`, formData, {
+      headers,
+    });
   }
   getAllProjects(): Observable<any> {
     const token = localStorage.getItem('token'); // Retrieve the token from localStorage
@@ -76,10 +91,12 @@ export class ApiService {
     });
 
     // Make the HTTP request to get all projects with payload
-    return this.http.post<any>(`${this.baseUrl}/projects/get_all_projects`, payload, { headers });
+    return this.http.post<any>(
+      `${this.baseUrl}/projects/get_all_projects`,
+      payload,
+      { headers }
+    );
   }
-
-
 
   // Method to get user details by ID
   getUserById(): Observable<any> {
@@ -89,22 +106,26 @@ export class ApiService {
     if (!token) {
       // Handle case where token is missing (e.g., redirect to login)
       console.error('No token found');
-      return of(null);  // Return an empty observable with 'null' or any fallback data
+      return of(null); // Return an empty observable with 'null' or any fallback data
     }
 
     // Set the token in the request headers
     const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     });
 
     // Call the API with the token in the header
-    return this.http.get(`${this.baseUrl}/admin/get_all_admins`, { headers })
+    return this.http
+      .get(`${this.baseUrl}/admin/get_all_admins`, { headers })
       .pipe(
-        tap(response => {
-          console.log('User data fetched successfully:', response);
-        }, error => {
-          console.error('Error fetching user data:', error);
-        })
+        tap(
+          (response) => {
+            console.log('User data fetched successfully:', response);
+          },
+          (error) => {
+            console.error('Error fetching user data:', error);
+          }
+        )
       );
   }
 
@@ -113,18 +134,20 @@ export class ApiService {
 
     if (!token) {
       console.error('No token found');
-      return of(null);  // Return an empty observable with 'null' or any fallback data
+      return of(null); // Return an empty observable with 'null' or any fallback data
     }
 
     // Set up the headers with the authorization token
     const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
+      Authorization: `Bearer ${token}`,
     });
 
-    return this.http.post<any>(`${this.baseUrl}/admin/update_admins`, userData, { headers });
+    return this.http.post<any>(
+      `${this.baseUrl}/admin/update_admins`,
+      userData,
+      { headers }
+    );
   }
-
-
 
   // Check old password and reset password
   updatePassword(oldPassword: string, newPassword?: string): Observable<any> {
@@ -132,12 +155,12 @@ export class ApiService {
 
     if (!token) {
       console.error('No token found');
-      return of(null);  // Return an empty observable with 'null' or any fallback data
+      return of(null); // Return an empty observable with 'null' or any fallback data
     }
 
     // Set up the headers with the authorization token
     const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
+      Authorization: `Bearer ${token}`,
     });
 
     // Prepare the body based on the presence of new password (for resetting password)
@@ -146,7 +169,11 @@ export class ApiService {
       : { strOldPassword: oldPassword };
 
     // Send request to the same endpoint for both checking and updating password
-    return this.http.post<any>(`${this.baseUrl}/admin/update_admin_passwd`, body, { headers });
+    return this.http.post<any>(
+      `${this.baseUrl}/admin/update_admin_passwd`,
+      body,
+      { headers }
+    );
   }
 
   // Delete a project by ID

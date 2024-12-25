@@ -54,6 +54,7 @@
         class="mt-1 block border w-full rounded-md px-3 py-2 border-gray-300 shadow-sm"
         multiple
         (change)="onFileChange($event)"
+        accept="image/*"
         required
       />
     </div>
@@ -62,7 +63,7 @@
     <div class="form-group">
       <label class="block text-sm font-medium text-gray-700">Details:</label>
       <div *ngFor="let detail of details; let i = index" class="flex gap-4 items-center my-5">
-        <!-- Icon -->
+        <!-- Icon URL -->
         <input
           type="url"
           class="flex-1 block border rounded-md px-3 py-2 border-gray-300 shadow-sm"
@@ -111,4 +112,5 @@
       </button>
     </div>
   </form>
+
 </div>
