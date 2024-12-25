@@ -63,29 +63,35 @@ export class ProfileComponent implements OnInit {
     }
   }
 
-  // Update profile details
-  updateProfile(): void {
-    const userId = localStorage.getItem('userId'); // Get userId from localStorage
-    if (userId) {
-      const userData = {
-        firstName: this.firstName,
-        lastName: this.lastName,
-        phoneNumber: this.phoneNumber,
-        email: this.email,
-        profileImage: this.profileImage
-      };
+  // Update the user profile
+// Update the user profile
+updateProfile(): void {
+  const userId = localStorage.getItem('userId'); // Get userId from localStorage
 
-      this.apiService.updateUserProfile(userId, userData).subscribe(
-        (response) => {
-          alert('Profile updated successfully!');
-        },
-        (error) => {
-          alert('Failed to update profile. Please try again.');
-          console.error('Error updating profile:', error); // Log the full error details
-        }
-      );
-    }
+  if (userId) {
+    const userData = {
+      fkAdminId: userId,  // Assuming the userId is the fkAdminId in your request
+      strFirstName: this.firstName,
+      strLastName: this.lastName,
+      strEmail: this.email,  // Email should not be changed since it's disabled
+      strProfileImage: this.profileImage  // Make sure profile image data is handled correctly
+    };
+
+    // Call the service to update the profile
+    this.apiService.updateUserProfile(userId, userData).subscribe(
+      (response) => {
+        alert('Profile updated successfully!');
+      },
+      (error) => {
+        alert('Failed to update profile. Please try again.');
+        console.error('Error updating profile:', error); // Log the full error details
+      }
+    );
+  } else {
+    console.error('User ID is not available.');
   }
+}
+
 
   // Validate and update the password
   updatePassword(): void {

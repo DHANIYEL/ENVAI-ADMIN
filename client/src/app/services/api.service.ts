@@ -109,8 +109,21 @@ export class ApiService {
   }
 
   updateUserProfile(userId: string, userData: any): Observable<any> {
-    return this.http.patch<any>(`${this.baseUrl}/users/${userId}`, userData);
+    const token = localStorage.getItem('token'); // Get token from localStorage
+
+    if (!token) {
+      console.error('No token found');
+      return of(null);  // Return an empty observable with 'null' or any fallback data
+    }
+
+    // Set up the headers with the authorization token
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+
+    return this.http.post<any>(`${this.baseUrl}/admin/update_admins`, userData, { headers });
   }
+
 
   // Check old password
   // Check old password
