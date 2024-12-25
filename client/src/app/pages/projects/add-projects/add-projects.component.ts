@@ -2,21 +2,20 @@ import { Component, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule, NgForm } from '@angular/forms';
 import { ApiService } from 'src/app/services/api.service';
-import { NgIf } from '@angular/common';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-add-projects',
   templateUrl: './add-projects.component.html',
   styleUrls: ['./add-projects.component.css'],
   standalone: true,
-  imports: [FormsModule, NgIf],
+  imports: [FormsModule, CommonModule],
 })
 export class AddProjectsComponent {
-
   imageFile: File | null = null;
   iconFile: File | null = null;
-  imagePreview: string | null = null;  // Variable to store image preview URL
-
+  imagePreview: string | null = null; // Variable to store image preview URL
+  details: { icon: string; description: string }[] = []; // Details array initialized empty
 
   @ViewChild('projectForm') projectForm!: NgForm; // Access the form directly using ViewChild
 
@@ -44,6 +43,12 @@ export class AddProjectsComponent {
       formData.append('icon', this.projectForm.value.icon);
     }
 
+    // Append details array
+    this.details.forEach((detail, i) => {
+      formData.append(`detail[${i}][icon]`, detail.icon);
+      formData.append(`detail[${i}][description]`, detail.description);
+    });
+
     // Call the addProject API
     this.apiService.addProject(formData).subscribe(
       (response) => {
@@ -65,6 +70,26 @@ export class AddProjectsComponent {
     );
   }
 
+  // Add New Detail (empty by default)
+  addDetail() {
+    this.details.push({ icon: '', description: '' });
+  }
+
+  // Remove Detail by Index
+  removeDetail(index: number) {
+    this.details.splice(index, 1);
+  }
+
+  // File List for Project Images
+  projectImages: File[] = [];
+
+  onFileChange(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input.files) {
+      this.projectImages = Array.from(input.files);
+    }
+  }
+
   onFileSelect(event: Event, type: string): void {
     const input = event.target as HTMLInputElement;
     const file = input?.files?.[0];
@@ -79,15 +104,13 @@ export class AddProjectsComponent {
     }
   }
 
-
   previewImage(file: File): void {
     const reader = new FileReader();
     reader.onload = (e: any) => {
-      this.imagePreview = e.target.result;  // Set image preview URL
+      this.imagePreview = e.target.result; // Set image preview URL
     };
     reader.readAsDataURL(file);
   }
-
 
   // Method to trigger file input for image or icon
   triggerFileInput(type: string): void {
@@ -111,7 +134,7 @@ export class AddProjectsComponent {
     if (file) {
       if (type === 'image') {
         this.imageFile = file;
-        this.previewImage(file);  // Display image preview
+        this.previewImage(file); // Display image preview
         console.log('Image file dropped:', file);
       } else if (type === 'icon') {
         this.iconFile = file;

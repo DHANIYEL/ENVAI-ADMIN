@@ -44,80 +44,61 @@
       ></textarea>
     </div>
 
-<!-- Image Upload -->
-<div class="form-group">
-  <label for="imageUpload" class="block text-sm font-medium text-gray-700">Image Upload:</label>
-  <div
-    class="border-2 border-dashed rounded-lg p-8 text-center cursor-pointer hover:border-gray-400 transition-colors"
-    (click)="triggerFileInput('image')"
-    (dragover)="onDragOver($event)"
-    (drop)="onDrop($event, 'image')"
-  >
-    <div class="flex flex-col items-center gap-4">
-      <div class="w-16 h-16 text-gray-400">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-        </svg>
-      </div>
-      <div class="text-gray-600">
-        Drag n drop image file here, or click to select
-      </div>
-      <div class="text-sm text-gray-500">
-        Supported files: jpeg, jpg, png | Will be resized to: 1920x1080 px
-      </div>
+    <!-- Project Images -->
+    <div class="form-group">
+      <label for="projectImages" class="block text-sm font-medium text-gray-700">Project Images:</label>
+      <input
+        type="file"
+        id="projectImages"
+        name="projectImages"
+        class="mt-1 block border w-full rounded-md px-3 py-2 border-gray-300 shadow-sm"
+        multiple
+        (change)="onFileChange($event)"
+        required
+      />
     </div>
-    <!-- Image Preview -->
-    <div *ngIf="imagePreview" class="mt-4">
-      <img [src]="imagePreview" alt="Image preview" class="w-32 h-32 object-cover rounded-md" />
+
+    <!-- Details -->
+    <div class="form-group">
+      <label class="block text-sm font-medium text-gray-700">Details:</label>
+      <div *ngFor="let detail of details; let i = index" class="flex gap-4 items-center my-5">
+        <!-- Icon -->
+        <input
+          type="url"
+          class="flex-1 block border rounded-md px-3 py-2 border-gray-300 shadow-sm"
+          placeholder="Icon URL"
+          [(ngModel)]="details[i].icon"
+          name="icon-{{i}}"
+          required
+        />
+
+        <!-- Description -->
+        <input
+          type="text"
+          class="flex-1 block border rounded-md px-3 py-2 border-gray-300 shadow-sm"
+          placeholder="Description"
+          [(ngModel)]="details[i].description"
+          name="description-{{i}}"
+          required
+        />
+
+        <!-- Remove Detail -->
+        <button
+          type="button"
+          class="text-red-500 font-semibold"
+          (click)="removeDetail(i)"
+        >
+          Remove
+        </button>
+      </div>
+      <button
+        type="button"
+        class="mt-2 text-blue-600 font-semibold"
+        (click)="addDetail()"
+      >
+        + Add Detail
+      </button>
     </div>
-  </div>
-  <input
-    type="file"
-    #imageInput
-    hidden
-    accept="image/jpeg,image/png,image/jpg"
-    (change)="onFileSelect($event, 'image')"
-  />
-  <div class="text-sm">
-    <span class="text-gray-600">Note:</span>
-    <span class="text-red-500"> Supported image formats are: jpg, png and jpeg only</span>
-  </div>
-</div>
-
-
-<!-- Small Icon Upload -->
-<div class="form-group">
-  <label for="iconUpload" class="block text-sm py-2 font-medium text-gray-700">Small Icon (Select or Upload):</label>
-  <div
-    class="border-2 border-dashed rounded-lg p-8 text-center cursor-pointer hover:border-gray-400 transition-colors"
-    (click)="triggerFileInput('icon')"
-    (dragover)="onDragOver($event)"
-    (drop)="onDrop($event, 'icon')"
-  >
-    <div class="flex flex-col items-center gap-4">
-      <div class="w-16 h-16 text-gray-400">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-        </svg>
-      </div>
-      <div class="text-gray-600">
-        Drag n drop icon file here, or click to select
-      </div>
-      <div class="text-sm text-gray-500">
-        Supported files: jpeg, jpg, png | Size: 64x64 px recommended
-      </div>
-    </div>
-  </div>
-  <input
-    type="file"
-    #iconInput
-    hidden
-    accept="image/jpeg,image/png,image/jpg"
-    (change)="onFileSelect($event, 'icon')"
-  />
-
-</div>
-
 
     <!-- Submit Button -->
     <div class="flex justify-end">
