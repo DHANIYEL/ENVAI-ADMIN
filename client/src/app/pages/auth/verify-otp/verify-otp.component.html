@@ -10,7 +10,7 @@
         id="email"
         name="email"
         class="w-full px-4 py-2 mt-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-        [(ngModel)]="email"
+        [(ngModel)]="strEmail"
         required
         #emailModel="ngModel"
         placeholder="Enter your email"
@@ -28,6 +28,7 @@
         Send OTP
       </button>
     </div>
+
 
     <!-- OTP Section -->
     <div *ngIf="otpSent && !otpVerified">

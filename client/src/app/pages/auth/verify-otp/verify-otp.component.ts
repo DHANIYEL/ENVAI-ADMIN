@@ -16,20 +16,24 @@ export class VerifyOtpComponent {
   otp: string = '';
   otpSent: boolean = false;
   otpVerified: boolean = false;
+  strEmail: string = ''; // Declare the property
 
   constructor(private apiService: ApiService, private router: Router) {}
 
   // Method to send OTP to email
   sendOtp(): void {
-    const payload = { email: this.email };
+    const payload = { strEmail: this.strEmail };
 
     this.apiService.sendOtp(payload).subscribe(
       (response: any) => {
-        if (response.message === 'OTP sent successfully') {
+        console.log(response);
+
+        if (response.success) { // Assuming 'success' is the key in the response
           console.log('OTP sent successfully!');
           this.otpSent = true;
         } else {
-          console.log('Error sending OTP');
+          console.log('OTP already sent or expired.');
+          this.otpSent = true; // Mark as true to indicate an OTP has already been sent
         }
       },
       (error) => {
@@ -37,6 +41,8 @@ export class VerifyOtpComponent {
       }
     );
   }
+
+
 
   // Method to handle OTP verification
   onSubmit(): void {
