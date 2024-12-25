@@ -42,10 +42,10 @@ export class AddProjectsComponent {
       formData.append('details', detailsJson);
     }
 
-    // Log the FormData to check its contents using forEach
-    formData.forEach((value, key) => {
-      console.log(key + ': ' + value);
-    });
+    // // Log the FormData to check its contents using forEach
+    // formData.forEach((value, key) => {
+    //   console.log(key + ': ' + value);
+    // });
 
     // Send the formData containing text data, images, and details as JSON
     this.apiService.addProject(formData).subscribe(
