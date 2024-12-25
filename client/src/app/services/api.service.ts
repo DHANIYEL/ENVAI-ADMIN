@@ -18,14 +18,17 @@ export interface Project {
 })
 export class ApiService {
 
-  private baseUrl: string = 'https://adminenvaiprojectsapi.vercel.app/api'; // API base URL
-
+  private baseUrl: string = 'https://admin.envaiprojects.com/v1/api';
   constructor(private http: HttpClient) {}
 
 
-  login(loginData: { username: string; password: string }): Observable<any> {
-    return this.http.post<any>(`${this.baseUrl}/login`, loginData);
+  login(email: string, password: string): Observable<any> {
+    const loginData = { strEmail: email, strPassword: password };
+    return this.http.post<any>(`${this.baseUrl}/admin/admin_login`, loginData);
   }
+
+
+
 
   // API call to send OTP
   sendOtp(payload: { email: string }): Observable<any> {
@@ -41,7 +44,7 @@ export class ApiService {
     return this.http.post(`${this.baseUrl}/projects`, formData);
   }
   getProjects(): Observable<Project[]> {
-    return this.http.get<Project[]>(`${this.baseUrl}/projects`);
+    return this.http.get<Project[]>(`${this.baseUrl}/projects/get_all_projects`);
   }
 
   // Method to get user details by ID

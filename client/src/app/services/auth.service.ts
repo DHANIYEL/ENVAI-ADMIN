@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class AuthService {
-  private apiUrl = 'https://adminenvaiprojectsapi.vercel.app/api/auth/login'; // Replace with your actual backend URL
+  private apiUrl = 'https://admin.envaiprojects.com/v1/api'; // Replace with your actual backend URL
 
   constructor(private http: HttpClient) {}
 
