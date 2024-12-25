@@ -125,27 +125,30 @@ export class ApiService {
   }
 
 
-  // Check old password
-  // Check old password
-  checkOldPassword(email: string, oldPassword: string): Observable<any> {
-    return this.http.post<any>(`${this.baseUrl}/auth/check-old-password`, {
-      email,
-      oldPassword,
+
+  // Check old password and reset password
+  updatePassword(oldPassword: string, newPassword?: string): Observable<any> {
+    const token = localStorage.getItem('token'); // Get token from localStorage
+
+    if (!token) {
+      console.error('No token found');
+      return of(null);  // Return an empty observable with 'null' or any fallback data
+    }
+
+    // Set up the headers with the authorization token
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
     });
+
+    // Prepare the body based on the presence of new password (for resetting password)
+    const body = newPassword
+      ? { strOldPassword: oldPassword, strNewPassword: newPassword }
+      : { strOldPassword: oldPassword };
+
+    // Send request to the same endpoint for both checking and updating password
+    return this.http.post<any>(`${this.baseUrl}/admin/update_admin_passwd`, body, { headers });
   }
 
-  // Reset password
-  resetPassword(
-    email: string,
-    newPassword: string,
-    confirmPassword: string
-  ): Observable<any> {
-    return this.http.post<any>(`${this.baseUrl}/auth/reset-password`, {
-      email,
-      newPassword,
-      confirmPassword,
-    });
-  }
   // Delete a project by ID
   deleteProject(projectId: string): Observable<any> {
     return this.http.delete(`${this.baseUrl}/projects/${projectId}`);

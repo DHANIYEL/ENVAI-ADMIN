@@ -94,41 +94,47 @@ updateProfile(): void {
 
 
   // Validate and update the password
-  updatePassword(): void {
-    this.oldPasswordError = '';
-    this.newPasswordError = '';
+// Update the password
+updatePassword(): void {
+  this.oldPasswordError = '';
+  this.newPasswordError = '';
 
-    // Check if new password and confirm password match
-    if (this.newPassword !== this.confirmPassword) {
-      this.newPasswordError = 'New password and confirm password do not match.';
-      return;
-    }
+  // Check if new password and confirm password match
+  if (this.newPassword !== this.confirmPassword) {
+    this.newPasswordError = 'New password and confirm password do not match.';
+    return;
+  }
 
-    // Validate old password with backend
-    this.apiService.checkOldPassword(this.email, this.oldPassword).subscribe(
-      (response: any) => {
-        if (response.message === 'Old password is correct') {
-          // Proceed to change the password
-          this.apiService.resetPassword(this.email, this.newPassword, this.confirmPassword).subscribe(
-            (resetResponse: any) => {
-              alert('Password changed successfully!');
-              this.oldPassword = '';
-              this.newPassword = '';
-              this.confirmPassword = '';
-            },
-            (resetError) => {
-              console.error('Error resetting password:', resetError);
-              alert('Failed to change password. Please try again.');
-            }
-          );
-        }
-      },
-      (error) => {
-        console.error('Old password is incorrect:', error);
+  // First, check if the old password is correct (we will pass oldPassword only)
+  this.apiService.updatePassword(this.oldPassword).subscribe(
+    (response: any) => {
+      console.log(response);
+      if (response) {
+        // If old password is correct, proceed to reset password
+        this.apiService.updatePassword(this.oldPassword, this.newPassword).subscribe(
+          (resetResponse: any) => {
+            alert('Password changed successfully!');
+            this.oldPassword = '';
+            this.newPassword = '';
+            this.confirmPassword = '';
+          },
+          (resetError) => {
+            console.error('Error resetting password:', resetError);
+            alert('Failed to change password. Please try again.');
+          }
+        );
+      } else {
         this.oldPasswordError = 'The old password you entered is incorrect.';
       }
-    );
-  }
+    },
+    (error) => {
+      console.error('Error checking old password:', error);
+      this.oldPasswordError = 'The old password you entered is incorrect.';
+    }
+  );
+
+}
+
 
   // Handle file selection for profile image
   onFileSelected(event: Event): void {
