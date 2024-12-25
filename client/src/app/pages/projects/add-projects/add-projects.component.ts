@@ -76,6 +76,33 @@ export class AddProjectsComponent {
     }
   }
 
+
+onDrop(event: DragEvent): void {
+  event.preventDefault();
+  const files = event.dataTransfer?.files;
+  if (files) {
+    this.projectImages = Array.from(files);
+  }
+}
+
+onDragOver(event: DragEvent): void {
+  event.preventDefault();
+}
+
+onDragEnter(event: DragEvent): void {
+  event.preventDefault();
+  // Cast event.target to HTMLElement to access classList
+  const target = event.currentTarget as HTMLElement;
+  target.classList.add('border-blue-500'); // Optional: add visual feedback
+}
+
+onDragLeave(event: DragEvent): void {
+  event.preventDefault();
+  // Cast event.target to HTMLElement to access classList
+  const target = event.currentTarget as HTMLElement;
+  target.classList.remove('border-blue-500'); // Optional: remove visual feedback
+}
+
   // Add a new detail object to the details array
   addDetail() {
     this.details.push({ icon: '', description: '' });

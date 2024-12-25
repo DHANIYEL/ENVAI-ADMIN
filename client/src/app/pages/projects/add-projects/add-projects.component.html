@@ -44,20 +44,36 @@
       ></textarea>
     </div>
 
-    <!-- Project Images -->
     <div class="form-group">
       <label for="projectImages" class="block text-sm font-medium text-gray-700">Project Images:</label>
-      <input
-        type="file"
-        id="projectImages"
-        name="projectImages"
-        class="mt-1 block border w-full rounded-md px-3 py-2 border-gray-300 shadow-sm"
-        multiple
-        (change)="onFileChange($event)"
-        accept="image/*"
-        required
-      />
+
+      <!-- Container for Drag-and-Drop and File Input -->
+      <div
+        class="mt-1  h-40 w-full rounded-md px-3 py-2 border-gray-300 border-2 border-dotted shadow-sm flex justify-center items-center"
+        (drop)="onDrop($event)"
+        (dragover)="onDragOver($event)"
+        (dragenter)="onDragEnter($event)"
+        (dragleave)="onDragLeave($event)"
+        (click)="fileInput.click()"
+        style="cursor: pointer;"
+      >
+        <input
+          type="file"
+          id="projectImages"
+          name="projectImages"
+          #fileInput
+          class="hidden"
+          multiple
+          (change)="onFileChange($event)"
+          accept="image/*"
+          required
+        />
+
+        <!-- Placeholder text centered -->
+        <p class="text-center text-sm text-gray-500">Drag & Drop your images here, or click to select files</p>
+      </div>
     </div>
+
 
     <!-- Details -->
     <div class="form-group">
