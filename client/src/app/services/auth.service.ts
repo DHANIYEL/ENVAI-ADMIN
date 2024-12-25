@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:5000/api/auth/login'; // Replace with your actual backend URL
+  private apiUrl = 'https://admin.envaiprojects.com/api/auth/login'; // Replace with your actual backend URL
 
   constructor(private http: HttpClient) {}
 
