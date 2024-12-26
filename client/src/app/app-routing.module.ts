@@ -10,6 +10,7 @@ import { VerifyOtpComponent } from './pages/auth/verify-otp/verify-otp.component
 import { OtpVerifiedGuard } from './services/otp-veryfied.guard';
 import { AuthGuard } from './services/auth.guard';
 import { AddProjectsComponent } from './pages/projects/add-projects/add-projects.component';
+import { EditProjectsComponent } from './pages/projects/edit-projects/edit-projects.component';
 
 const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: '/login' },
@@ -26,6 +27,7 @@ const routes: Routes = [
       { path: 'dashboard', component: ProjectsComponent },
       { path: 'projects', component: ProjectsComponent },
       { path: 'projects/add', component: AddProjectsComponent },
+      { path: 'projects/edit', component: EditProjectsComponent },
       { path: 'profile', component: ProfileComponent },
       // Add other routes that need sidebar and header here
     ]

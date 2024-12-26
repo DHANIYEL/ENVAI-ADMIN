@@ -1,0 +1,124 @@
+<div class="container p-10 overflow-y-auto h-screen pb-32">
+  <nav class="text-2xl font-semibold mb-6">Edit Project</nav>
+
+  <form #editProjectForm="ngForm" class="flex flex-col gap-5" (ngSubmit)="updateProject()">
+    <!-- Title -->
+    <div class="form-group">
+      <label for="title" class="block text-sm font-medium text-gray-700">Title:</label>
+      <input
+        type="text"
+        id="title"
+        name="title"
+        class="mt-1 block border w-full rounded-md px-3 py-2 border-gray-300 shadow-sm"
+        placeholder="Enter project title"
+        [(ngModel)]="projectForm.value.title"
+        required
+      />
+    </div>
+
+    <!-- Homepage Small Description -->
+    <div class="form-group">
+      <label for="smallDescription" class="block text-sm font-medium text-gray-700">Homepage Small Description:</label>
+      <textarea
+        id="smallDescription"
+        name="smallDescription"
+        rows="3"
+        class="mt-1 block border w-full rounded-md px-3 py-2 border-gray-300 shadow-sm"
+        placeholder="Enter a brief description for the homepage"
+        [(ngModel)]="projectForm.value.smallDescription"
+        required
+      ></textarea>
+    </div>
+
+    <!-- Detailed Description -->
+    <div class="form-group">
+      <label for="detailedDescription" class="block text-sm font-medium text-gray-700">Detailed Description:</label>
+      <textarea
+        id="detailedDescription"
+        name="detailedDescription"
+        rows="6"
+        class="mt-1 block border w-full rounded-md px-3 py-2 border-gray-300 shadow-sm"
+        placeholder="Provide a detailed description"
+        [(ngModel)]="projectForm.value.detailedDescription"
+        required
+      ></textarea>
+    </div>
+
+    <!-- Project Images -->
+    <div class="form-group">
+      <label for="projectImages" class="block text-sm font-medium text-gray-700">Project Images:</label>
+      <div
+        class="mt-1 h-40 w-full rounded-md px-3 py-2 border-gray-300 border-2 border-dotted shadow-sm flex justify-center items-center"
+        (click)="fileInput.click()"
+        style="cursor: pointer;"
+      >
+        <input
+          type="file"
+          id="projectImages"
+          name="projectImages"
+          #fileInput
+          class="hidden"
+          multiple
+          (change)="onFileChange($event)"
+          accept="image/*"
+        />
+        <p class="text-center text-sm text-gray-500">Drag & Drop your images here, or click to select files</p>
+      </div>
+      <div class="flex flex-wrap mt-2 gap-2">
+        <img *ngFor="let image of projectImages" [src]="image" class="w-16 h-16 rounded-md" />
+      </div>
+    </div>
+
+    <!-- Details -->
+    <div class="form-group">
+      <label class="block text-sm font-medium text-gray-700">Details:</label>
+      <div *ngFor="let detail of details; let i = index" class="flex gap-4 items-center my-5">
+        <!-- Icon URL -->
+        <input
+          type="url"
+          class="flex-1 block border rounded-md px-3 py-2 border-gray-300 shadow-sm"
+          placeholder="Icon URL"
+          [(ngModel)]="detail.icon"
+          name="icon-{{i}}"
+          required
+        />
+
+        <!-- Description -->
+        <input
+          type="text"
+          class="flex-1 block border rounded-md px-3 py-2 border-gray-300 shadow-sm"
+          placeholder="Description"
+          [(ngModel)]="detail.description"
+          name="description-{{i}}"
+          required
+        />
+
+        <!-- Remove Detail -->
+        <button
+          type="button"
+          class="text-red-500 font-semibold"
+          (click)="removeDetail(i)"
+        >
+          Remove
+        </button>
+      </div>
+      <button
+        type="button"
+        class="mt-2 text-blue-600 font-semibold"
+        (click)="addDetail()"
+      >
+        + Add Detail
+      </button>
+    </div>
+
+    <div class="flex justify-end">
+      <button
+        type="submit"
+        class="mt-5 bg-blue-600 text-white w-fit py-2 px-4 rounded-md"
+      >
+        Update Project
+      </button>
+    </div>
+
+  </form>
+</div>

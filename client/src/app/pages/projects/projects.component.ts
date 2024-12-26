@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { ApiService } from 'src/app/services/api.service';
 import { ConfirmationModalComponent } from "../../components/confirmation-modal/confirmation-modal.component";
 
@@ -18,7 +18,7 @@ interface Project {
   templateUrl: './projects.component.html',
   styleUrls: ['./projects.component.css'],
   standalone: true,
-  imports: [CommonModule, ConfirmationModalComponent],
+  imports: [CommonModule, ConfirmationModalComponent, RouterModule],
 })
 export class ProjectsComponent implements OnInit {
   projects: any[] = []; // Holds the list of projects
@@ -71,6 +71,11 @@ export class ProjectsComponent implements OnInit {
   addProject(): void {
     this.router.navigate(['/projects/add']);
   }
+
+  editProjectNavigate(): void {
+    this.router.navigate(['/projects/edit']);
+  }
+
 
   // Delete a project by ID
   confirmDelete(): void {
