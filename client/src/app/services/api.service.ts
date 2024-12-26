@@ -46,6 +46,30 @@ export class ApiService {
     return token !== null; // Return true if token exists, false otherwise
   }
 
+  logout(): Observable<any> {
+    const token = localStorage.getItem('token'); // Retrieve the token from localStorage
+
+    if (!token) {
+      console.log('No token found, user is not logged in');
+      return of(null);
+    }
+
+    // Create headers with the token for authorization
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`, // Include the Bearer token
+    });
+
+    // Send the logout request to the backend
+    return this.http.post<any>(`${this.baseUrl}/admin/admin_logout`, {}, { headers }).pipe(
+      tap((response) => {
+        console.log('Logout Response:', response);
+        // On successful logout, remove the token from localStorage
+        localStorage.removeItem('token');
+        console.log('Token removed, user logged out');
+      })
+    );
+  }
+
   // API call to send OTP
   sendOtp(payload: { strEmail: string }): Observable<any> {
     return this.http.post(`${this.baseUrl}/otp/send_otp_for_reset`, payload);
