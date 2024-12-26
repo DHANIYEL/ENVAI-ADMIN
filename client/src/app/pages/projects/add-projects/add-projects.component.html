@@ -57,7 +57,22 @@
         required
       ></textarea>
     </div>
+    <div class="form-group flex gap-4 w-56">
+      <div class="flex-1">
+        <label class="block text-sm font-medium text-gray-700">Amount</label>
+        <input
+          type="number"
+          class="flex-1 block text-center border rounded-md w-full mt-2 px-3 py-2"
+          [(ngModel)]="counter"
+          name="counter"
+          required
+          min="0"
+          placeholder="Enter amount"
+        />
+      </div>
+    </div>
 
+<!-- Project Images Input -->
 <!-- Project Images Input -->
 <div class="form-group">
   <label for="projectImages" class="block text-sm font-medium text-gray-700">
@@ -72,6 +87,20 @@
     accept="image/*"
     class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
   />
+</div>
+
+<!-- Project URL Input -->
+<div class="form-group flex gap-4">
+  <div class="flex-1">
+    <label class="block text-sm font-medium text-gray-700">Project URL:</label>
+    <input
+      type="url"
+      class="flex-1 block border rounded-md w-full mt-2 px-3 py-2 border-gray-300 shadow-sm"
+      placeholder="Project URL"
+      [(ngModel)]="projectUrl"
+      name="projectUrl"
+    />
+  </div>
 </div>
 
 <!-- Icon Images Input -->
@@ -90,33 +119,20 @@
   />
 </div>
 
-    <!-- <div class="form-group flex gap-4">
-      <div class="flex-1">
-        <label class="block text-sm font-medium text-gray-700">Icon URL:</label>
-        <input
-          type="url"
-          class="flex-1 block border rounded-md w-full mt-2 px-3 py-2 border-gray-300 shadow-sm"
-          placeholder="Icon URL"
-          [(ngModel)]="iconUrl"
-          name="iconUrl"
-          required
-        />
-      </div>
+<!-- Icon URL Input -->
+<div class="form-group flex gap-4">
+  <div class="flex-1">
+    <label class="block text-sm font-medium text-gray-700">Icon URL:</label>
+    <input
+      type="url"
+      class="flex-1 block border rounded-md w-full mt-2 px-3 py-2 border-gray-300 shadow-sm"
+      placeholder="Icon URL"
+      [(ngModel)]="iconUrl"
+      name="iconUrl"
+    />
+  </div>
+</div>
 
-      <div class="flex-1">
-        <label class="block text-sm font-medium text-gray-700"
-          >Project URL:</label
-        >
-        <input
-          type="url"
-          class="flex-1 block border rounded-md w-full mt-2 px-3 py-2 border-gray-300 shadow-sm"
-          placeholder="Project URL"
-          [(ngModel)]="projectUrl"
-          name="projectUrl"
-          required
-        />
-      </div>
-    </div> -->
 
     <!-- Submit Button -->
     <div class="flex justify-end">

@@ -29,6 +29,18 @@ export class AddProjectsComponent {
 
   constructor(private apiService: ApiService, private router: Router) {}
 
+  counter: number = 0;
+
+  increment() {
+    this.counter++;
+  }
+
+  decrement() {
+    if (this.counter > 0) {
+      this.counter--;
+    }
+  }
+
   // Submit the form with all data
   onSubmit(): void {
     const formData = new FormData();
@@ -58,13 +70,16 @@ export class AddProjectsComponent {
     const projectUrl: string[] = []; // Empty array for projectUrl
     formData.append('projectUrls', JSON.stringify(projectUrl)); // Renamed to projectUrls
 
+    // Commented out the amount field for later addition
+    // formData.append('amount', this.counter.toString()); // Add the amount value (converted to string) to the formData
+
     // Log the entire formData for debugging
     console.log('FormData Content:');
     formData.forEach((value, key) => {
       console.log(`${key}:`, value); // Log each key-value pair in formData
     });
 
-    // Uncomment the below block to send the formData to the backend
+    // Send the formData to the backend
     this.apiService.addProject(formData).subscribe(
       (response) => {
         console.log('Project added successfully:', response);
@@ -72,6 +87,10 @@ export class AddProjectsComponent {
         this.projectForm.reset(); // Reset the form
         this.selectedProjectImages = []; // Clear the selected project images
         this.selectedIconImages = []; // Clear the selected icon images
+        // this.counter = 0; // Reset the amount field (optional)
+
+        // Navigate to the .projects route
+        this.router.navigate(['/projects']);
       },
       (error) => {
         console.error('Error adding project:', error);
