@@ -62,12 +62,12 @@ export class AddProjectsComponent {
     const iconUrl = this.iconUrl; // Assuming iconUrl is a string from the input
     const projectUrl = this.projectUrl; // Assuming projectUrl is a string from the input
 
-    // Append the URLs to formData using the specified names
+    // Append the URLs as arrays
     if (iconUrl) {
-      formData.append('iconUrls', iconUrl); // Changed to iconUrls
+      formData.append('iconUrls', JSON.stringify([iconUrl])); // Wrap iconUrl in an array and convert it to JSON string
     }
     if (projectUrl) {
-      formData.append('projectUrls', projectUrl); // Changed to projectUrls
+      formData.append('projectUrls', JSON.stringify([projectUrl])); // Wrap projectUrl in an array and convert it to JSON string
     }
 
     // Log formData to console for debugging
