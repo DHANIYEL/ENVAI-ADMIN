@@ -202,44 +202,42 @@ export class ApiService {
     return this.http.post(`${this.baseUrl}/project/delete_project`, body, { headers });
   }
 
-  updateProject(body: any, options: any): Observable<any> {
-    // Retrieve the token from localStorage
-    const token = localStorage.getItem('token');
-    if (!token) {
-      throw new Error('No token found');
-    }
-
-    // Set the Authorization header with the token
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`,
-      ...options.headers, // Merge existing headers if any
-    });
-
-    // Update the options with the token in the headers
-    const updatedOptions = {
-      ...options,
-      headers,
-    };
-
-    // Make the POST request with the updated options
-    return this.http.post(`${this.baseUrl2}/project/update_project`, body, updatedOptions);
-  }
-
-  getProjectById(projectId: string): Observable<any> {
-    const token = localStorage.getItem('token');
+  updateProject(projectId: string, projectData: FormData): Observable<any> {
+    const token = localStorage.getItem('token'); // Retrieve token from localStorage
 
     if (!token) {
-      console.error('No token found!');
-      return new Observable();  // Return empty observable or handle error accordingly
+      console.error('No token found');
+      return of(null); // Handle the missing token gracefully
     }
 
+    // Set the authorization header
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`,
     });
 
-    return this.http.post(`${this.baseUrl}/projects/get_all_projects`, { headers });
+    // Send the POST request to update the project
+    return this.http.post<any>(
+      `${this.baseUrl2}/project/update_project`,
+      projectData,
+      { headers }
+    );
   }
 
 
+
+  // getProjectById(projectId: string): Observable<any> {
+  //   const token = localStorage.getItem('token');
+
+  //   if (!token) {
+  //     console.error('No token found!');
+  //     return new Observable();  // Return empty observable or handle error accordingly
+  //   }
+
+  //   const headers = new HttpHeaders({
+  //     Authorization: `Bearer ${token}`,
+  //   });
+
+  //   return this.http.post(`${this.baseUrl}/projects/get_all_projects`, { headers });
+  // }
 
 }

@@ -15,16 +15,18 @@ import { CommonModule } from '@angular/common';
 })
 export class EditProjectsComponent implements OnInit {
   @ViewChild('projectForm') projectForm!: NgForm;
+  projects: any[] = [];  // Define the projects array
+  fkProjectId: string = '';
+  projectDetails: any = {}; // Store project details
+  iconUrl: string = '';
+  projectUrl: string = '';
+  amount: number = 0; // Amount
 
   selectedProjectImages: { file: File; preview: string }[] = [];
   selectedIconImages: { file: File; preview: string }[] = [];
 
-  fkProjectId: string = '';
-  iconUrl: string = '';
-  projectUrl: string = '';
-  counter: number = 0;
-
-  projectDetails: any = null;
+  loading: boolean = true;
+  errorMessage: string = '';// Loading indicator
 
   constructor(
     private apiService: ApiService,
@@ -33,96 +35,157 @@ export class EditProjectsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.fkProjectId = this.route.snapshot.paramMap.get('id') || '';
-    if (this.fkProjectId) {
-      this.loadProjectDetails();
-    }
+    this.route.params.subscribe((params) => {
+      if (params['id']) {
+        this.fkProjectId = params['id'];
+        console.log('Project ID for editing:', this.fkProjectId);
+      } else {
+        console.error('No project ID provided in the route.');
+      }
+    });
   }
 
-  loadProjectDetails(): void {
-    this.apiService.getProjectById(this.fkProjectId).subscribe(
-      (response: any) => {
-        if (response && response.success === true) {
-          const project = response.data.find((p: any) => p.fkProjectId === this.fkProjectId);
-          if (project) {
-            // Set form values after view is initialized
-            setTimeout(() => {
-              if (this.projectForm) {
+
+  getAllProjects(): void {
+    this.apiService.getAllProjects().subscribe(
+      (response) => {
+        if (response && response.data) {
+          // Map the response data to match the required fields
+          this.projects = response.data.map((project: any) => ({
+            title: project.strTitle,
+            smallDescription: project.short_Description,
+            detailedDescription: project.long_Description,
+            projectUrls: project.strProjectUrls, // Use strProjectUrls for project URLs
+            iconUrls: project.strIconUrls, // Use strIconUrls for icon URLs
+            id: project.fkProjectId, // Assuming this is the unique identifier
+            amount: project.amount // Assuming 'amount' is present in the backend response
+          }));
+
+          console.log('All Projects:', this.projects); // Log all projects
+
+          // Filter the project by ID
+          const filteredProject = this.projects.find(
+            (project) => project.id === this.fkProjectId
+          );
+
+          if (filteredProject) {
+            console.log('Filtered Project:', filteredProject); // Log the filtered project
+
+            // Populate the form with the filtered project details
+            if (this.projectForm) {
+              setTimeout(() => {
                 this.projectForm.form.patchValue({
-                  title: project.strTitle,
-                  smallDescription: project.short_Description,
-                  detailedDescription: project.long_Description,
+                  title: filteredProject.title,
+                  smallDescription: filteredProject.smallDescription,
+                  detailedDescription: filteredProject.detailedDescription,
+                  amount: filteredProject.amount,
                 });
 
                 // Set other values
-                this.iconUrl = project.iconUrls?.[0] || '';
-                this.projectUrl = project.projectUrls?.[0] || '';
-                this.counter = project.amount || 0;
-              }
-            });
-
-            this.projectDetails = project;
+                this.iconUrl = filteredProject.iconUrls?.[0] || ''; // First icon URL
+                this.projectUrl = filteredProject.projectUrls?.[0] || ''; // First project URL
+              });
+            }
+          } else {
+            console.error('Project with the given ID not found.');
           }
+        } else {
+          this.projects = [];
         }
+        this.loading = false;
       },
       (error) => {
-        console.error('Error loading project details:', error);
+        console.error('Failed to fetch projects:', error);
+        this.errorMessage = 'Could not load projects. Please try again later.'; // Set the error message
+        this.loading = false;
       }
     );
   }
 
   onSubmit(): void {
+    if (!this.fkProjectId) {
+      console.error('Project ID is missing.');
+      alert('No project ID found. Cannot update the project.');
+      return;
+    }
+
     const formData = new FormData();
 
-    // Append form fields with correct names
+    // Append the project ID (required for the backend)
+    formData.append('projectId', this.fkProjectId);
+
+    // Append form fields with the updated naming conventions
     formData.append('strTitle', this.projectForm.value.title);
     formData.append('short_Description', this.projectForm.value.smallDescription);
     formData.append('long_Description', this.projectForm.value.detailedDescription);
     formData.append('detail_Description', this.projectForm.value.detailedDescription);
-    formData.append('fkProjectId', this.fkProjectId);
 
-    // Append project images
-    this.selectedProjectImages.forEach(({ file }) => {
-      formData.append('projectImages', file, file.name);
-    });
-
-    // Append icon images
-    this.selectedIconImages.forEach(({ file }) => {
-      formData.append('iconImages', file, file.name);
-    });
-
-    // Append URLs as arrays
-    formData.append('iconUrls', JSON.stringify([this.iconUrl]));
-    formData.append('projectUrls', JSON.stringify([this.projectUrl]));
-
-    // Add amount if needed
-    formData.append('amount', this.counter.toString());
-
-    // Get token and set headers
-    const token = localStorage.getItem('token');
-    if (!token) {
-      alert('No token found!');
-      return;
+    // Append selected project images if any are provided
+    if (this.selectedProjectImages.length > 0) {
+      this.selectedProjectImages.forEach(({ file }) => {
+        formData.append('projectImages', file, file.name);
+      });
     }
 
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${token}`,
+    // Append selected icon images if any are provided
+    if (this.selectedIconImages.length > 0) {
+      this.selectedIconImages.forEach(({ file }) => {
+        formData.append('iconImages', file, file.name);
+      });
+    }
+
+    // Append existing icon URLs
+    const iconUrlArray: string[] = [this.iconUrl];
+    formData.append('iconUrls', JSON.stringify(iconUrlArray));
+
+    // Append existing project URLs
+    const projectUrlArray: string[] = [this.projectUrl];
+    formData.append('projectUrls', JSON.stringify(projectUrlArray));
+
+    // Append the amount value
+    formData.append('amount', this.projectForm.value.amount.toString());
+
+    // Log the formData for debugging
+    formData.forEach((value, key) => {
+      console.log(`${key}:`, value);
     });
 
-    this.apiService.updateProject(formData, { headers }).subscribe(
-      (response: any) => {
-        if (response && response.success === true) {
+    // Call the updateProject method
+    this.apiService.updateProject(this.fkProjectId, formData).subscribe(
+      (response) => {
+        // Check if the response indicates success
+        if (response && response.success) {
+          console.log('Project updated successfully:', response);
           alert('Project updated successfully!');
+
+          // Update the local projects array with the new data
+          this.projects = this.projects.map((project) =>
+            project.id === this.fkProjectId ? { ...project, ...response.data } : project
+          );
+
+          // Reset the form and fields
+          this.projectForm.reset();
+          this.selectedProjectImages = [];
+          this.selectedIconImages = [];
+          this.iconUrl = '';
+          this.projectUrl = '';
+          this.amount = 0;
+
+          // Navigate to the projects page
           this.router.navigate(['/projects']);
         } else {
-          alert('Failed to update project. Please try again.');
+          // Handle the case where the update was not successful
+          console.error('Failed to update project:', response?.message || 'Unknown error');
+          alert(response?.message || 'Failed to update project. Please try again.');
         }
       },
       (error) => {
+        // Handle errors from the API call
         console.error('Error updating project:', error);
-        alert('Failed to update project. Please try again.');
+        alert('Failed to update project due to a network or server error. Please try again.');
       }
     );
+
   }
 
   onFileChange(event: Event, type: string): void {

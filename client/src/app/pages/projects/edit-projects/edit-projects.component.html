@@ -2,45 +2,59 @@
 <div class="container p-10 overflow-y-auto h-screen pb-32">
   <nav class="text-2xl font-semibold mb-6">Edit Project</nav>
 
-  <form #projectForm="ngForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-5">
+  <form
+    #projectForm="ngForm"
+    (ngSubmit)="onSubmit()"
+    class="flex flex-col gap-5"
+  >
     <!-- Title -->
     <div class="form-group">
-      <label for="title" class="block text-sm font-medium text-gray-700">Title:</label>
+      <label for="title" class="block text-sm font-medium text-gray-700"
+        >Title:</label
+      >
       <input
         type="text"
         id="title"
         name="title"
         class="mt-1 block border w-full rounded-md px-3 py-2 border-gray-300 shadow-sm"
         placeholder="Enter project title"
-        ngModel
+        [(ngModel)]="projectDetails.strTitle"
         required
       />
     </div>
 
     <!-- Homepage Small Description -->
     <div class="form-group">
-      <label for="smallDescription" class="block text-sm font-medium text-gray-700">Homepage Small Description:</label>
+      <label
+        for="smallDescription"
+        class="block text-sm font-medium text-gray-700"
+        >Homepage Small Description:</label
+      >
       <textarea
         id="smallDescription"
         name="smallDescription"
         rows="3"
         class="mt-1 block border w-full rounded-md px-3 py-2 border-gray-300 shadow-sm"
         placeholder="Enter a brief description for the homepage"
-        ngModel
+        [(ngModel)]="projectDetails.short_Description"
         required
       ></textarea>
     </div>
 
     <!-- Detailed Description -->
     <div class="form-group">
-      <label for="detailedDescription" class="block text-sm font-medium text-gray-700">Detailed Description:</label>
+      <label
+        for="detailedDescription"
+        class="block text-sm font-medium text-gray-700"
+        >Detailed Description:</label
+      >
       <textarea
         id="detailedDescription"
         name="detailedDescription"
         rows="6"
         class="mt-1 block border w-full rounded-md px-3 py-2 border-gray-300 shadow-sm"
         placeholder="Provide a detailed description"
-        ngModel
+        [(ngModel)]="projectDetails.long_Description"
         required
       ></textarea>
     </div>
@@ -52,8 +66,8 @@
         <input
           type="number"
           class="flex-1 block text-center border rounded-md w-full mt-2 px-3 py-2"
-          [(ngModel)]="counter"
-          name="counter"
+          [(ngModel)]="projectDetails.amount"
+          name="amount"
           required
           min="0"
           placeholder="Enter amount"
@@ -61,65 +75,70 @@
       </div>
     </div>
 
-<!-- Project Images Input -->
-<div class="form-group">
-  <label for="projectImages" class="block text-sm font-medium text-gray-700">
-    Project Images:
-  </label>
-  <input
-    type="file"
-    id="projectImages"
-    name="projectImages"
-    (change)="onFileChange($event, 'project')"
-    multiple
-    accept="image/*"
-    class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-  />
-</div>
+    <!-- Project Images Input -->
+    <div class="form-group">
+      <label
+        for="projectImages"
+        class="block text-sm font-medium text-gray-700"
+      >
+        Project Images:
+      </label>
+      <input
+        type="file"
+        id="projectImages"
+        name="projectImages"
+        (change)="onFileChange($event, 'project')"
+        multiple
+        accept="image/*"
+        class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+      />
+    </div>
 
-<!-- Project URL Input -->
-<div class="form-group flex gap-4">
-  <div class="flex-1">
-    <label class="block text-sm font-medium text-gray-700">Project URL:</label>
-    <input
-      type="url"
-      class="flex-1 block border rounded-md w-full mt-2 px-3 py-2 border-gray-300 shadow-sm"
-      placeholder="Project URL"
-      [(ngModel)]="projectUrl"
-      name="projectUrl"
-    />
-  </div>
-</div>
+    <!-- Project URL Input -->
+    <div class="form-group flex gap-4">
+      <div class="flex-1">
+        <label class="block text-sm font-medium text-gray-700"
+          >Project URL:</label
+        >
+        <input
+          type="url"
+          class="flex-1 block border rounded-md w-full mt-2 px-3 py-2 border-gray-300 shadow-sm"
+          placeholder="Project URL"
+          [(ngModel)]="projectUrl"
+          name="projectUrl"
+        />
+      </div>
+    </div>
 
-<!-- Icon Images Input -->
-<div class="form-group">
-  <label for="iconImages" class="block text-sm font-medium text-gray-700">
-    Icon Images:
-  </label>
-  <input
-    type="file"
-    id="iconImages"
-    name="iconImages"
-    (change)="onFileChange($event, 'icon')"
-    multiple
-    accept="image/*"
-    class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-  />
-</div>
+    <!-- Icon Images Input -->
+    <div class="form-group">
+      <label for="iconImages" class="block text-sm font-medium text-gray-700">
+        Icon Images:
+      </label>
+      <input
+        type="file"
+        id="iconImages"
+        name="iconImages"
+        (change)="onFileChange($event, 'icon')"
+        multiple
+        accept="image/*"
+        class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+      />
+    </div>
 
-<!-- Icon URL Input -->
-<div class="form-group flex gap-4">
-  <div class="flex-1">
-    <label class="block text-sm font-medium text-gray-700">Icon URL:</label>
-    <input
-      type="url"
-      class="flex-1 block border rounded-md w-full mt-2 px-3 py-2 border-gray-300 shadow-sm"
-      placeholder="Icon URL"
-      [(ngModel)]="iconUrl"
-      name="iconUrl"
-    />
-  </div>
-</div>
+    <!-- Icon URL Input -->
+    <div class="form-group flex gap-4">
+      <div class="flex-1">
+        <label class="block text-sm font-medium text-gray-700">Icon URL:</label>
+        <input
+          type="url"
+          class="flex-1 block border rounded-md w-full mt-2 px-3 py-2 border-gray-300 shadow-sm"
+          placeholder="Icon URL"
+          [(ngModel)]="iconUrl"
+          name="iconUrl"
+        />
+      </div>
+    </div>
 
     <!-- Submit Button -->
     <div class="flex justify-end">

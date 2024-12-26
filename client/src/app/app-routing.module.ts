@@ -27,7 +27,7 @@ const routes: Routes = [
       { path: 'dashboard', component: ProjectsComponent },
       { path: 'projects', component: ProjectsComponent },
       { path: 'projects/add', component: AddProjectsComponent },
-      { path: 'projects/edit', component: EditProjectsComponent },
+      { path: 'projects/edit/:id', component: EditProjectsComponent },
       { path: 'profile', component: ProfileComponent },
       // Add other routes that need sidebar and header here
     ]

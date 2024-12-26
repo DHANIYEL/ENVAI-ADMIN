@@ -75,9 +75,10 @@ export class ProjectsComponent implements OnInit {
     this.router.navigate(['/projects/add']);
   }
 
-  editProjectNavigate(): void {
-    this.router.navigate(['/projects/edit']);
+  editProjectNavigate(projectId: string): void {
+    this.router.navigate(['/projects/edit', projectId]);
   }
+
 
 
   // Delete a project by ID
