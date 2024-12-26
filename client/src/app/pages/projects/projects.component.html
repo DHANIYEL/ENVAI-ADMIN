@@ -1,6 +1,4 @@
-<div
-  class="container mx-auto p-6 h-screen overflow-y-auto pb-32 flex flex-col justify-between"
->
+<div class="container mx-auto p-6 h-screen overflow-y-auto pb-32 flex flex-col justify-between">
   <div>
     <h1 class="text-2xl font-bold mb-6">Projects</h1>
 
@@ -28,7 +26,8 @@
             <th scope="col" class="px-6 py-3">Title</th>
             <th scope="col" class="px-6 py-3">Short Description</th>
             <th scope="col" class="px-6 py-3">Detailed Description</th>
-            <th scope="col" class="px-6 py-3">Images</th>
+            <th scope="col" class="px-6 py-3">Icon</th>
+            <th scope="col" class="px-6 py-3">Project URLs</th>
             <th scope="col" class="px-6 py-3 text-right">Actions</th>
           </tr>
         </thead>
@@ -44,20 +43,40 @@
             <td class="px-6 py-4">{{ project.detailedDescription }}</td>
             <td class="px-6 py-4">
               <div class="flex flex-wrap gap-2">
+                <!-- Display project icons -->
                 <img
-                  *ngFor="let image of project.images"
-                  [src]="image"
-                  alt="Project Image"
+                  *ngFor="let icon of project.iconUrls"
+                  [src]="icon"
+                  alt="Project Icon"
                   class="w-16 h-16 rounded-md"
                 />
               </div>
             </td>
+
+            <td class="px-6 py-4">
+              <div class="flex flex-wrap gap-2">
+                <!-- Display project URLs as icons -->
+                <a
+                  *ngFor="let url of project.projectUrls"
+                  [href]="url"
+                  target="_blank"
+                  class="w-16 h-16 rounded-md border border-gray-300 bg-gray-100 flex items-center justify-center"
+                >
+                  <img
+                    [src]="url"
+                    alt="Project URL"
+                    class="w-10 h-10 object-cover rounded-md"
+                  />
+                </a>
+              </div>
+            </td>
+
             <td
               class="px-6 py-4 text-right flex justify-center items-center gap-4"
             >
               <a
-              (click)="editProjectNavigate()"
-              routerLinkActive="router-link-active"  class="font-medium text-blue-600 hover:underline"
+                (click)="editProjectNavigate()"
+                routerLinkActive="router-link-active"  class="font-medium text-blue-600 hover:underline"
                 >Edit</a
               >
               <a

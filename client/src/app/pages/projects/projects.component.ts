@@ -50,7 +50,8 @@ export class ProjectsComponent implements OnInit {
             title: project.strTitle,
             smallDescription: project.short_Description,
             detailedDescription: project.long_Description,
-            images: project.details.map((detail: any) => detail.iconUrl), // Collect all image URLs
+            projectUrls: project.strProjectUrls, // Use strProjectUrls for project URLs
+            iconUrls: project.strIconUrls, // Use strIconUrls for icon URLs
             id: project.fkProjectId, // Assuming this is the unique identifier
           }));
         } else {
