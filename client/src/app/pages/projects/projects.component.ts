@@ -63,18 +63,32 @@ export class ProjectsComponent implements OnInit {
   }
 
   // Delete a project by ID
-  deleteProject(projectId: string): void {
+  deleteProject(id: string): void {
+    console.log('Attempting to delete project with ID:', id);
+
+    if (!id) {
+      alert('Project ID is missing. Unable to delete.');
+      return;
+    }
+
     if (confirm('Are you sure you want to delete this project?')) {
-      this.apiService.deleteProject(projectId).subscribe(
-        () => {
-          // Remove the project from the local array after successful deletion
-          this.projects = this.projects.filter((project) => project.id !== projectId);
-          console.log('Project deleted successfully');
+      this.apiService.deleteProject(id).subscribe(
+        (response) => {
+          console.log('Delete response:', response);
+          if (response?.success) {
+            // Remove the deleted project from the local projects array
+            this.projects = this.projects.filter((project) => project.id !== id);
+            alert('Project deleted successfully.');
+          } else {
+            alert(response?.message || 'Failed to delete the project. Please try again.');
+          }
         },
         (error) => {
           console.error('Failed to delete project:', error);
+          alert('Failed to delete project. Please try again later.');
         }
       );
     }
   }
+
 }

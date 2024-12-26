@@ -177,7 +177,23 @@ export class ApiService {
   }
 
   // Delete a project by ID
-  deleteProject(projectId: string): Observable<any> {
-    return this.http.delete(`${this.baseUrl}/projects/${projectId}`);
+  deleteProject(fkProjectId: string): Observable<any> {
+    const token = localStorage.getItem('token');
+
+    if (!token) {
+      console.error('No token found!');
+      return new Observable(); // Handle error if token is not found
+    }
+
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+    });
+
+    // Include fkProjectId in the body
+    const body = { fkProjectId };
+
+    return this.http.post(`${this.baseUrl}/project/delete_project`, body, { headers });
   }
+
+
 }

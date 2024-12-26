@@ -1,72 +1,60 @@
-<div class="container mx-auto p-6 h-screen overflow-y-auto">
-  <h1 class="text-2xl font-bold mb-6">Projects</h1>
+<div class="container mx-auto p-6 h-screen overflow-y-auto pb-32 flex flex-col justify-between">
+  <div>
+    <h1 class="text-2xl font-bold mb-6">Projects</h1>
 
-  <div class="flex justify-end mb-4">
-    <button
-      class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none"
-      (click)="addProject()"
-    >
-      Add Project
-    </button>
-  </div>
-
-  <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-    <!-- Loading Indicator -->
-    <div *ngIf="loading" class="text-center text-gray-500 p-4">
-      Loading projects...
+    <div class="flex justify-end mb-4">
+      <button
+        class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none"
+        (click)="addProject()"
+      >
+        Add Project
+      </button>
     </div>
 
-    <!-- Project Table -->
-    <table *ngIf="!loading && projects.length > 0" class="w-full text-sm text-left text-gray-700">
-      <thead class="text-xs uppercase bg-gray-300 text-gray-900">
-        <tr>
-          <th scope="col" class="px-6 py-3">Title</th>
-          <th scope="col" class="px-6 py-3">Short Description</th>
-          <th scope="col" class="px-6 py-3">Detailed Description</th>
-          <th scope="col" class="px-6 py-3">Images</th>
-          <th scope="col" class="px-6 py-3 text-right">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let project of projects" class="bg-gray-100 border-b hover:bg-gray-200">
-          <td class="px-6 py-4 font-medium text-gray-900">
-            {{ project.title }}
-          </td>
-          <td class="px-6 py-4">
-            {{ project.smallDescription }}
-          </td>
-          <td class="px-6 py-4">
-            {{ project.detailedDescription }}
-          </td>
-          <td class="px-6 py-4">
-            <div class="flex flex-wrap gap-2">
-              <img
-                *ngFor="let image of project.images"
-                [src]="image"
-                alt="Project Image"
-                class="w-16 h-16 rounded-md"
-              />
-            </div>
-          </td>
-          <td class="px-6 py-4 text-right flex justify-center items-center gap-4">
-            <a href="#" class="font-medium text-blue-600 hover:underline">Edit</a>
-            <a
-              (click)="deleteProject(project.id)"
-              class="font-medium text-red-600 hover:underline"
-              >Delete</a
-            >
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+      <!-- Loading Indicator -->
+      <div *ngIf="loading" class="text-center text-gray-500 p-4">
+        Loading projects...
+      </div>
 
-    <!-- No Projects Found -->
-    <div *ngIf="!loading && projects.length === 0" class="text-center text-gray-500 p-4">
-      No projects found.
+      <table *ngIf="!loading && projects.length > 0" class="w-full text-sm text-left text-gray-700">
+        <thead class="text-xs uppercase bg-gray-300 text-gray-900">
+          <tr>
+            <th scope="col" class="px-6 py-3">Title</th>
+            <th scope="col" class="px-6 py-3">Short Description</th>
+            <th scope="col" class="px-6 py-3">Detailed Description</th>
+            <th scope="col" class="px-6 py-3">Images</th>
+            <th scope="col" class="px-6 py-3 text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let project of projects" class="bg-gray-100 border-b hover:bg-gray-200">
+            <td class="px-6 py-4 font-medium text-gray-900">
+              {{ project.title }}
+            </td>
+            <td class="px-6 py-4">{{ project.smallDescription }}</td>
+            <td class="px-6 py-4">{{ project.detailedDescription }}</td>
+            <td class="px-6 py-4">
+              <div class="flex flex-wrap gap-2">
+                <img *ngFor="let image of project.images" [src]="image" alt="Project Image" class="w-16 h-16 rounded-md" />
+              </div>
+            </td>
+            <td class="px-6 py-4 text-right flex justify-center items-center gap-4">
+              <a href="#" class="font-medium text-blue-600 hover:underline">Edit</a>
+              <a (click)="deleteProject(project.id)" class="font-medium text-red-600 hover:underline">Delete</a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- No Projects Found -->
+      <div *ngIf="!loading && projects.length === 0" class="text-center text-gray-500 p-4">
+        No projects found.
+      </div>
     </div>
   </div>
 
-  <div class="absolute bottom-3 right-4">
+  <div class="flex justify-end p-4 -mb-10">
     <p>
       created by
       <a href="https://isap.investments/" target="_blank"><u>iSap Groups</u></a>
