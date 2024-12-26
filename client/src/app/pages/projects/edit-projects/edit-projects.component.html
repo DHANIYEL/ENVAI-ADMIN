@@ -1,7 +1,11 @@
 <div class="container p-10 overflow-y-auto h-screen pb-32">
   <nav class="text-2xl font-semibold mb-6">Edit Project</nav>
 
-  <form #editProjectForm="ngForm" class="flex flex-col gap-5" (ngSubmit)="updateProject()">
+  <form
+    #editProjectForm="ngForm"
+    class="flex flex-col gap-5"
+    (ngSubmit)="updateProject()"
+  >
     <!-- Title -->
     <div class="form-group">
       <label for="title" class="block text-sm font-medium text-gray-700">Title:</label>
@@ -11,7 +15,7 @@
         name="title"
         class="mt-1 block border w-full rounded-md px-3 py-2 border-gray-300 shadow-sm"
         placeholder="Enter project title"
-        [(ngModel)]="projectForm.value.title"
+        (ngModel)="projectForm.value.title"
         required
       />
     </div>
@@ -25,7 +29,7 @@
         rows="3"
         class="mt-1 block border w-full rounded-md px-3 py-2 border-gray-300 shadow-sm"
         placeholder="Enter a brief description for the homepage"
-        [(ngModel)]="projectForm.value.smallDescription"
+        (ngModel)="projectForm.value.smallDescription"
         required
       ></textarea>
     </div>
@@ -39,7 +43,7 @@
         rows="6"
         class="mt-1 block border w-full rounded-md px-3 py-2 border-gray-300 shadow-sm"
         placeholder="Provide a detailed description"
-        [(ngModel)]="projectForm.value.detailedDescription"
+        (ngModel)="projectForm.value.detailedDescription"
         required
       ></textarea>
     </div>
@@ -59,7 +63,7 @@
           #fileInput
           class="hidden"
           multiple
-          (change)="onFileChange($event)"
+          (change)="onFileChange($event, 'project')"
           accept="image/*"
         />
         <p class="text-center text-sm text-gray-500">Drag & Drop your images here, or click to select files</p>
@@ -69,57 +73,82 @@
       </div>
     </div>
 
-    <!-- Details -->
+    <!-- Icon Images -->
     <div class="form-group">
-      <label class="block text-sm font-medium text-gray-700">Details:</label>
-      <div *ngFor="let detail of details; let i = index" class="flex gap-4 items-center my-5">
-        <!-- Icon URL -->
+      <label for="iconImages" class="block text-sm font-medium text-gray-700">Icon Images:</label>
+      <div
+        *ngIf="!selectedIconImage"
+        class="mt-1 h-40 w-full rounded-md px-3 py-2 border-gray-300 border-2 border-dotted shadow-sm flex justify-center items-center"
+        (drop)="onDrop($event, 'icon')"
+        (dragover)="onDragOver($event)"
+        (dragenter)="onDragEnter($event, 'icon')"
+        (dragleave)="onDragLeave($event, 'icon')"
+        (click)="iconFileInput.click()"
+        style="cursor: pointer"
+      >
         <input
-          type="url"
-          class="flex-1 block border rounded-md px-3 py-2 border-gray-300 shadow-sm"
-          placeholder="Icon URL"
-          [(ngModel)]="detail.icon"
-          name="icon-{{i}}"
-          required
+          type="file"
+          id="iconImages"
+          name="iconImages"
+          #iconFileInput
+          class="hidden"
+          multiple
+          (change)="onFileChange($event, 'icon')"
+          accept="image/*"
         />
-
-        <!-- Description -->
-        <input
-          type="text"
-          class="flex-1 block border rounded-md px-3 py-2 border-gray-300 shadow-sm"
-          placeholder="Description"
-          [(ngModel)]="detail.description"
-          name="description-{{i}}"
-          required
+        <p class="text-center text-sm text-gray-500">Drag & Drop your icon images here, or click to select files</p>
+      </div>
+      <div *ngIf="selectedIconImage" class="mt-1 h-40 w-40 mx-auto relative">
+        <img
+          [src]="selectedIconImage"
+          class="h-full w-full object-cover rounded-md"
+          alt="Selected icon image"
         />
-
-        <!-- Remove Detail -->
         <button
-          type="button"
-          class="text-red-500 font-semibold"
-          (click)="removeDetail(i)"
+          (click)="removeIconImage()"
+          class="absolute top-0 right-0 -mt-2 -mr-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600"
         >
-          Remove
+          <span class="text-sm">X</span>
         </button>
       </div>
-      <button
-        type="button"
-        class="mt-2 text-blue-600 font-semibold"
-        (click)="addDetail()"
-      >
-        + Add Detail
-      </button>
     </div>
 
+    <!-- Project URLs and Icon URLs Section -->
+    <div class="form-group flex gap-4">
+      <div class="flex-1">
+        <label class="block text-sm font-medium text-gray-700">Icon URL:</label>
+        <input
+          type="url"
+          class="flex-1 block border rounded-md w-full mt-2 px-3 py-2 border-gray-300 shadow-sm"
+          placeholder="Icon URL"
+          (ngModel)="iconUrl"
+          name="iconUrl"
+          required
+        />
+      </div>
 
+      <div class="flex-1">
+        <label class="block text-sm font-medium text-gray-700">Project URL:</label>
+        <input
+          type="url"
+          class="flex-1 block border rounded-md w-full mt-2 px-3 py-2 border-gray-300 shadow-sm"
+          placeholder="Project URL"
+          (ngModel)="projectUrl"
+          name="projectUrl"
+          required
+        />
+      </div>
+    </div>
+
+    <!-- Submit Button -->
     <div class="flex justify-end">
       <button
         type="submit"
-        class="mt-5 bg-blue-600 text-white w-fit py-2 px-4 rounded-md"
+        class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none"
+        [disabled]="!editProjectForm.valid"
       >
         Update Project
       </button>
     </div>
-
   </form>
 </div>

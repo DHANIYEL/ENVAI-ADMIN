@@ -60,7 +60,10 @@
 
     <!-- Project Images Input -->
     <div class="form-group">
-      <label for="projectImages" class="block text-sm font-medium text-gray-700">
+      <label
+        for="projectImages"
+        class="block text-sm font-medium text-gray-700"
+      >
         Project Images:
       </label>
 
@@ -155,34 +158,34 @@
       </div>
     </div>
 
-<!-- Project URLs and Icon URLs Section -->
-<div class="form-group flex gap-4">
-  <div class="flex-1">
-    <label class="block text-sm font-medium text-gray-700">Icon URL:</label>
-    <input
-    type="url"
-    class="flex-1 block border rounded-md w-full mt-2 px-3 py-2 border-gray-300 shadow-sm"
-    placeholder="Icon URL"
-    [(ngModel)]="iconUrl"
-    name="iconUrl"
-    required
-  />
-  </div>
+    <!-- Project URLs and Icon URLs Section -->
+    <div class="form-group flex gap-4">
+      <div class="flex-1">
+        <label class="block text-sm font-medium text-gray-700">Icon URL:</label>
+        <input
+          type="url"
+          class="flex-1 block border rounded-md w-full mt-2 px-3 py-2 border-gray-300 shadow-sm"
+          placeholder="Icon URL"
+          [(ngModel)]="iconUrl"
+          name="iconUrl"
+          required
+        />
+      </div>
 
-  <div class="flex-1">
-    <label class="block text-sm font-medium text-gray-700">Project URL:</label>
-    <input
-    type="url"
-    class="flex-1 block border rounded-md w-full mt-2 px-3 py-2 border-gray-300 shadow-sm"
-    placeholder="Project URL"
-    [(ngModel)]="projectUrl"
-    name="projectUrl"
-    required
-  />
-  </div>
-</div>
-
-
+      <div class="flex-1">
+        <label class="block text-sm font-medium text-gray-700"
+          >Project URL:</label
+        >
+        <input
+          type="url"
+          class="flex-1 block border rounded-md w-full mt-2 px-3 py-2 border-gray-300 shadow-sm"
+          placeholder="Project URL"
+          [(ngModel)]="projectUrl"
+          name="projectUrl"
+          required
+        />
+      </div>
+    </div>
 
     <!-- Submit Button -->
     <div class="flex justify-end">
