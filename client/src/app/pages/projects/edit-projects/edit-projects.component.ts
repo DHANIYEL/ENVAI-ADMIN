@@ -24,6 +24,7 @@ export class EditProjectsComponent implements OnInit {
 
   selectedProjectImages: { file: File; preview: string }[] = [];
   selectedIconImages: { file: File; preview: string }[] = [];
+  selectedProject: any = null; // Property to hold the filtered project
 
   loading: boolean = true;
   errorMessage: string = '';// Loading indicator
@@ -43,6 +44,7 @@ export class EditProjectsComponent implements OnInit {
         console.error('No project ID provided in the route.');
       }
     });
+    this.getAllProjects();
   }
 
 
@@ -50,18 +52,18 @@ export class EditProjectsComponent implements OnInit {
     this.apiService.getAllProjects().subscribe(
       (response) => {
         if (response && response.data) {
-          // Map the response data to match the required fields
+          // Map the response data to a usable format
           this.projects = response.data.map((project: any) => ({
+            id: project.fkProjectId,
             title: project.strTitle,
-            smallDescription: project.short_Description,
-            detailedDescription: project.long_Description,
-            projectUrls: project.strProjectUrls, // Use strProjectUrls for project URLs
-            iconUrls: project.strIconUrls, // Use strIconUrls for icon URLs
-            id: project.fkProjectId, // Assuming this is the unique identifier
-            amount: project.amount // Assuming 'amount' is present in the backend response
+            shortDescription: project.short_Description,
+            longDescription: project.long_Description,
+            iconUrls: project.strIconUrls,
+            projectUrls: project.strProjectUrls,
+            amount: project.amount,
           }));
 
-          console.log('All Projects:', this.projects); // Log all projects
+          console.log('All Projects:', this.projects);
 
           // Filter the project by ID
           const filteredProject = this.projects.find(
@@ -69,39 +71,23 @@ export class EditProjectsComponent implements OnInit {
           );
 
           if (filteredProject) {
-            console.log('Filtered Project:', filteredProject); // Log the filtered project
+            console.log('Filtered Project:', filteredProject);
 
-            // Populate the form with the filtered project details
-            if (this.projectForm) {
-              setTimeout(() => {
-                this.projectForm.form.patchValue({
-                  title: filteredProject.title,
-                  smallDescription: filteredProject.smallDescription,
-                  detailedDescription: filteredProject.detailedDescription,
-                  amount: filteredProject.amount,
-                });
-
-                // Set other values
-                this.iconUrl = filteredProject.iconUrls?.[0] || ''; // First icon URL
-                this.projectUrl = filteredProject.projectUrls?.[0] || ''; // First project URL
-              });
-            }
+            // Show the filtered project details
+            this.selectedProject = filteredProject;
           } else {
-            console.error('Project with the given ID not found.');
+            console.error('No project found with the given ID:', this.fkProjectId);
           }
         } else {
+          console.error('Response data is empty or invalid.');
           this.projects = [];
         }
-        this.loading = false;
       },
       (error) => {
         console.error('Failed to fetch projects:', error);
-        this.errorMessage = 'Could not load projects. Please try again later.'; // Set the error message
-        this.loading = false;
       }
     );
   }
-
   onSubmit(): void {
     if (!this.fkProjectId) {
       console.error('Project ID is missing.');
@@ -175,7 +161,7 @@ export class EditProjectsComponent implements OnInit {
           this.router.navigate(['/projects']);
         } else {
           // Handle the case where the update was not successful
-          console.error('Failed to update project:', response?.message || 'Unknown error');
+          console.error('Failed to update project:', response || 'Unknown error');
           alert(response?.message || 'Failed to update project. Please try again.');
         }
       },
