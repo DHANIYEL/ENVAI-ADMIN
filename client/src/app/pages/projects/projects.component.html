@@ -59,18 +59,18 @@
             </td>
 
             <td class="px-6 py-4">
-              <div class="flex flex-wrap gap-2">
+              <div class="flex flex-wrap gap-2 w-full">
                 <!-- Display project URLs as icons -->
                 <a
                   *ngFor="let url of project.projectUrls"
                   [href]="url"
                   target="_blank"
-                  class="w-16 h-16 rounded-md border border-gray-300 bg-white flex items-center justify-center"
+                  class="w-16 h-16 rounded-md"
                 >
                   <img
                     [src]="url"
                     alt="Project URL"
-                    class="w-10 h-10 object-cover rounded-md"
+                    class="w-16 h-16 rounded-md"
                   />
                 </a>
               </div>

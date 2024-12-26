@@ -24,7 +24,7 @@ export class EditProjectsComponent implements OnInit {
 
   selectedProjectImages: { file: File; preview: string }[] = [];
   selectedIconImages: { file: File; preview: string }[] = [];
-  selectedProject: any = null; // Property to hold the filtered project
+  selectedProject: any = {}; // Initialize as an empty object
 
   loading: boolean = true;
   errorMessage: string = '';// Loading indicator
