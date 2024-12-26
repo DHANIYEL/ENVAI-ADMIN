@@ -22,7 +22,7 @@ const routes: Routes = [
   { path: 'verify-otp', component: VerifyOtpComponent },  // Add your verify otp component
   {
     path: '',
-    // canActivate: [AuthGuard], // Protect the route with AuthGuard
+    canActivate: [AuthGuard], // Protect the route with AuthGuard
     children: [
       { path: 'dashboard', component: ProjectsComponent },
       { path: 'projects', component: ProjectsComponent },

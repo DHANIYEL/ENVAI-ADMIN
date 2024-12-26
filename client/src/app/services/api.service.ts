@@ -20,6 +20,9 @@ export class ApiService {
   private baseUrl2: string = 'https://admin.envaiprojects.com/v2/api';
   constructor(private http: HttpClient) {}
 
+
+
+
   login(email: string, password: string): Observable<any> {
     const loginData = { strEmail: email, strPassword: password };
     return this.http
@@ -35,6 +38,12 @@ export class ApiService {
           }
         })
       );
+  }
+  // Check if user is logged in based on token
+  isLoggedIn(): boolean {
+    const token = localStorage.getItem('token'); // Retrieve the token from localStorage
+    console.log('Retrieved Token:', token); // Log the token for debugging
+    return token !== null; // Return true if token exists, false otherwise
   }
 
   // API call to send OTP
