@@ -29,7 +29,8 @@
             <th scope="col" class="px-6 py-3">Short Description</th>
             <th scope="col" class="px-6 py-3">Detailed Description</th>
             <th scope="col" class="px-6 py-3">Icon</th>
-            <th scope="col" class="px-6 py-3">Project URLs</th>
+            <th scope="col" class="px-6 py-3">Image</th>
+            <th scope="col" class="px-6 py-3">Amount</th> <!-- New column for Amount -->
             <th scope="col" class="px-6 py-3 text-right">Actions</th>
           </tr>
         </thead>
@@ -72,6 +73,8 @@
                 </a>
               </div>
             </td>
+            <td class="px-6 py-4 font-semibold">{{ project.amount }}</td> <!-- Display the Amount -->
+
 
             <td
               class="px-6 py-4 text-right flex justify-center items-center gap-4"

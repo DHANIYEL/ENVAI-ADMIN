@@ -53,7 +53,9 @@ export class ProjectsComponent implements OnInit {
             projectUrls: project.strProjectUrls, // Use strProjectUrls for project URLs
             iconUrls: project.strIconUrls, // Use strIconUrls for icon URLs
             id: project.fkProjectId, // Assuming this is the unique identifier
+            amount: project.amount // Assuming 'amount' is present in the backend response
           }));
+
         } else {
           this.projects = [];
         }

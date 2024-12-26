@@ -19,9 +19,9 @@ export class AddProjectsComponent {
 
   iconUrl: string[] = []; // Explicitly typed as string array
   projectUrl: string[] = []; // Explicitly typed as string array
-
   selectedIconImages: { file: File; preview: string }[] = [];
   selectedProjectImages: { file: File; preview: string }[] = [];
+  amount: number = 0; // Initialize with a default value (0 in this case)
 
   selectedProjectImage: string | null = null;
 
@@ -29,17 +29,6 @@ export class AddProjectsComponent {
 
   constructor(private apiService: ApiService, private router: Router) {}
 
-  counter: number = 0;
-
-  increment() {
-    this.counter++;
-  }
-
-  decrement() {
-    if (this.counter > 0) {
-      this.counter--;
-    }
-  }
 
   // Submit the form with all data
   onSubmit(): void {
@@ -71,7 +60,7 @@ export class AddProjectsComponent {
     formData.append('projectUrls', JSON.stringify(projectUrl)); // Renamed to projectUrls
 
     // Commented out the amount field for later addition
-    // formData.append('amount', this.counter.toString()); // Add the amount value (converted to string) to the formData
+    formData.append('amount', this.amount.toString()); // Add the amount value (converted to string) to the formData
 
     // Log the entire formData for debugging
     console.log('FormData Content:');
@@ -87,7 +76,7 @@ export class AddProjectsComponent {
         this.projectForm.reset(); // Reset the form
         this.selectedProjectImages = []; // Clear the selected project images
         this.selectedIconImages = []; // Clear the selected icon images
-        // this.counter = 0; // Reset the amount field (optional)
+        this.amount = 0; // Reset the amount field (optional)
 
         // Navigate to the .projects route
         this.router.navigate(['/projects']);

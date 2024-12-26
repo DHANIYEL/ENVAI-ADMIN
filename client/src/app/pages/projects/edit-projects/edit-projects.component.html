@@ -1,11 +1,8 @@
+<!-- edit-projects.component.html -->
 <div class="container p-10 overflow-y-auto h-screen pb-32">
   <nav class="text-2xl font-semibold mb-6">Edit Project</nav>
 
-  <form
-    #editprojectFormGroup="ngForm"
-    class="flex flex-col gap-5"
-    (ngSubmit)="updateProject()"
-  >
+  <form #projectForm="ngForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-5">
     <!-- Title -->
     <div class="form-group">
       <label for="title" class="block text-sm font-medium text-gray-700">Title:</label>
@@ -15,7 +12,7 @@
         name="title"
         class="mt-1 block border w-full rounded-md px-3 py-2 border-gray-300 shadow-sm"
         placeholder="Enter project title"
-        [(ngModel)]="projectFormGroup.value.title"
+        ngModel
         required
       />
     </div>
@@ -29,7 +26,7 @@
         rows="3"
         class="mt-1 block border w-full rounded-md px-3 py-2 border-gray-300 shadow-sm"
         placeholder="Enter a brief description for the homepage"
-        [(ngModel)]="projectFormGroup.value.smallDescription"
+        ngModel
         required
       ></textarea>
     </div>
@@ -43,109 +40,93 @@
         rows="6"
         class="mt-1 block border w-full rounded-md px-3 py-2 border-gray-300 shadow-sm"
         placeholder="Provide a detailed description"
-        [(ngModel)]="projectFormGroup.value.detailedDescription"
+        ngModel
         required
       ></textarea>
     </div>
 
-    <!-- Project Images -->
-    <div class="form-group">
-      <label for="projectImages" class="block text-sm font-medium text-gray-700">Project Images:</label>
-      <div
-        class="mt-1 h-40 w-full rounded-md px-3 py-2 border-gray-300 border-2 border-dotted shadow-sm flex justify-center items-center"
-        (click)="fileInput.click()"
-        style="cursor: pointer;"
-      >
-        <input
-          type="file"
-          id="projectImages"
-          name="projectImages"
-          #fileInput
-          class="hidden"
-          multiple
-          (change)="onFileChange($event, 'project')"
-          accept="image/*"
-        />
-        <p class="text-center text-sm text-gray-500">Drag & Drop your images here, or click to select files</p>
-      </div>
-      <div class="flex flex-wrap mt-2 gap-2">
-        <img *ngFor="let image of projectImages" [src]="image" class="w-16 h-16 rounded-md" />
-      </div>
-    </div>
-
-    <!-- Icon Images -->
-    <div class="form-group">
-      <label for="iconImages" class="block text-sm font-medium text-gray-700">Icon Images:</label>
-      <div
-        *ngIf="!selectedIconImage"
-        class="mt-1 h-40 w-full rounded-md px-3 py-2 border-gray-300 border-2 border-dotted shadow-sm flex justify-center items-center"
-        (drop)="onDrop($event, 'icon')"
-        (dragover)="onDragOver($event)"
-        (dragenter)="onDragEnter($event, 'icon')"
-        (dragleave)="onDragLeave($event, 'icon')"
-        (click)="iconFileInput.click()"
-        style="cursor: pointer"
-      >
-        <input
-          type="file"
-          id="iconImages"
-          name="iconImages"
-          #iconFileInput
-          class="hidden"
-          multiple
-          (change)="onFileChange($event, 'icon')"
-          accept="image/*"
-        />
-        <p class="text-center text-sm text-gray-500">Drag & Drop your icon images here, or click to select files</p>
-      </div>
-      <div *ngIf="selectedIconImage" class="mt-1 h-40 w-40 mx-auto relative">
-        <img
-          [src]="selectedIconImage"
-          class="h-full w-full object-cover rounded-md"
-          alt="Selected icon image"
-        />
-        <button
-          (click)="removeIconImage()"
-          class="absolute top-0 right-0 -mt-2 -mr-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600"
-        >
-          <span class="text-sm">X</span>
-        </button>
-      </div>
-    </div>
-
-    <!-- Project URLs and Icon URLs Section -->
-    <div class="form-group flex gap-4">
+    <!-- Amount -->
+    <div class="form-group flex gap-4 w-56">
       <div class="flex-1">
-        <label class="block text-sm font-medium text-gray-700">Icon URL:</label>
+        <label class="block text-sm font-medium text-gray-700">Amount</label>
         <input
-          type="url"
-          class="flex-1 block border rounded-md w-full mt-2 px-3 py-2 border-gray-300 shadow-sm"
-          placeholder="Icon URL"
-          [(ngModel)]="iconUrl"
-          name="iconUrl"
+          type="number"
+          class="flex-1 block text-center border rounded-md w-full mt-2 px-3 py-2"
+          [(ngModel)]="counter"
+          name="counter"
           required
-        />
-      </div>
-
-      <div class="flex-1">
-        <label class="block text-sm font-medium text-gray-700">Project URL:</label>
-        <input
-          type="url"
-          class="flex-1 block border rounded-md w-full mt-2 px-3 py-2 border-gray-300 shadow-sm"
-          placeholder="Project URL"
-          [(ngModel)]="projectUrl"
-          name="projectUrl"
-          required
+          min="0"
+          placeholder="Enter amount"
         />
       </div>
     </div>
+
+<!-- Project Images Input -->
+<div class="form-group">
+  <label for="projectImages" class="block text-sm font-medium text-gray-700">
+    Project Images:
+  </label>
+  <input
+    type="file"
+    id="projectImages"
+    name="projectImages"
+    (change)="onFileChange($event, 'project')"
+    multiple
+    accept="image/*"
+    class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+  />
+</div>
+
+<!-- Project URL Input -->
+<div class="form-group flex gap-4">
+  <div class="flex-1">
+    <label class="block text-sm font-medium text-gray-700">Project URL:</label>
+    <input
+      type="url"
+      class="flex-1 block border rounded-md w-full mt-2 px-3 py-2 border-gray-300 shadow-sm"
+      placeholder="Project URL"
+      [(ngModel)]="projectUrl"
+      name="projectUrl"
+    />
+  </div>
+</div>
+
+<!-- Icon Images Input -->
+<div class="form-group">
+  <label for="iconImages" class="block text-sm font-medium text-gray-700">
+    Icon Images:
+  </label>
+  <input
+    type="file"
+    id="iconImages"
+    name="iconImages"
+    (change)="onFileChange($event, 'icon')"
+    multiple
+    accept="image/*"
+    class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+  />
+</div>
+
+<!-- Icon URL Input -->
+<div class="form-group flex gap-4">
+  <div class="flex-1">
+    <label class="block text-sm font-medium text-gray-700">Icon URL:</label>
+    <input
+      type="url"
+      class="flex-1 block border rounded-md w-full mt-2 px-3 py-2 border-gray-300 shadow-sm"
+      placeholder="Icon URL"
+      [(ngModel)]="iconUrl"
+      name="iconUrl"
+    />
+  </div>
+</div>
 
     <!-- Submit Button -->
     <div class="flex justify-end">
       <button
         type="submit"
         class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none"
-        [disabled]="!editprojectFormGroup.valid"
+        [disabled]="!projectForm.valid"
       >
         Update Project
       </button>
