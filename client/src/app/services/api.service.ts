@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { tap } from 'rxjs/operators'; // Add this import at the top of your service file
 
 export interface Project {
@@ -57,7 +57,13 @@ export class ApiService {
   addProject(formData: FormData): Observable<any> {
     const token = localStorage.getItem('token'); // Or use a token service to get the token
 
-    // Set up the headers with Authorization token
+    // Check if the token is available and valid
+    if (!token) {
+      console.error('No token found!');
+      return new Observable(); // Handle error if token is not found
+    }
+    console.log("the Token is :",token)
+
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`,
     });
@@ -67,6 +73,7 @@ export class ApiService {
       headers,
     });
   }
+
 
   getAllProjects(): Observable<any> {
     const token = localStorage.getItem('token'); // Retrieve the token from localStorage

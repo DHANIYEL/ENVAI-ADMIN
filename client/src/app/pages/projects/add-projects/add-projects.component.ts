@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { FormsModule, NgForm } from '@angular/forms';
 import { ApiService } from 'src/app/services/api.service';
 import { CommonModule } from '@angular/common';
+import { of } from 'rxjs';
 
 @Component({
   selector: 'app-add-projects',
@@ -12,10 +13,12 @@ import { CommonModule } from '@angular/common';
   imports: [FormsModule, CommonModule],
 })
 export class AddProjectsComponent {
-  details: { iconUrl: string; projectUrl: string }[] = []; // Initialize the details array with icon and project URLs
   projectImages: File[] = []; // Array to hold the project images
   iconImages: File[] = [];
   selectedImageUrl: string | null = null;
+
+  iconUrl: string = '';
+  projectUrl: string = '';
 
   selectedProjectImage: string | null = null;
   selectedIconImage: string | null = null;
@@ -28,40 +31,49 @@ export class AddProjectsComponent {
   onSubmit(): void {
     const formData = new FormData();
 
+    // Ensure the arrays are initialized
+    const projectImages = this.projectImages || [];
+    const iconImages = this.iconImages || [];
+
     // Append text data from the form
     formData.append('strTitle', this.projectForm.value.title);
-    formData.append(
-      'short_Description',
-      this.projectForm.value.smallDescription
-    );
-    formData.append(
-      'long_Description',
-      this.projectForm.value.detailedDescription
-    );
+    formData.append('short_Description', this.projectForm.value.smallDescription);
+
+    // Set long_Description and detail_Description to be the same
+    const longDescription = this.projectForm.value.detailedDescription || '';
+    formData.append('long_Description', longDescription);
+    formData.append('detail_Description', longDescription);
 
     // Append project images (if any)
-    if (this.projectImages.length > 0) {
-      this.projectImages.forEach((file) => {
+    if (projectImages && projectImages[0]) {
+      projectImages.forEach((file) => {
         formData.append('projectImages', file, file.name);
       });
     }
 
     // Append icon images (if any)
-    if (this.iconImages.length > 0) {
-      this.iconImages.forEach((file) => {
+    if (iconImages && iconImages[0]) {
+      iconImages.forEach((file) => {
         formData.append('iconImages', file, file.name);
       });
     }
 
-    // Append details data
-    if (this.details.length > 0) {
-      this.details.forEach((detail, index) => {
-        formData.append(`details[${index}].iconUrl`, detail.iconUrl);
-        formData.append(`details[${index}].projectUrl`, detail.projectUrl);
-      });
+    // Get Icon URL and Project URL from the input fields
+    const iconUrl = this.iconUrl; // Assuming iconUrl is a string from the input
+    const projectUrl = this.projectUrl; // Assuming projectUrl is a string from the input
+
+    // Append the URLs to formData using the specified names
+    if (iconUrl) {
+      formData.append('iconUrls', iconUrl); // Changed to iconUrls
+    }
+    if (projectUrl) {
+      formData.append('projectUrls', projectUrl); // Changed to projectUrls
     }
 
-    // Send the formData containing text data, images, and details
+    // Log formData to console for debugging
+    this.logFormData(formData);
+
+    // Send the formData containing text data, images, and URLs to the backend
     this.apiService.addProject(formData).subscribe(
       (response) => {
         if (response && response.success === true) {
@@ -79,6 +91,30 @@ export class AddProjectsComponent {
         alert('Failed to add project. Please try again.');
       }
     );
+  }
+
+  uploadFileToCloud(file: File) {
+    // This is a placeholder function, implement actual cloud upload here
+    // Example: Uploading file to AWS S3 and returning the file URL
+
+    const uploadedFileUrl = `https://your-cloud-storage-url/${file.name}`;
+
+    // Simulate an upload and return the file URL
+    return of(uploadedFileUrl); // 'of' is from RxJS, simulating a successful upload
+  }
+
+  logFormData(formData: FormData) {
+    // Convert FormData to a plain object for logging
+    const data: any = {};
+    formData.forEach((value, key) => {
+      // If the key already exists, make it an array to hold multiple values
+      if (data[key]) {
+        data[key] = Array.isArray(data[key]) ? [...data[key], value] : [data[key], value];
+      } else {
+        data[key] = value;
+      }
+    });
+    console.log('Form Data:', data);
   }
 
   // In your component class, add:
@@ -154,15 +190,5 @@ export class AddProjectsComponent {
     event.preventDefault();
     const target = event.currentTarget as HTMLElement;
     target.classList.remove(type === 'icon' ? 'border-green-500' : 'border-blue-500');
-  }
-
-
-  addDetail() {
-    this.details.push({ iconUrl: '', projectUrl: '' });
-  }
-
-  // Remove a detail object by index
-  removeDetail(index: number) {
-    this.details.splice(index, 1);
   }
 }

@@ -155,50 +155,34 @@
       </div>
     </div>
 
-    <!-- Details Section -->
-    <div class="form-group">
-      <label class="block text-sm font-medium text-gray-700">Details:</label>
-      <div
-        *ngFor="let detail of details; let i = index"
-        class="flex gap-4 items-center my-5"
-      >
-        <!-- Icon URL -->
-        <input
-          type="url"
-          class="flex-1 block border rounded-md px-3 py-2 border-gray-300 shadow-sm"
-          placeholder="Icon URL"
-          [(ngModel)]="detail.iconUrl"
-          name="iconUrl-{{ i }}"
-          required
-        />
+<!-- Project URLs and Icon URLs Section -->
+<div class="form-group flex gap-4">
+  <div class="flex-1">
+    <label class="block text-sm font-medium text-gray-700">Icon URL:</label>
+    <input
+    type="url"
+    class="flex-1 block border rounded-md w-full mt-2 px-3 py-2 border-gray-300 shadow-sm"
+    placeholder="Icon URL"
+    [(ngModel)]="iconUrl"
+    name="iconUrl"
+    required
+  />
+  </div>
 
-        <!-- Project URL -->
-        <input
-          type="url"
-          class="flex-1 block border rounded-md px-3 py-2 border-gray-300 shadow-sm"
-          placeholder="Project URL"
-          [(ngModel)]="detail.projectUrl"
-          name="projectUrl-{{ i }}"
-          required
-        />
+  <div class="flex-1">
+    <label class="block text-sm font-medium text-gray-700">Project URL:</label>
+    <input
+    type="url"
+    class="flex-1 block border rounded-md w-full mt-2 px-3 py-2 border-gray-300 shadow-sm"
+    placeholder="Project URL"
+    [(ngModel)]="projectUrl"
+    name="projectUrl"
+    required
+  />
+  </div>
+</div>
 
-        <!-- Remove Detail -->
-        <button
-          type="button"
-          class="text-red-500 font-semibold"
-          (click)="removeDetail(i)"
-        >
-          Remove
-        </button>
-      </div>
-      <button
-        type="button"
-        class="mt-2 text-blue-600 font-semibold"
-        (click)="addDetail()"
-      >
-        + Add Detail
-      </button>
-    </div>
+
 
     <!-- Submit Button -->
     <div class="flex justify-end">
