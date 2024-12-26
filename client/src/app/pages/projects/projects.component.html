@@ -28,9 +28,9 @@
             <th scope="col" class="px-6 py-3">Title</th>
             <th scope="col" class="px-6 py-3">Short Description</th>
             <th scope="col" class="px-6 py-3">Detailed Description</th>
+            <th scope="col" class="px-6 py-3">Amount</th> <!-- New column for Amount -->
             <th scope="col" class="px-6 py-3">Icon</th>
             <th scope="col" class="px-6 py-3">Image</th>
-            <th scope="col" class="px-6 py-3">Amount</th> <!-- New column for Amount -->
             <th scope="col" class="px-6 py-3 text-right">Actions</th>
           </tr>
         </thead>
@@ -44,6 +44,8 @@
             </td>
             <td class="px-6 py-4">{{ project.smallDescription }}</td>
             <td class="px-6 py-4">{{ project.detailedDescription }}</td>
+            <td class="px-6 py-4 font-semibold">{{ project.amount }}</td> <!-- Display the Amount -->
+
             <td class="px-6 py-4">
               <div class="flex flex-wrap gap-2">
                 <!-- Display project icons -->
@@ -73,7 +75,6 @@
                 </a>
               </div>
             </td>
-            <td class="px-6 py-4 font-semibold">{{ project.amount }}</td> <!-- Display the Amount -->
 
 
             <td
