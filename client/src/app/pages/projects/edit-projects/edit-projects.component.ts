@@ -5,6 +5,16 @@ import { ApiService } from 'src/app/services/api.service';  // Import your API s
 import { HttpHeaders } from '@angular/common/http';
 import { NgIf, CommonModule } from '@angular/common';  // Import CommonModule
 
+
+interface Project {
+  id: string;
+  strTitle: string;
+  short_Description: string;
+  long_Description: string;
+  projectImages: File[];
+  details: { icon: string, description: string }[];
+}
+
 @Component({
   selector: 'app-edit-projects',
   templateUrl: './edit-projects.component.html',
@@ -42,31 +52,40 @@ export class EditProjectsComponent implements OnInit {
   }
 
   loadProjectDetails(): void {
-    // Call your API to fetch the existing project data
-    this.apiService.getProjectById(this.fkProjectId).subscribe(
-      (response) => {
+    this.apiService.getAllProjects().subscribe(
+      (response: any) => {
+        console.log('Backend response:', response);  // Check the full structure of the response
         if (response && response.success === true) {
-          // Populate the form with the fetched project data
-          this.projectForm.patchValue({
-            title: response.data.strTitle,
-            smallDescription: response.data.short_Description,
-            detailedDescription: response.data.long_Description
-          });
+          const project = response.data.find((p: any) => p.id === this.fkProjectId);
+          if (project) {
+            // Populate the form
+            this.projectForm.patchValue({
+              title: project.strTitle,
+              smallDescription: project.short_Description,
+              detailedDescription: project.long_Description
+            });
 
-          // Populate additional project data like images and details if needed
-          this.projectImages = response.data.projectImages || [];
-          this.details = response.data.details || [];
+            this.projectImages = project.projectImages || [];
+            this.details = project.details || [];
+          } else {
+            console.error('Project not found:', this.fkProjectId);
+            alert('Project not found. Please try again.');
+          }
         } else {
-          console.error('Failed to load project:', response);
-          alert('Failed to load project. Please try again.');
+          console.error('Failed to load projects:', response);
+          alert('Failed to load projects. Please try again.');
         }
       },
       (error) => {
-        console.error('Error loading project:', error);
+        console.error('Error loading projects:', error);
         alert('Error loading project details.');
       }
     );
   }
+
+
+
+
 
   updateProject(): void {
     const formData = new FormData();
