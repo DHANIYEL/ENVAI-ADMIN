@@ -55,7 +55,6 @@ export class ApiService {
 
   // api.service.ts
   addProject(formData: FormData): Observable<any> {
-    // Get the token from localStorage or any other service
     const token = localStorage.getItem('token'); // Or use a token service to get the token
 
     // Set up the headers with Authorization token
@@ -68,6 +67,7 @@ export class ApiService {
       headers,
     });
   }
+
   getAllProjects(): Observable<any> {
     const token = localStorage.getItem('token'); // Retrieve the token from localStorage
 

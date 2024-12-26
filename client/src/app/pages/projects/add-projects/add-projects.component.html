@@ -1,10 +1,16 @@
 <div class="container p-10 overflow-y-auto h-screen pb-32">
   <nav class="text-2xl font-semibold mb-6">Add Project</nav>
 
-  <form #projectForm="ngForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-5">
+  <form
+    #projectForm="ngForm"
+    (ngSubmit)="onSubmit()"
+    class="flex flex-col gap-5"
+  >
     <!-- Title -->
     <div class="form-group">
-      <label for="title" class="block text-sm font-medium text-gray-700">Title:</label>
+      <label for="title" class="block text-sm font-medium text-gray-700"
+        >Title:</label
+      >
       <input
         type="text"
         id="title"
@@ -18,7 +24,11 @@
 
     <!-- Homepage Small Description -->
     <div class="form-group">
-      <label for="smallDescription" class="block text-sm font-medium text-gray-700">Homepage Small Description:</label>
+      <label
+        for="smallDescription"
+        class="block text-sm font-medium text-gray-700"
+        >Homepage Small Description:</label
+      >
       <textarea
         id="smallDescription"
         name="smallDescription"
@@ -32,7 +42,11 @@
 
     <!-- Detailed Description -->
     <div class="form-group">
-      <label for="detailedDescription" class="block text-sm font-medium text-gray-700">Detailed Description:</label>
+      <label
+        for="detailedDescription"
+        class="block text-sm font-medium text-gray-700"
+        >Detailed Description:</label
+      >
       <textarea
         id="detailedDescription"
         name="detailedDescription"
@@ -44,76 +58,127 @@
       ></textarea>
     </div>
 
+    <!-- Project Images Input -->
     <div class="form-group">
-      <label for="projectImages" class="block text-sm font-medium text-gray-700">Project Images:</label>
+      <label for="projectImages" class="block text-sm font-medium text-gray-700">
+        Project Images:
+      </label>
 
-      <!-- Show this div when no image is selected -->
+      <!-- Show this div when no image is selected for project -->
       <div
-        *ngIf="!selectedImageUrl"
+        *ngIf="!selectedProjectImage"
         class="mt-1 h-40 w-full rounded-md px-3 py-2 border-gray-300 border-2 border-dotted shadow-sm flex justify-center items-center"
-        (drop)="onDrop($event)"
+        (drop)="onDrop($event, 'project')"
         (dragover)="onDragOver($event)"
-        (dragenter)="onDragEnter($event)"
-        (dragleave)="onDragLeave($event)"
-        (click)="fileInput.click()"
-        style="cursor: pointer;"
+        (dragenter)="onDragEnter($event, 'project')"
+        (dragleave)="onDragLeave($event, 'project')"
+        (click)="projectFileInput.click()"
+        style="cursor: pointer"
       >
         <input
           type="file"
           id="projectImages"
           name="projectImages"
-          #fileInput
+          #projectFileInput
           class="hidden"
           multiple
-          (change)="onFileChange($event)"
+          (change)="onFileChange($event, 'project')"
           accept="image/*"
           required
         />
-
-        <p class="text-center text-sm text-gray-500">Drag & Drop your images here, or click to select files</p>
+        <p class="text-center text-sm text-gray-500">
+          Drag & Drop your project images here, or click to select files
+        </p>
       </div>
 
-      <!-- Show this div when image is selected -->
-      <div
-        *ngIf="selectedImageUrl"
-        class="mt-1 h-40 w-40 mx-auto relative"
-      >
+      <!-- Show this div when image is selected for project -->
+      <div *ngIf="selectedProjectImage" class="mt-1 h-40 w-40 mx-auto relative">
         <img
-          [src]="selectedImageUrl"
+          [src]="selectedProjectImage"
           class="h-full w-full object-cover rounded-md"
-          alt="Selected image"
+          alt="Selected project image"
         />
-        <!-- Optional: Add remove button -->
         <button
-        (click)="selectedImageUrl = null; projectImages = []"
-        class="absolute top-0 right-0 -mt-2 -mr-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600"
-      >
-        <span class="text-sm">X</span>
-      </button>
+          (click)="removeProjectImage()"
+          class="absolute top-0 right-0 -mt-2 -mr-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600"
+        >
+          <span class="text-sm">X</span>
+        </button>
       </div>
     </div>
 
-    <!-- Details -->
+    <div class="form-group">
+      <label for="iconImages" class="block text-sm font-medium text-gray-700">
+        Icon Images:
+      </label>
+
+      <!-- Show this div when no image is selected for icon -->
+      <div
+        *ngIf="!selectedIconImage"
+        class="mt-1 h-40 w-full rounded-md px-3 py-2 border-gray-300 border-2 border-dotted shadow-sm flex justify-center items-center"
+        (drop)="onDrop($event, 'icon')"
+        (dragover)="onDragOver($event)"
+        (dragenter)="onDragEnter($event, 'icon')"
+        (dragleave)="onDragLeave($event, 'icon')"
+        (click)="iconFileInput.click()"
+        style="cursor: pointer"
+      >
+        <input
+          type="file"
+          id="iconImages"
+          name="iconImages"
+          #iconFileInput
+          class="hidden"
+          multiple
+          (change)="onFileChange($event, 'icon')"
+          accept="image/*"
+          required
+        />
+        <p class="text-center text-sm text-gray-500">
+          Drag & Drop your icon images here, or click to select files
+        </p>
+      </div>
+
+      <!-- Show this div when image is selected for icon -->
+      <div *ngIf="selectedIconImage" class="mt-1 h-40 w-40 mx-auto relative">
+        <img
+          [src]="selectedIconImage"
+          class="h-full w-full object-cover rounded-md"
+          alt="Selected icon image"
+        />
+        <button
+          (click)="removeIconImage()"
+          class="absolute top-0 right-0 -mt-2 -mr-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600"
+        >
+          <span class="text-sm">X</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Details Section -->
     <div class="form-group">
       <label class="block text-sm font-medium text-gray-700">Details:</label>
-      <div *ngFor="let detail of details; let i = index" class="flex gap-4 items-center my-5">
+      <div
+        *ngFor="let detail of details; let i = index"
+        class="flex gap-4 items-center my-5"
+      >
         <!-- Icon URL -->
         <input
           type="url"
           class="flex-1 block border rounded-md px-3 py-2 border-gray-300 shadow-sm"
           placeholder="Icon URL"
-          [(ngModel)]="details[i].icon"
-          name="icon-{{i}}"
+          [(ngModel)]="detail.iconUrl"
+          name="iconUrl-{{ i }}"
           required
         />
 
-        <!-- Description -->
+        <!-- Project URL -->
         <input
-          type="text"
+          type="url"
           class="flex-1 block border rounded-md px-3 py-2 border-gray-300 shadow-sm"
-          placeholder="Description"
-          [(ngModel)]="details[i].description"
-          name="description-{{i}}"
+          placeholder="Project URL"
+          [(ngModel)]="detail.projectUrl"
+          name="projectUrl-{{ i }}"
           required
         />
 
@@ -146,5 +211,4 @@
       </button>
     </div>
   </form>
-
 </div>
