@@ -48,22 +48,22 @@ export class EditProjectsComponent implements OnInit {
   }
 
 
+
   getAllProjects(): void {
     this.apiService.getAllProjects().subscribe(
       (response) => {
         if (response && response.data) {
-          // Map the response data to a usable format
+          // Map response data
           this.projects = response.data.map((project: any) => ({
             id: project.fkProjectId,
-            title: project.strTitle,
-            shortDescription: project.short_Description,
-            longDescription: project.long_Description,
-            iconUrls: project.strIconUrls,
-            projectUrls: project.strProjectUrls,
+            strTitle: project.strTitle,
+            short_Description: project.short_Description,
+            long_Description: project.long_Description,
+            strIconUrls: project.strIconUrls,
+            strProjectUrls: project.strProjectUrls,
             amount: project.amount,
           }));
 
-          console.log('All Projects:', this.projects);
 
           // Filter the project by ID
           const filteredProject = this.projects.find(
@@ -72,9 +72,9 @@ export class EditProjectsComponent implements OnInit {
 
           if (filteredProject) {
             console.log('Filtered Project:', filteredProject);
-
-            // Show the filtered project details
-            this.selectedProject = filteredProject;
+            this.selectedProject = { ...filteredProject }; // Populate selectedProject
+            this.iconUrl = filteredProject.strIconUrls[0] || '';
+            this.projectUrl = filteredProject.strProjectUrls[0] || '';
           } else {
             console.error('No project found with the given ID:', this.fkProjectId);
           }
@@ -98,7 +98,7 @@ export class EditProjectsComponent implements OnInit {
     const formData = new FormData();
 
     // Append the project ID (required for the backend)
-    formData.append('projectId', this.fkProjectId);
+    formData.append('fkProjectId', this.fkProjectId);
 
     // Append form fields with the updated naming conventions
     formData.append('strTitle', this.projectForm.value.title);

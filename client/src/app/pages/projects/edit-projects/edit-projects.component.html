@@ -18,7 +18,7 @@
         name="title"
         class="mt-1 block border w-full rounded-md px-3 py-2 border-gray-300 shadow-sm"
         placeholder="Enter project title"
-        [(ngModel)]="projectDetails.strTitle"
+        [(ngModel)]="selectedProject.strTitle"
         required
       />
     </div>
@@ -36,7 +36,7 @@
         rows="3"
         class="mt-1 block border w-full rounded-md px-3 py-2 border-gray-300 shadow-sm"
         placeholder="Enter a brief description for the homepage"
-        [(ngModel)]="projectDetails.short_Description"
+        [(ngModel)]="selectedProject.short_Description"
         required
       ></textarea>
     </div>
@@ -54,7 +54,7 @@
         rows="6"
         class="mt-1 block border w-full rounded-md px-3 py-2 border-gray-300 shadow-sm"
         placeholder="Provide a detailed description"
-        [(ngModel)]="projectDetails.long_Description"
+        [(ngModel)]="selectedProject.long_Description"
         required
       ></textarea>
     </div>
@@ -66,7 +66,7 @@
         <input
           type="number"
           class="flex-1 block text-center border rounded-md w-full mt-2 px-3 py-2"
-          [(ngModel)]="projectDetails.amount"
+          [(ngModel)]="selectedProject.amount"
           name="amount"
           required
           min="0"
