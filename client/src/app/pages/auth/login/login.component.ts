@@ -10,6 +10,7 @@ import { ApiService } from 'src/app/services/api.service';
   standalone: false
 })
 export class LoginComponent {
+  logoImg = 'assets/logo/LOGO-BLUE.png';
   email: string = '';
   password: string = '';
   loginError: boolean = false;
