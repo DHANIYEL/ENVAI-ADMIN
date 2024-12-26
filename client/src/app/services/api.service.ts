@@ -203,23 +203,43 @@ export class ApiService {
   }
 
   updateProject(body: any, options: any): Observable<any> {
-    return this.http.post(`${this.baseUrl2}/project/add_project`, body, options);
+    // Retrieve the token from localStorage
+    const token = localStorage.getItem('token');
+    if (!token) {
+      throw new Error('No token found');
+    }
+
+    // Set the Authorization header with the token
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      ...options.headers, // Merge existing headers if any
+    });
+
+    // Update the options with the token in the headers
+    const updatedOptions = {
+      ...options,
+      headers,
+    };
+
+    // Make the POST request with the updated options
+    return this.http.post(`${this.baseUrl2}/project/update_project`, body, updatedOptions);
   }
 
-  // getProjectById(projectId: string): Observable<any> {
-  //   const token = localStorage.getItem('token');
+  getProjectById(projectId: string): Observable<any> {
+    const token = localStorage.getItem('token');
 
-  //   if (!token) {
-  //     console.error('No token found!');
-  //     return new Observable(); // Return empty observable or handle error accordingly
-  //   }
+    if (!token) {
+      console.error('No token found!');
+      return new Observable();  // Return empty observable or handle error accordingly
+    }
 
-  //   const headers = new HttpHeaders({
-  //     Authorization: `Bearer ${token}`,
-  //   });
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+    });
 
-  //   return this.http.get(`${this.baseUrl}/projects/get_all_projects`, { headers });
-  // }
+    return this.http.post(`${this.baseUrl}/projects/get_all_projects`, { headers });
+  }
+
 
 
 }
