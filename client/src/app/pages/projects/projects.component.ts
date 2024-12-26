@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApiService } from 'src/app/services/api.service';
+import { ConfirmationModalComponent } from "../../components/confirmation-modal/confirmation-modal.component";
 
 interface Project {
   id: string;
@@ -17,14 +18,23 @@ interface Project {
   templateUrl: './projects.component.html',
   styleUrls: ['./projects.component.css'],
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ConfirmationModalComponent],
 })
 export class ProjectsComponent implements OnInit {
   projects: any[] = []; // Holds the list of projects
   loading: boolean = true;
   errorMessage: string = '';// Loading indicator
+  showDeleteModal: boolean = false;
+  projectToDeleteId: string | null = null;
+
 
   constructor(private apiService: ApiService, private router: Router) {}
+
+
+  openDeleteModal(projectId: string): void {
+    this.projectToDeleteId = projectId;
+    this.showDeleteModal = true;
+  }
 
   ngOnInit(): void {
     this.getAllProjects(); // Fetch projects on component initialization
@@ -63,32 +73,28 @@ export class ProjectsComponent implements OnInit {
   }
 
   // Delete a project by ID
-  deleteProject(id: string): void {
-    console.log('Attempting to delete project with ID:', id);
-
-    if (!id) {
-      alert('Project ID is missing. Unable to delete.');
-      return;
-    }
-
-    if (confirm('Are you sure you want to delete this project?')) {
-      this.apiService.deleteProject(id).subscribe(
-        (response) => {
-          console.log('Delete response:', response);
-          if (response?.success) {
-            // Remove the deleted project from the local projects array
-            this.projects = this.projects.filter((project) => project.id !== id);
-            alert('Project deleted successfully.');
-          } else {
-            alert(response?.message || 'Failed to delete the project. Please try again.');
-          }
+  confirmDelete(): void {
+    if (this.projectToDeleteId) {
+      this.apiService.deleteProject(this.projectToDeleteId).subscribe(
+        () => {
+          this.projects = this.projects.filter(
+            (project) => project.id !== this.projectToDeleteId
+          );
+          console.log('Project deleted successfully');
+          this.showDeleteModal = false;
+          this.projectToDeleteId = null;
         },
         (error) => {
           console.error('Failed to delete project:', error);
-          alert('Failed to delete project. Please try again later.');
+          alert('Failed to delete project. Please try again.');
+          this.showDeleteModal = false;
         }
       );
     }
   }
 
+  cancelDelete(): void {
+    this.showDeleteModal = false;
+    this.projectToDeleteId = null;
+  }
 }
