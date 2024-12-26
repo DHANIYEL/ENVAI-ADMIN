@@ -58,108 +58,39 @@
       ></textarea>
     </div>
 
-    <!-- Project Images Input -->
-    <div class="form-group">
-      <label
-        for="projectImages"
-        class="block text-sm font-medium text-gray-700"
-      >
-        Project Images:
-      </label>
+<!-- Project Images Input -->
+<div class="form-group">
+  <label for="projectImages" class="block text-sm font-medium text-gray-700">
+    Project Images:
+  </label>
+  <input
+    type="file"
+    id="projectImages"
+    name="projectImages"
+    (change)="onFileChange($event, 'project')"
+    multiple
+    accept="image/*"
+    class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+  />
+</div>
 
-      <!-- Show this div when no image is selected for project -->
-      <div
-        *ngIf="!selectedProjectImage"
-        class="mt-1 h-40 w-full rounded-md px-3 py-2 border-gray-300 border-2 border-dotted shadow-sm flex justify-center items-center"
-        (drop)="onDrop($event, 'project')"
-        (dragover)="onDragOver($event)"
-        (dragenter)="onDragEnter($event, 'project')"
-        (dragleave)="onDragLeave($event, 'project')"
-        (click)="projectFileInput.click()"
-        style="cursor: pointer"
-      >
-        <input
-          type="file"
-          id="projectImages"
-          name="projectImages"
-          #projectFileInput
-          class="hidden"
-          multiple
-          (change)="onFileChange($event, 'project')"
-          accept="image/*"
-          required
-        />
-        <p class="text-center text-sm text-gray-500">
-          Drag & Drop your project images here, or click to select files
-        </p>
-      </div>
+<!-- Icon Images Input -->
+<div class="form-group">
+  <label for="iconImages" class="block text-sm font-medium text-gray-700">
+    Icon Images:
+  </label>
+  <input
+    type="file"
+    id="iconImages"
+    name="iconImages"
+    (change)="onFileChange($event, 'icon')"
+    multiple
+    accept="image/*"
+    class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+  />
+</div>
 
-      <!-- Show this div when image is selected for project -->
-      <div *ngIf="selectedProjectImage" class="mt-1 h-40 w-40 mx-auto relative">
-        <img
-          [src]="selectedProjectImage"
-          class="h-full w-full object-cover rounded-md"
-          alt="Selected project image"
-        />
-        <button
-          (click)="removeProjectImage()"
-          class="absolute top-0 right-0 -mt-2 -mr-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600"
-        >
-          <span class="text-sm">X</span>
-        </button>
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label for="iconImages" class="block text-sm font-medium text-gray-700">
-        Icon Images:
-      </label>
-
-      <!-- Show this div when no image is selected for icon -->
-      <div
-        *ngIf="!selectedIconImage"
-        class="mt-1 h-40 w-full rounded-md px-3 py-2 border-gray-300 border-2 border-dotted shadow-sm flex justify-center items-center"
-        (drop)="onDrop($event, 'icon')"
-        (dragover)="onDragOver($event)"
-        (dragenter)="onDragEnter($event, 'icon')"
-        (dragleave)="onDragLeave($event, 'icon')"
-        (click)="iconFileInput.click()"
-        style="cursor: pointer"
-      >
-        <input
-          type="file"
-          id="iconImages"
-          name="iconImages"
-          #iconFileInput
-          class="hidden"
-          multiple
-          (change)="onFileChange($event, 'icon')"
-          accept="image/*"
-          required
-        />
-        <p class="text-center text-sm text-gray-500">
-          Drag & Drop your icon images here, or click to select files
-        </p>
-      </div>
-
-      <!-- Show this div when image is selected for icon -->
-      <div *ngIf="selectedIconImage" class="mt-1 h-40 w-40 mx-auto relative">
-        <img
-          [src]="selectedIconImage"
-          class="h-full w-full object-cover rounded-md"
-          alt="Selected icon image"
-        />
-        <button
-          (click)="removeIconImage()"
-          class="absolute top-0 right-0 -mt-2 -mr-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600"
-        >
-          <span class="text-sm">X</span>
-        </button>
-      </div>
-    </div>
-
-    <!-- Project URLs and Icon URLs Section -->
-    <div class="form-group flex gap-4">
+    <!-- <div class="form-group flex gap-4">
       <div class="flex-1">
         <label class="block text-sm font-medium text-gray-700">Icon URL:</label>
         <input
@@ -185,7 +116,7 @@
           required
         />
       </div>
-    </div>
+    </div> -->
 
     <!-- Submit Button -->
     <div class="flex justify-end">

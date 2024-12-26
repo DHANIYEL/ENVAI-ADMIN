@@ -17,11 +17,13 @@ export class AddProjectsComponent {
   iconImages: File[] = [];
   selectedImageUrl: string | null = null;
 
-  iconUrl: string = '';
-  projectUrl: string = '';
+  iconUrl: string[] = []; // Explicitly typed as string array
+  projectUrl: string[] = []; // Explicitly typed as string array
+
+  selectedIconImages: { file: File; preview: string }[] = [];
+  selectedProjectImages: { file: File; preview: string }[] = [];
 
   selectedProjectImage: string | null = null;
-  selectedIconImage: string | null = null;
 
   @ViewChild('projectForm') projectForm!: NgForm; // ViewChild for form reference
 
@@ -31,60 +33,45 @@ export class AddProjectsComponent {
   onSubmit(): void {
     const formData = new FormData();
 
-    // Ensure the arrays are initialized
-    const projectImages = this.projectImages || [];
-    const iconImages = this.iconImages || [];
+    // Append form fields (text data) with new names
+    formData.append('strTitle', this.projectForm.value.title); // title renamed to strTitle
+    formData.append('short_Description', this.projectForm.value.smallDescription); // smallDescription renamed to short_Description
+    formData.append('long_Description', this.projectForm.value.detailedDescription); // detailedDescription renamed to long_Description
+    formData.append('detail_Description', this.projectForm.value.detailedDescription); // detailedDescription renamed to detail_Description
 
-    // Append text data from the form
-    formData.append('strTitle', this.projectForm.value.title);
-    formData.append('short_Description', this.projectForm.value.smallDescription);
+    // Append selected project images to formData
+    this.selectedProjectImages.forEach(({ file }) => {
+      formData.append('projectImages', file, file.name); // projectImages remains the same
+      console.log('Project Image:', file, 'Name:', file.name); // Log project image file and name
+    });
 
-    // Set long_Description and detail_Description to be the same
-    const longDescription = this.projectForm.value.detailedDescription || '';
-    formData.append('long_Description', longDescription);
-    formData.append('detail_Description', longDescription);
+    // Append selected icon images to formData
+    this.selectedIconImages.forEach(({ file }) => {
+      formData.append('iconImages', file, file.name); // iconImages remains the same
+      console.log('Icon Image:', file, 'Name:', file.name); // Log icon image file and name
+    });
 
-    // Append project images (if any)
-    if (projectImages && projectImages[0]) {
-      projectImages.forEach((file) => {
-        formData.append('projectImages', file, file.name);
-      });
-    }
+    // Explicitly define the type of iconUrl and projectUrl
+    const iconUrl: string[] = []; // Empty array for iconUrl
+    formData.append('iconUrls', JSON.stringify(iconUrl)); // Renamed to iconUrls
 
-    // Append icon images (if any)
-    if (iconImages && iconImages[0]) {
-      iconImages.forEach((file) => {
-        formData.append('iconImages', file, file.name);
-      });
-    }
+    const projectUrl: string[] = []; // Empty array for projectUrl
+    formData.append('projectUrls', JSON.stringify(projectUrl)); // Renamed to projectUrls
 
-    // Get Icon URL and Project URL from the input fields
-    const iconUrl = this.iconUrl; // Assuming iconUrl is a string from the input
-    const projectUrl = this.projectUrl; // Assuming projectUrl is a string from the input
+    // Log the entire formData for debugging
+    console.log('FormData Content:');
+    formData.forEach((value, key) => {
+      console.log(`${key}:`, value); // Log each key-value pair in formData
+    });
 
-    // Append the URLs as arrays
-    if (iconUrl) {
-      formData.append('iconUrls', JSON.stringify([iconUrl])); // Wrap iconUrl in an array and convert it to JSON string
-    }
-    if (projectUrl) {
-      formData.append('projectUrls', JSON.stringify([projectUrl])); // Wrap projectUrl in an array and convert it to JSON string
-    }
-
-    // Log formData to console for debugging
-    this.logFormData(formData);
-
-    // Send the formData containing text data, images, and URLs to the backend
+    // Uncomment the below block to send the formData to the backend
     this.apiService.addProject(formData).subscribe(
       (response) => {
-        if (response && response.success === true) {
-          console.log('Project added successfully:', response);
-          alert('Project added successfully!');
-          this.projectForm.reset();
-          this.router.navigate(['/projects']);
-        } else {
-          console.error('Failed to add project:', response);
-          alert('Failed to add project. Please try again.');
-        }
+        console.log('Project added successfully:', response);
+        alert('Project added successfully!');
+        this.projectForm.reset(); // Reset the form
+        this.selectedProjectImages = []; // Clear the selected project images
+        this.selectedIconImages = []; // Clear the selected icon images
       },
       (error) => {
         console.error('Error adding project:', error);
@@ -120,28 +107,29 @@ export class AddProjectsComponent {
   // In your component class, add:
   onFileChange(event: Event, type: string): void {
     const input = event.target as HTMLInputElement;
-    if (input.files && input.files[0]) {
-      const file = input.files[0];
-
-      // Only process images
-      if (file.type.startsWith('image/')) {
+    if (input.files) {
+      const files = Array.from(input.files);
+      files.forEach((file) => {
         const reader = new FileReader();
-
-        if (type === 'project') {
-          reader.onload = (e) => {
-            this.selectedProjectImage = e.target?.result as string;
-          };
-          reader.readAsDataURL(file);
-        } else if (type === 'icon') {
-          reader.onload = (e) => {
-            this.selectedIconImage = e.target?.result as string;
-          };
-          reader.readAsDataURL(file);
-        }
-      }
+        reader.onload = () => {
+          if (type === 'project') {
+            if (!this.selectedProjectImages) this.selectedProjectImages = []; // Ensure it's initialized
+            this.selectedProjectImages.push({ file, preview: reader.result as string });
+          } else if (type === 'icon') {
+            if (!this.selectedIconImages) this.selectedIconImages = []; // Ensure it's initialized
+            this.selectedIconImages.push({ file, preview: reader.result as string });
+          }
+        };
+        reader.readAsDataURL(file);
+      });
     }
   }
 
+
+  // Remove selected image
+  removeImage(type: string, index: number): void {
+    this.selectedProjectImages.splice(index, 1);
+  }
   // Remove project image
   removeProjectImage(): void {
     this.selectedProjectImage = null;
@@ -149,46 +137,5 @@ export class AddProjectsComponent {
   }
 
   // Remove icon image
-  removeIconImage(): void {
-    this.selectedIconImage = null;
-    this.iconImages = [];
-  }
 
-  // Drag and Drop Methods
-  onDrop(event: DragEvent, type: string): void {
-    event.preventDefault();
-    const files = event.dataTransfer?.files;
-    if (files && files[0]) {
-      const file = files[0];
-      const reader = new FileReader();
-
-      if (type === 'project') {
-        reader.onload = (e) => {
-          this.selectedProjectImage = e.target?.result as string;
-        };
-        reader.readAsDataURL(file);
-      } else if (type === 'icon') {
-        reader.onload = (e) => {
-          this.selectedIconImage = e.target?.result as string;
-        };
-        reader.readAsDataURL(file);
-      }
-    }
-  }
-
-  onDragOver(event: DragEvent): void {
-    event.preventDefault();
-  }
-
-  onDragEnter(event: DragEvent, type: string): void {
-    event.preventDefault();
-    const target = event.currentTarget as HTMLElement;
-    target.classList.add(type === 'icon' ? 'border-green-500' : 'border-blue-500');
-  }
-
-  onDragLeave(event: DragEvent, type: string): void {
-    event.preventDefault();
-    const target = event.currentTarget as HTMLElement;
-    target.classList.remove(type === 'icon' ? 'border-green-500' : 'border-blue-500');
-  }
 }
