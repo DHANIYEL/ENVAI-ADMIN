@@ -47,9 +47,10 @@
     <div class="form-group">
       <label for="projectImages" class="block text-sm font-medium text-gray-700">Project Images:</label>
 
-      <!-- Container for Drag-and-Drop and File Input -->
+      <!-- Show this div when no image is selected -->
       <div
-        class="mt-1  h-40 w-full rounded-md px-3 py-2 border-gray-300 border-2 border-dotted shadow-sm flex justify-center items-center"
+        *ngIf="!selectedImageUrl"
+        class="mt-1 h-40 w-full rounded-md px-3 py-2 border-gray-300 border-2 border-dotted shadow-sm flex justify-center items-center"
         (drop)="onDrop($event)"
         (dragover)="onDragOver($event)"
         (dragenter)="onDragEnter($event)"
@@ -69,11 +70,28 @@
           required
         />
 
-        <!-- Placeholder text centered -->
         <p class="text-center text-sm text-gray-500">Drag & Drop your images here, or click to select files</p>
       </div>
-    </div>
 
+      <!-- Show this div when image is selected -->
+      <div
+        *ngIf="selectedImageUrl"
+        class="mt-1 h-40 w-40 mx-auto relative"
+      >
+        <img
+          [src]="selectedImageUrl"
+          class="h-full w-full object-cover rounded-md"
+          alt="Selected image"
+        />
+        <!-- Optional: Add remove button -->
+        <button
+        (click)="selectedImageUrl = null; projectImages = []"
+        class="absolute top-0 right-0 -mt-2 -mr-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600"
+      >
+        <span class="text-sm">X</span>
+      </button>
+      </div>
+    </div>
 
     <!-- Details -->
     <div class="form-group">

@@ -13,6 +13,9 @@ import { CommonModule } from '@angular/common';
 })
 export class AddProjectsComponent {
 
+selectedImageUrl: string | null = null;
+
+
   @ViewChild('projectForm') projectForm!: NgForm; // ViewChild for form reference
 
   details: { icon: string; description: string }[] = [];  // Initialize the details array
@@ -68,20 +71,30 @@ export class AddProjectsComponent {
   }
 
 
-  // Handle file input change
-  onFileChange(event: Event) {
-    const input = event.target as HTMLInputElement;
-    if (input?.files) {
-      this.projectImages = Array.from(input.files);
-    }
-  }
+// In your component class, add:
 
+onFileChange(event: Event) {
+  const input = event.target as HTMLInputElement;
+  if (input?.files && input.files[0]) {
+    this.projectImages = Array.from(input.files);
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      this.selectedImageUrl = e.target?.result as string;
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
+}
 
 onDrop(event: DragEvent): void {
   event.preventDefault();
   const files = event.dataTransfer?.files;
-  if (files) {
+  if (files && files[0]) {
     this.projectImages = Array.from(files);
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      this.selectedImageUrl = e.target?.result as string;
+    };
+    reader.readAsDataURL(files[0]);
   }
 }
 
