@@ -14,8 +14,10 @@ export class LoginComponent {
   email: string = '';
   password: string = '';
   loginError: boolean = false;
-  passwordVisible: boolean = false; // Track visibility of the password
+  passwordVisible: boolean = false;
 
+  bottomRightImg = 'assets/images/login-img1.jpg'
+  topLeftImg = 'assets/images/login-img2.jpg'
   constructor(private router: Router, private authService: ApiService) {}
 
   onSubmit(form: NgForm) {

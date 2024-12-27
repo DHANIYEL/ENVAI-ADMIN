@@ -1,10 +1,16 @@
-<div class="flex justify-center flex-col gap-10 items-center min-h-screen bg-gray-100">
-  <div class="flex justify-center">
-    <img [src]="logoImg" alt="LOGO-ENVAI" class="h-16 w-auto" />
-  </div>
-  <div class="w-full max-w-md p-8 space-y-6 bg-white shadow-md rounded-lg">
-    <!-- Logo Section -->
+<div class="relative flex justify-center flex-col gap-10 items-center min-h-screen">
+  <!-- Top-Left Image -->
+  <img
+    [src]="topLeftImg"
+    alt="Top Left Image"
+    class="absolute top-0 left-0 h-1/2 w-auto m-4"
+  />
 
+  <!-- Content -->
+  <div class="flex justify-center">
+    <img [src]="logoImg" alt="LOGO-ENVAI" class="h-16 w-auto z-50" />
+  </div>
+  <div class="w-full max-w-md p-8 space-y-6 bg-white shadow-md rounded-lg z-50">
     <!-- Login Heading -->
     <h2 class="text-2xl font-bold text-center text-gray-800">Login</h2>
 
@@ -79,4 +85,11 @@
       <a routerLink="/verify-otp" class="text-blue-500 hover:underline cursor-pointer">Forgot Password?</a>
     </div>
   </div>
+
+  <!-- Bottom-Right Image -->
+  <img
+    [src]="bottomRightImg"
+    alt="Bottom Right Image"
+    class="absolute bottom-0 right-0 h-1/2 w-auto m-4"
+  />
 </div>
