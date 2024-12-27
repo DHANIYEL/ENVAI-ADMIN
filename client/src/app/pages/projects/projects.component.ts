@@ -55,7 +55,6 @@ export class ProjectsComponent implements OnInit {
             id: project.fkProjectId, // Assuming this is the unique identifier
             amount: project.amount // Assuming 'amount' is present in the backend response
           }));
-
         } else {
           this.projects = [];
         }
@@ -68,7 +67,6 @@ export class ProjectsComponent implements OnInit {
       }
     );
   }
-
 
   // Navigate to add project page
   addProject(): void {

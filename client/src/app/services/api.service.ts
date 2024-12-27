@@ -109,33 +109,14 @@ export class ApiService {
 
 
   getAllProjects(): Observable<any> {
-    const token = localStorage.getItem('token'); // Retrieve the token from localStorage
+    const strLoginUserId = '6694bc261a50999f1740e118'; // Use the actual login user ID here
 
-    // Log the token to ensure it's being retrieved correctly
-    console.log('Retrieved token:', token);
-
-    // Ensure token exists
-    if (!token) {
-      throw new Error('Token not found in localStorage. Please log in.');
-    }
-
-    // Payload to send with the request
-    const payload = {
-      token: token,
-      // You can add any other data you need to pass in the payload, like filters, sorting, etc.
+    // Request body with strLoginUserId
+    const body = {
+      strLoginUserId: strLoginUserId,
     };
 
-    // Create headers with the token
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${token}`, // Add the Bearer token
-    });
-
-    // Make the HTTP request to get all projects with payload
-    return this.http.post<any>(
-      `${this.baseUrl}/projects/get_all_projects`,
-      payload,
-      { headers }
-    );
+    return this.http.post<any>(`${this.baseUrl}/projects/get_all_projects`, body);
   }
 
   // Method to get user details by ID
