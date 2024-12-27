@@ -5,13 +5,14 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from 'src/app/services/api.service';
 import { HttpHeaders } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
+import { SuccessModalComponent } from '../../../components/success-modal/success-modal.component';
 
 @Component({
   selector: 'app-edit-projects',
   templateUrl: './edit-projects.component.html',
   styleUrls: ['./edit-projects.component.css'],
   standalone: true,
-  imports: [CommonModule, FormsModule]
+  imports: [CommonModule, FormsModule, SuccessModalComponent],
 })
 export class EditProjectsComponent implements OnInit {
   @ViewChild('projectForm') projectForm!: NgForm;
@@ -20,9 +21,9 @@ export class EditProjectsComponent implements OnInit {
   isIconImageAdded: boolean = false;
 
   isSubmitting: boolean = false;
+  showSuccessModal = false; // Flag to control modal visibility
 
-
-  projects: any[] = [];  // Define the projects array
+  projects: any[] = []; // Define the projects array
   fkProjectId: string = '';
   projectDetails: any = {}; // Store project details
   iconUrl: string = '';
@@ -34,7 +35,7 @@ export class EditProjectsComponent implements OnInit {
   selectedProject: any = {}; // Initialize as an empty object
 
   loading: boolean = true;
-  errorMessage: string = '';// Loading indicator
+  errorMessage: string = ''; // Loading indicator
 
   constructor(
     private apiService: ApiService,
@@ -54,8 +55,6 @@ export class EditProjectsComponent implements OnInit {
     this.getAllProjects();
   }
 
-
-
   getAllProjects(): void {
     this.apiService.getAllProjects().subscribe(
       (response) => {
@@ -71,7 +70,6 @@ export class EditProjectsComponent implements OnInit {
             amount: project.amount,
           }));
 
-
           // Filter the project by ID
           const filteredProject = this.projects.find(
             (project) => project.id === this.fkProjectId
@@ -83,7 +81,10 @@ export class EditProjectsComponent implements OnInit {
             this.iconUrl = filteredProject.strIconUrls[0] || '';
             this.projectUrl = filteredProject.strProjectUrls[0] || '';
           } else {
-            console.error('No project found with the given ID:', this.fkProjectId);
+            console.error(
+              'No project found with the given ID:',
+              this.fkProjectId
+            );
           }
         } else {
           console.error('Response data is empty or invalid.');
@@ -115,9 +116,18 @@ export class EditProjectsComponent implements OnInit {
 
     // Append form fields with the updated naming conventions
     formData.append('strTitle', this.projectForm.value.title);
-    formData.append('short_Description', this.projectForm.value.smallDescription);
-    formData.append('long_Description', this.projectForm.value.detailedDescription);
-    formData.append('detail_Description', this.projectForm.value.detailedDescription);
+    formData.append(
+      'short_Description',
+      this.projectForm.value.smallDescription
+    );
+    formData.append(
+      'long_Description',
+      this.projectForm.value.detailedDescription
+    );
+    formData.append(
+      'detail_Description',
+      this.projectForm.value.detailedDescription
+    );
 
     // Append selected project images if any are provided
     if (this.selectedProjectImages.length > 0) {
@@ -153,11 +163,12 @@ export class EditProjectsComponent implements OnInit {
         // Check if the response indicates success
         if (response && response.success) {
           console.log('Project updated successfully:', response);
-          alert('Project updated successfully!');
 
           // Update the local projects array with the new data
           this.projects = this.projects.map((project) =>
-            project.id === this.fkProjectId ? { ...project, ...response.data } : project
+            project.id === this.fkProjectId
+              ? { ...project, ...response.data }
+              : project
           );
 
           // Reset the form and fields
@@ -169,22 +180,33 @@ export class EditProjectsComponent implements OnInit {
           this.amount = 0;
 
           // Navigate to the projects page
-          this.router.navigate(['/projects']);
+          this.showSuccessModal = true;
         } else {
           // Handle the case where the update was not successful
-          console.error('Failed to update project:', response || 'Unknown error');
-          alert(response?.message || 'Failed to update project. Please try again.');
+          console.error(
+            'Failed to update project:',
+            response || 'Unknown error'
+          );
+          alert(
+            response?.message || 'Failed to update project. Please try again.'
+          );
         }
       },
       (error) => {
         this.isSubmitting = false;
         // Handle errors from the API call
         console.error('Error updating project:', error);
-        alert('Failed to update project due to a network or server error. Please try again.');
+        alert(
+          'Failed to update project due to a network or server error. Please try again.'
+        );
       }
     );
+  }
 
-
+  // Method to close the success modal and navigate to the projects page
+  closeSuccessModal(): void {
+    this.showSuccessModal = false; // Hide the modal
+    this.router.navigate(['/projects']); // Navigate to the projects page
   }
 
   onFileChange(event: Event, type: string): void {
@@ -205,7 +227,10 @@ export class EditProjectsComponent implements OnInit {
             this.selectedProjectImages = this.selectedProjectImages || [];
             this.selectedProjectImages.push({ file, preview });
             this.isProjectImageAdded = true; // Set flag when a project image is added
-            console.log('Updated selectedProjectImages:', this.selectedProjectImages);
+            console.log(
+              'Updated selectedProjectImages:',
+              this.selectedProjectImages
+            );
           } else if (type === 'icon') {
             this.selectedIconImages = this.selectedIconImages || [];
             this.selectedIconImages.push({ file, preview });
