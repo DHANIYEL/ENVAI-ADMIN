@@ -1,4 +1,4 @@
-<div class="container p-10 overflow-y-auto h-screen pb-32">
+<div class="container p-10">
   <nav class="text-2xl font-semibold mb-6">Add Project</nav>
 
   <form
@@ -20,6 +20,9 @@
         ngModel
         required
       />
+      <p *ngIf="errorMessages.title" class="text-red-500 text-sm">
+        {{ errorMessages.title }}
+      </p>
     </div>
 
     <!-- Homepage Small Description -->
@@ -38,6 +41,9 @@
         ngModel
         required
       ></textarea>
+      <p *ngIf="errorMessages.smallDescription" class="text-red-500 text-sm">
+        {{ errorMessages.smallDescription }}
+      </p>
     </div>
 
     <!-- Detailed Description -->
@@ -56,7 +62,12 @@
         ngModel
         required
       ></textarea>
+      <p *ngIf="errorMessages.detailedDescription" class="text-red-500 text-sm">
+        {{ errorMessages.detailedDescription }}
+      </p>
     </div>
+
+    <!-- Amount Field -->
     <div class="form-group flex gap-4 w-56">
       <div class="flex-1">
         <label class="block text-sm font-medium text-gray-700">Amount</label>
@@ -69,9 +80,11 @@
           min="0"
           placeholder="Enter amount"
         />
+        <p *ngIf="errorMessages.amount" class="text-red-500 text-sm">
+          {{ errorMessages.amount }}
+        </p>
       </div>
     </div>
-
     <div class="flex flex-wrap w-full justify-between gap-8">
       <!-- Left Section (Project Images and Project URL) -->
       <div class="w-full md:w-1/2">
@@ -85,6 +98,7 @@
           </label>
           <input
             type="file"
+            required
             id="projectImages"
             name="projectImages"
             (change)="onFileChange($event, 'project')"
@@ -92,6 +106,10 @@
             accept="image/*"
             class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
+          <!-- Display error message if validation fails -->
+          <p *ngIf="errorMessages.projectImages" class="text-red-500 text-sm">
+            {{ errorMessages.projectImages }}
+          </p>
         </div>
 
         <p class="text-center font-semibold mb-4">OR</p>
@@ -129,12 +147,17 @@
           <input
             type="file"
             id="iconImages"
+            required
             name="iconImages"
             (change)="onFileChange($event, 'icon')"
             multiple
             accept="image/*"
             class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
+          <!-- Display error message if validation fails -->
+          <p *ngIf="errorMessages.iconImages" class="text-red-500 text-sm">
+            {{ errorMessages.iconImages }}
+          </p>
         </div>
 
         <p class="text-center font-semibold mb-4">OR</p>
@@ -171,8 +194,8 @@
       ></app-success-modal>
       <button
         type="submit"
-        class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
-        [disabled]="!projectForm.valid || isSubmitting"
+        class="px-4 py-2 bg-blue-600 text-white rounded-md cursor-pointer hover:bg-blue-700 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+        [disabled]="isSubmitting"
       >
         Create Project
       </button>

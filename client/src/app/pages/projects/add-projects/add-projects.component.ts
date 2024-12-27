@@ -25,6 +25,16 @@ export class AddProjectsComponent {
   showSuccessModal = false; // Flag to control modal visibility
 
 
+
+  errorMessages = {
+    title: '',
+    smallDescription: '',
+    detailedDescription: '',
+    projectImages: '',
+    iconImages: '',
+    amount: ''
+  };
+
   iconUrl: string[] = []; // Explicitly typed as string array
   projectUrl: string[] = []; // Explicitly typed as string array
   selectedIconImages: { file: File; preview: string }[] = [];
@@ -37,80 +47,119 @@ export class AddProjectsComponent {
 
   constructor(private apiService: ApiService, private router: Router) {}
 
+
   // Submit the form with all data
   onSubmit(): void {
     if (this.isSubmitting) {
       return; // Prevent multiple submissions
     }
 
-    this.isSubmitting = true; // Set the flag to true to disable the button
+    // Reset error messages
+    this.resetErrorMessages();
 
-    const formData = new FormData();
+    // Validation logic for required fields
+    let isValid = true;
 
-    // Append form fields (text data) with new names
-    formData.append('strTitle', this.projectForm.value.title); // title renamed to strTitle
-    formData.append(
-      'short_Description',
-      this.projectForm.value.smallDescription
-    ); // smallDescription renamed to short_Description
-    formData.append(
-      'long_Description',
-      this.projectForm.value.detailedDescription
-    ); // detailedDescription renamed to long_Description
-    formData.append(
-      'detail_Description',
-      this.projectForm.value.detailedDescription
-    ); // detailedDescription renamed to detail_Description
-
-    // Append selected project images or project URL
-    if (this.selectedProjectImages.length > 0) {
-      this.selectedProjectImages.forEach(({ file }) => {
-        formData.append('projectImages', file, file.name); // Attach image files if present
-        console.log('Project Image:', file, 'Name:', file.name); // Log project image file and name
-      });
-      formData.append('projectUrls', JSON.stringify([])); // Pass empty array if project images are added
-    } else {
-      formData.append('projectUrls', JSON.stringify([this.projectUrl])); // Pass URL if no project images are selected
+    if (!this.projectForm.value.title?.trim()) {
+      this.errorMessages.title = 'Title is required';
+      isValid = false;
     }
 
-    // Append selected icon images or icon URL
+    if (!this.projectForm.value.smallDescription?.trim()) {
+      this.errorMessages.smallDescription = 'Homepage Small Description is required';
+      isValid = false;
+    }
+
+    if (!this.projectForm.value.detailedDescription?.trim()) {
+      this.errorMessages.detailedDescription = 'Detailed Description is required';
+      isValid = false;
+    }
+// Check for project images or project URL
+if (this.selectedProjectImages.length === 0 && (!this.projectUrl || this.projectUrl.length === 0)) {
+  this.errorMessages.projectImages = 'Project Images are required';
+  isValid = false;
+} else {
+  this.errorMessages.projectImages = ''; // Clear error if condition is met
+}
+
+// Check for icon images or icon URL
+if (this.selectedIconImages.length === 0 && (!this.iconUrl || this.iconUrl.length === 0)) {
+  this.errorMessages.iconImages = 'Icon Images are required';
+  isValid = false;
+} else {
+  this.errorMessages.iconImages = ''; // Clear error if condition is met
+}
+
+
+
+    if (!this.amount || this.amount <= 0) {
+      this.errorMessages.amount = 'Amount is required and should be greater than 0';
+      isValid = false;
+    }
+
+    if (!isValid) {
+      return; // Prevent form submission if validation fails
+    }
+
+    // Proceed with form submission
+    this.isSubmitting = true;
+
+    const formData = new FormData();
+    // Append form fields (text data) with new names
+    formData.append('strTitle', this.projectForm.value.title);
+    formData.append('short_Description', this.projectForm.value.smallDescription);
+    formData.append('long_Description', this.projectForm.value.detailedDescription);
+    formData.append('detail_Description', this.projectForm.value.detailedDescription);
+
+    // Append selected project images
+    if (this.selectedProjectImages.length > 0) {
+      this.selectedProjectImages.forEach(({ file }) => {
+        formData.append('projectImages', file, file.name);
+      });
+      formData.append('projectUrls', JSON.stringify([]));
+    } else {
+      formData.append('projectUrls', JSON.stringify([this.projectUrl]));
+    }
+
+    // Append selected icon images
     if (this.selectedIconImages.length > 0) {
       this.selectedIconImages.forEach(({ file }) => {
-        formData.append('iconImages', file, file.name); // Attach icon files if present
-        console.log('Icon Image:', file, 'Name:', file.name); // Log icon image file and name
+        formData.append('iconImages', file, file.name);
       });
-      formData.append('iconUrls', JSON.stringify([])); // Pass empty array if icon images are added
+      formData.append('iconUrls', JSON.stringify([]));
     } else {
-      formData.append('iconUrls', JSON.stringify([this.iconUrl])); // Pass URL if no icon images are selected
+      formData.append('iconUrls', JSON.stringify([this.iconUrl]));
     }
 
     // Append amount field
-    formData.append('amount', this.amount.toString()); // Convert amount to string for backend
+    formData.append('amount', this.amount.toString());
 
-    // Log the entire formData for debugging
-    console.log('FormData Content:');
-    formData.forEach((value, key) => {
-      console.log(`${key}:`, value); // Log each key-value pair in formData
-    });
-
-    // Send the formData to the backend
     this.apiService.addProject(formData).subscribe(
       (response) => {
-        console.log('Project added successfully:', response);
-        this.projectForm.reset(); // Reset the form
-        this.selectedProjectImages = []; // Clear the selected project images
-        this.selectedIconImages = []; // Clear the selected icon images
-        this.amount = 0; // Reset the amount field (optional)
-
-        // Navigate to the projects route
         this.showSuccessModal = true;
+        this.projectForm.reset();
+        this.selectedProjectImages = [];
+        this.selectedIconImages = [];
+        this.amount = 0;
       },
       (error) => {
-        this.isSubmitting = false;
         console.error('Error adding project:', error);
         alert('Failed to add project. Please try again.');
+        this.isSubmitting = false;
       }
     );
+  }
+
+  // Method to reset error messages
+  resetErrorMessages(): void {
+    this.errorMessages = {
+      title: '',
+      smallDescription: '',
+      detailedDescription: '',
+      projectImages: '',
+      iconImages: '',
+      amount: ''
+    };
   }
 
   closeSuccessModal(): void {
