@@ -4,13 +4,14 @@ import { FormsModule, NgForm } from '@angular/forms';
 import { ApiService } from 'src/app/services/api.service';
 import { CommonModule } from '@angular/common';
 import { of } from 'rxjs';
+import { SuccessModalComponent } from 'src/app/components/success-modal/success-modal.component';
 
 @Component({
   selector: 'app-add-projects',
   templateUrl: './add-projects.component.html',
   styleUrls: ['./add-projects.component.css'],
   standalone: true,
-  imports: [FormsModule, CommonModule],
+  imports: [FormsModule, CommonModule, SuccessModalComponent],
 })
 export class AddProjectsComponent {
   projectImages: File[] = []; // Array to hold the project images
@@ -21,6 +22,8 @@ export class AddProjectsComponent {
   isIconImageAdded: boolean = false;
 
   isSubmitting: boolean = false;
+  showSuccessModal = false; // Flag to control modal visibility
+
 
   iconUrl: string[] = []; // Explicitly typed as string array
   projectUrl: string[] = []; // Explicitly typed as string array
@@ -94,14 +97,13 @@ export class AddProjectsComponent {
     this.apiService.addProject(formData).subscribe(
       (response) => {
         console.log('Project added successfully:', response);
-        alert('Project added successfully!');
         this.projectForm.reset(); // Reset the form
         this.selectedProjectImages = []; // Clear the selected project images
         this.selectedIconImages = []; // Clear the selected icon images
         this.amount = 0; // Reset the amount field (optional)
 
         // Navigate to the projects route
-        this.router.navigate(['/projects']);
+        this.showSuccessModal = true;
       },
       (error) => {
         this.isSubmitting = false;
@@ -109,6 +111,11 @@ export class AddProjectsComponent {
         alert('Failed to add project. Please try again.');
       }
     );
+  }
+
+  closeSuccessModal(): void {
+    this.showSuccessModal = false; // Hide the modal
+    this.router.navigate(['/projects']); // Navigate to the projects page
   }
 
   logFormData(formData: FormData) {

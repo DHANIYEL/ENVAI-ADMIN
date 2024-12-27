@@ -98,7 +98,10 @@
 
         <!-- Project URL Input -->
         <div class="form-group">
-          <label for="projectUrl" class="block text-sm font-medium text-gray-700">
+          <label
+            for="projectUrl"
+            class="block text-sm font-medium text-gray-700"
+          >
             Project URL:
           </label>
           <input
@@ -156,6 +159,16 @@
 
     <!-- Submit Button -->
     <div class="flex justify-end">
+      <!-- Success Modal -->
+      <app-success-modal
+        *ngIf="showSuccessModal"
+        [title]="'Project Added Successfully'"
+        [description]="
+          'Your project has been added successfully. Click below to close and view the projects.'
+        "
+        [successButtonText]="'Close and View Projects'"
+        (close)="closeSuccessModal()"
+      ></app-success-modal>
       <button
         type="submit"
         class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
