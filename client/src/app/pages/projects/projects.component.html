@@ -81,19 +81,27 @@
             </td>
 
 
-            <td
-              class="px-6 py-4 text-right flex justify-center items-center gap-4"
-            >
-              <a
-                (click)="editProjectNavigate(project.id)"
-                routerLinkActive="router-link-active"  class="font-medium text-blue-600 hover:underline"
-                >Edit</a
-              >
-              <a
-                (click)="openDeleteModal(project.id)"
-                class="font-medium text-red-600 hover:underline"
-                >Delete</a
-              >
+            <td class="px-6 py-4 text-center">
+              <div class="flex justify-center items-center gap-4">
+                <!-- Edit Icon -->
+                <a
+                  (click)="editProjectNavigate(project.id)"
+                  routerLinkActive="router-link-active"
+                  class="font-medium text-blue-600"
+                  title="Edit"
+                >
+                  <i class="fas fa-pen"></i>
+                </a>
+
+                <!-- Delete Icon -->
+                <a
+                  (click)="openDeleteModal(project.id)"
+                  class="font-medium text-red-600"
+                  title="Delete"
+                >
+                  <i class="fas fa-trash-alt"></i>
+                </a>
+              </div>
             </td>
             <!-- Delete Confirmation Modal -->
             <app-confirmation-modal
