@@ -25,6 +25,7 @@
       >
         <thead class="text-xs uppercase bg-gray-300 text-gray-900">
           <tr>
+            <th scope="col" class="px-6 py-3">ID</th>
             <th scope="col" class="px-6 py-3">Title</th>
             <th scope="col" class="px-6 py-3">Short Description</th>
             <th scope="col" class="px-6 py-3">Detailed Description</th>
@@ -36,9 +37,12 @@
         </thead>
         <tbody>
           <tr
-            *ngFor="let project of projects"
+            *ngFor="let project of projects; let i = index"
             class="bg-white border-b hover:bg-gray-200"
-          >
+            >
+            <td class="px-6 py-4 font-medium text-gray-900">
+              {{ i + 1 }}
+            </td>
             <td class="px-6 py-4 font-medium text-gray-900">
               {{ project.title }}
             </td>
