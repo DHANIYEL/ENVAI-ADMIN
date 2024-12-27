@@ -75,68 +75,84 @@
       </div>
     </div>
 
-    <!-- Project Images Input -->
-    <div class="form-group">
-      <label
-        for="projectImages"
-        class="block text-sm font-medium text-gray-700"
-      >
-        Project Images:
-      </label>
-      <input
-        type="file"
-        id="projectImages"
-        name="projectImages"
-        (change)="onFileChange($event, 'project')"
-        multiple
-        accept="image/*"
-        class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
-    </div>
+    <div class="flex flex-wrap w-full justify-between gap-8">
+      <!-- Left Section (Project Images and Project URL) -->
+      <div class="w-full md:w-1/2">
+        <!-- Project Images Input -->
+        <div class="form-group mb-4">
+          <label
+            for="projectImages"
+            class="block text-sm font-medium text-gray-700"
+          >
+            Project Images:
+          </label>
+          <input
+            type="file"
+            id="projectImages"
+            name="projectImages"
+            (change)="onFileChange($event, 'project')"
+            multiple
+            accept="image/*"
+            class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
 
-    <!-- Project URL Input -->
-    <div class="form-group flex gap-4">
-      <div class="flex-1">
-        <label class="block text-sm font-medium text-gray-700"
-          >Project URL:</label
-        >
-        <input
-          type="url"
-          class="flex-1 block border rounded-md w-full mt-2 px-3 py-2 border-gray-300 shadow-sm"
-          placeholder="Project URL"
-          [(ngModel)]="projectUrl"
-          name="projectUrl"
-        />
+        <p class="text-center font-semibold mb-4">OR</p>
+
+<!-- Project URL Input -->
+<div class="form-group">
+  <label for="projectUrl" class="block text-sm font-medium text-gray-700">
+    Project URL:
+  </label>
+  <input
+    type="url"
+    id="projectUrl"
+    class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+    placeholder="Project URL"
+    [(ngModel)]="projectUrl"
+    name="projectUrl"
+    [disabled]="isProjectImageAdded"    />
+</div>
       </div>
-    </div>
 
-    <!-- Icon Images Input -->
-    <div class="form-group">
-      <label for="iconImages" class="block text-sm font-medium text-gray-700">
-        Icon Images:
-      </label>
-      <input
-        type="file"
-        id="iconImages"
-        name="iconImages"
-        (change)="onFileChange($event, 'icon')"
-        multiple
-        accept="image/*"
-        class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
-    </div>
+      <!-- Right Section (Icon Images and Icon URL) -->
+      <div class="w-full md:w-1/2">
+        <!-- Icon Images Input -->
+        <div class="form-group mb-4">
+          <label
+            for="iconImages"
+            class="block text-sm font-medium text-gray-700"
+          >
+            Icon Images:
+          </label>
+          <input
+            type="file"
+            id="iconImages"
+            name="iconImages"
+            (change)="onFileChange($event, 'icon')"
+            multiple
+            accept="image/*"
+            class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
 
-    <!-- Icon URL Input -->
-    <div class="form-group flex gap-4">
-      <div class="flex-1">
-        <label class="block text-sm font-medium text-gray-700">Icon URL:</label>
-        <input
-          type="url"
-          class="flex-1 block border rounded-md w-full mt-2 px-3 py-2 border-gray-300 shadow-sm"
-          placeholder="Icon URL"
-          [(ngModel)]="iconUrl"
-          name="iconUrl"
-        />
+        <p class="text-center font-semibold mb-4">OR</p>
+
+        <!-- Icon URL Input -->
+        <div class="form-group">
+          <label for="iconUrl" class="block text-sm font-medium text-gray-700">
+            Icon URL:
+          </label>
+          <input
+            type="url"
+            id="iconUrl"
+            class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Icon URL"
+            [(ngModel)]="iconUrl"
+            name="iconUrl"
+            [disabled]="isIconImageAdded"
+          />
+        </div>
       </div>
     </div>
 

@@ -15,6 +15,10 @@ import { CommonModule } from '@angular/common';
 })
 export class EditProjectsComponent implements OnInit {
   @ViewChild('projectForm') projectForm!: NgForm;
+
+  isProjectImageAdded: boolean = false;
+  isIconImageAdded: boolean = false;
+
   projects: any[] = [];  // Define the projects array
   fkProjectId: string = '';
   projectDetails: any = {}; // Store project details
@@ -111,6 +115,9 @@ export class EditProjectsComponent implements OnInit {
       this.selectedProjectImages.forEach(({ file }) => {
         formData.append('projectImages', file, file.name);
       });
+      formData.append('projectUrls', JSON.stringify([])); // Pass empty array if project image is added
+    } else {
+      formData.append('projectUrls', JSON.stringify([this.projectUrl])); // Pass the entered URL if no project image
     }
 
     // Append selected icon images if any are provided
@@ -118,15 +125,10 @@ export class EditProjectsComponent implements OnInit {
       this.selectedIconImages.forEach(({ file }) => {
         formData.append('iconImages', file, file.name);
       });
+      formData.append('iconUrls', JSON.stringify([])); // Pass empty array if icon image is added
+    } else {
+      formData.append('iconUrls', JSON.stringify([this.iconUrl])); // Pass the entered URL if no icon image
     }
-
-    // Append existing icon URLs
-    const iconUrlArray: string[] = [this.iconUrl];
-    formData.append('iconUrls', JSON.stringify(iconUrlArray));
-
-    // Append existing project URLs
-    const projectUrlArray: string[] = [this.projectUrl];
-    formData.append('projectUrls', JSON.stringify(projectUrlArray));
 
     // Append the amount value
     formData.append('amount', this.projectForm.value.amount.toString());
@@ -137,60 +139,46 @@ export class EditProjectsComponent implements OnInit {
     });
 
     // Call the updateProject method
-    this.apiService.updateProject(this.fkProjectId, formData).subscribe(
-      (response) => {
-        // Check if the response indicates success
-        if (response && response.success) {
-          console.log('Project updated successfully:', response);
-          alert('Project updated successfully!');
-
-          // Update the local projects array with the new data
-          this.projects = this.projects.map((project) =>
-            project.id === this.fkProjectId ? { ...project, ...response.data } : project
-          );
-
-          // Reset the form and fields
-          this.projectForm.reset();
-          this.selectedProjectImages = [];
-          this.selectedIconImages = [];
-          this.iconUrl = '';
-          this.projectUrl = '';
-          this.amount = 0;
-
-          // Navigate to the projects page
-          this.router.navigate(['/projects']);
-        } else {
-          // Handle the case where the update was not successful
-          console.error('Failed to update project:', response || 'Unknown error');
-          alert(response?.message || 'Failed to update project. Please try again.');
-        }
-      },
-      (error) => {
-        // Handle errors from the API call
-        console.error('Error updating project:', error);
-        alert('Failed to update project due to a network or server error. Please try again.');
-      }
-    );
-
+    // this.apiService.updateProject(this.fkProjectId, formData).subscribe(
+    //   (response) => {
+    //     // Handle success or failure
+    //   },
+    //   (error) => {
+    //     // Handle errors from the API call
+    //   }
+    // );
   }
 
   onFileChange(event: Event, type: string): void {
     const input = event.target as HTMLInputElement;
+
     if (input.files) {
+      console.log(`File change detected for type: ${type}`);
       const files = Array.from(input.files);
+      console.log('Selected files:', files);
+
       files.forEach((file) => {
+        console.log('Processing file:', file);
+
         const reader = new FileReader();
         reader.onload = () => {
+          const preview = reader.result as string;
           if (type === 'project') {
-            if (!this.selectedProjectImages) this.selectedProjectImages = [];
-            this.selectedProjectImages.push({ file, preview: reader.result as string });
+            this.selectedProjectImages = this.selectedProjectImages || [];
+            this.selectedProjectImages.push({ file, preview });
+            this.isProjectImageAdded = true; // Set flag when a project image is added
+            console.log('Updated selectedProjectImages:', this.selectedProjectImages);
           } else if (type === 'icon') {
-            if (!this.selectedIconImages) this.selectedIconImages = [];
-            this.selectedIconImages.push({ file, preview: reader.result as string });
+            this.selectedIconImages = this.selectedIconImages || [];
+            this.selectedIconImages.push({ file, preview });
+            this.isIconImageAdded = true; // Set flag when an icon image is added
+            console.log('Updated selectedIconImages:', this.selectedIconImages);
           }
         };
         reader.readAsDataURL(file);
       });
+    } else {
+      console.log('No files selected.');
     }
   }
 
