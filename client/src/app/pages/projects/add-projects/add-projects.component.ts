@@ -17,6 +17,9 @@ export class AddProjectsComponent {
   iconImages: File[] = [];
   selectedImageUrl: string | null = null;
 
+  isProjectImageAdded: boolean = false;
+  isIconImageAdded: boolean = false;
+
   isSubmitting: boolean = false;
 
   iconUrl: string[] = []; // Explicitly typed as string array
@@ -56,27 +59,30 @@ export class AddProjectsComponent {
       this.projectForm.value.detailedDescription
     ); // detailedDescription renamed to detail_Description
 
-    // Append selected project images to formData
-    this.selectedProjectImages.forEach(({ file }) => {
-      formData.append('projectImages', file, file.name); // projectImages remains the same
-      console.log('Project Image:', file, 'Name:', file.name); // Log project image file and name
-    });
+    // Append selected project images or project URL
+    if (this.selectedProjectImages.length > 0) {
+      this.selectedProjectImages.forEach(({ file }) => {
+        formData.append('projectImages', file, file.name); // Attach image files if present
+        console.log('Project Image:', file, 'Name:', file.name); // Log project image file and name
+      });
+      formData.append('projectUrls', JSON.stringify([])); // Pass empty array if project images are added
+    } else {
+      formData.append('projectUrls', JSON.stringify([this.projectUrl])); // Pass URL if no project images are selected
+    }
 
-    // Append selected icon images to formData
-    this.selectedIconImages.forEach(({ file }) => {
-      formData.append('iconImages', file, file.name); // iconImages remains the same
-      console.log('Icon Image:', file, 'Name:', file.name); // Log icon image file and name
-    });
+    // Append selected icon images or icon URL
+    if (this.selectedIconImages.length > 0) {
+      this.selectedIconImages.forEach(({ file }) => {
+        formData.append('iconImages', file, file.name); // Attach icon files if present
+        console.log('Icon Image:', file, 'Name:', file.name); // Log icon image file and name
+      });
+      formData.append('iconUrls', JSON.stringify([])); // Pass empty array if icon images are added
+    } else {
+      formData.append('iconUrls', JSON.stringify([this.iconUrl])); // Pass URL if no icon images are selected
+    }
 
-    // Explicitly define the type of iconUrl and projectUrl
-    const iconUrl: string[] = []; // Empty array for iconUrl
-    formData.append('iconUrls', JSON.stringify(iconUrl)); // Renamed to iconUrls
-
-    const projectUrl: string[] = []; // Empty array for projectUrl
-    formData.append('projectUrls', JSON.stringify(projectUrl)); // Renamed to projectUrls
-
-    // Commented out the amount field for later addition
-    formData.append('amount', this.amount.toString()); // Add the amount value (converted to string) to the formData
+    // Append amount field
+    formData.append('amount', this.amount.toString()); // Convert amount to string for backend
 
     // Log the entire formData for debugging
     console.log('FormData Content:');
@@ -94,7 +100,7 @@ export class AddProjectsComponent {
         this.selectedIconImages = []; // Clear the selected icon images
         this.amount = 0; // Reset the amount field (optional)
 
-        // Navigate to the .projects route
+        // Navigate to the projects route
         this.router.navigate(['/projects']);
       },
       (error) => {
@@ -103,16 +109,6 @@ export class AddProjectsComponent {
         alert('Failed to add project. Please try again.');
       }
     );
-  }
-
-  uploadFileToCloud(file: File) {
-    // This is a placeholder function, implement actual cloud upload here
-    // Example: Uploading file to AWS S3 and returning the file URL
-
-    const uploadedFileUrl = `https://your-cloud-storage-url/${file.name}`;
-
-    // Simulate an upload and return the file URL
-    return of(uploadedFileUrl); // 'of' is from RxJS, simulating a successful upload
   }
 
   logFormData(formData: FormData) {
@@ -134,27 +130,34 @@ export class AddProjectsComponent {
   // In your component class, add:
   onFileChange(event: Event, type: string): void {
     const input = event.target as HTMLInputElement;
+
     if (input.files) {
+      console.log(`File change detected for type: ${type}`);
       const files = Array.from(input.files);
+      console.log('Selected files:', files);
+
       files.forEach((file) => {
+        console.log('Processing file:', file);
+
         const reader = new FileReader();
         reader.onload = () => {
+          const preview = reader.result as string;
           if (type === 'project') {
-            if (!this.selectedProjectImages) this.selectedProjectImages = []; // Ensure it's initialized
-            this.selectedProjectImages.push({
-              file,
-              preview: reader.result as string,
-            });
+            this.selectedProjectImages = this.selectedProjectImages || [];
+            this.selectedProjectImages.push({ file, preview });
+            this.isProjectImageAdded = true; // Set flag when a project image is added
+            console.log('Updated selectedProjectImages:', this.selectedProjectImages);
           } else if (type === 'icon') {
-            if (!this.selectedIconImages) this.selectedIconImages = []; // Ensure it's initialized
-            this.selectedIconImages.push({
-              file,
-              preview: reader.result as string,
-            });
+            this.selectedIconImages = this.selectedIconImages || [];
+            this.selectedIconImages.push({ file, preview });
+            this.isIconImageAdded = true; // Set flag when an icon image is added
+            console.log('Updated selectedIconImages:', this.selectedIconImages);
           }
         };
         reader.readAsDataURL(file);
       });
+    } else {
+      console.log('No files selected.');
     }
   }
 

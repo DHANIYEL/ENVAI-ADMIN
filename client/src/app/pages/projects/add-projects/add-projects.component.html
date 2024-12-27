@@ -98,19 +98,17 @@
 
         <!-- Project URL Input -->
         <div class="form-group">
-          <label
-            for="projectUrl"
-            class="block text-sm font-medium text-gray-700"
-          >
+          <label for="projectUrl" class="block text-sm font-medium text-gray-700">
             Project URL:
           </label>
           <input
             type="url"
             id="projectUrl"
             class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Enter Project URL"
+            placeholder="Project URL"
             [(ngModel)]="projectUrl"
             name="projectUrl"
+            [disabled]="isProjectImageAdded"
           />
         </div>
       </div>
@@ -140,19 +138,17 @@
 
         <!-- Icon URL Input -->
         <div class="form-group">
-          <label
-            for="iconUrl"
-            class="block text-sm font-medium text-gray-700"
-          >
+          <label for="iconUrl" class="block text-sm font-medium text-gray-700">
             Icon URL:
           </label>
           <input
             type="url"
             id="iconUrl"
             class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Enter Icon URL"
+            placeholder="Icon URL"
             [(ngModel)]="iconUrl"
             name="iconUrl"
+            [disabled]="isIconImageAdded"
           />
         </div>
       </div>
