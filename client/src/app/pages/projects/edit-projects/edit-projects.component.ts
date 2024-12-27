@@ -37,6 +37,15 @@ export class EditProjectsComponent implements OnInit {
   loading: boolean = true;
   errorMessage: string = ''; // Loading indicator
 
+  errorMessages = {
+    title: '',
+    smallDescription: '',
+    detailedDescription: '',
+    projectImages: '',
+    iconImages: '',
+    amount: ''
+  };
+
   constructor(
     private apiService: ApiService,
     private route: ActivatedRoute,
@@ -101,33 +110,51 @@ export class EditProjectsComponent implements OnInit {
       return; // Prevent multiple submissions
     }
 
-    this.isSubmitting = true; // Set the flag to true to disable the button
+    // Reset error messages
+    this.resetErrorMessages();
 
-    if (!this.fkProjectId) {
-      console.error('Project ID is missing.');
-      alert('No project ID found. Cannot update the project.');
+    // Validation logic for required fields
+    let isValid = true;
+
+    if (!this.projectForm.value.title?.trim()) {
+      this.errorMessages.title = 'Title is required';
+      isValid = false;
+    }
+
+    if (!this.projectForm.value.smallDescription?.trim()) {
+      this.errorMessages.smallDescription = 'Homepage Small Description is required';
+      isValid = false;
+    }
+
+    if (!this.projectForm.value.detailedDescription?.trim()) {
+      this.errorMessages.detailedDescription = 'Detailed Description is required';
+      isValid = false;
+    }
+
+
+    if (!this.projectForm.value.amount || this.projectForm.value.amount <= 0) {
+      this.errorMessages.amount = 'Amount is required and should be greater than 0';
+      isValid = false;
+    }
+
+    // If validation fails, prevent form submission
+    if (!isValid) {
       return;
     }
+
+    // Proceed with form submission
+    this.isSubmitting = true;
 
     const formData = new FormData();
 
     // Append the project ID (required for the backend)
     formData.append('fkProjectId', this.fkProjectId);
 
-    // Append form fields with the updated naming conventions
+    // Append form fields (text data) with updated names
     formData.append('strTitle', this.projectForm.value.title);
-    formData.append(
-      'short_Description',
-      this.projectForm.value.smallDescription
-    );
-    formData.append(
-      'long_Description',
-      this.projectForm.value.detailedDescription
-    );
-    formData.append(
-      'detail_Description',
-      this.projectForm.value.detailedDescription
-    );
+    formData.append('short_Description', this.projectForm.value.smallDescription);
+    formData.append('long_Description', this.projectForm.value.detailedDescription);
+    formData.append('detail_Description', this.projectForm.value.detailedDescription);
 
     // Append selected project images if any are provided
     if (this.selectedProjectImages.length > 0) {
@@ -160,15 +187,12 @@ export class EditProjectsComponent implements OnInit {
     // Call the updateProject method
     this.apiService.updateProject(this.fkProjectId, formData).subscribe(
       (response) => {
-        // Check if the response indicates success
         if (response && response.success) {
           console.log('Project updated successfully:', response);
 
           // Update the local projects array with the new data
           this.projects = this.projects.map((project) =>
-            project.id === this.fkProjectId
-              ? { ...project, ...response.data }
-              : project
+            project.id === this.fkProjectId ? { ...project, ...response.data } : project
           );
 
           // Reset the form and fields
@@ -182,26 +206,28 @@ export class EditProjectsComponent implements OnInit {
           // Navigate to the projects page
           this.showSuccessModal = true;
         } else {
-          // Handle the case where the update was not successful
-          console.error(
-            'Failed to update project:',
-            response || 'Unknown error'
-          );
-          alert(
-            response?.message || 'Failed to update project. Please try again.'
-          );
+          console.error('Failed to update project:', response || 'Unknown error');
+          alert(response?.message || 'Failed to update project. Please try again.');
         }
       },
       (error) => {
         this.isSubmitting = false;
-        // Handle errors from the API call
         console.error('Error updating project:', error);
-        alert(
-          'Failed to update project due to a network or server error. Please try again.'
-        );
+        alert('Failed to update project due to a network or server error. Please try again.');
       }
     );
   }
+  resetErrorMessages(): void {
+    this.errorMessages = {
+      title: '',
+      smallDescription: '',
+      detailedDescription: '',
+      projectImages: '',
+      iconImages: '',
+      amount: ''
+    };
+  }
+
 
   // Method to close the success modal and navigate to the projects page
   closeSuccessModal(): void {

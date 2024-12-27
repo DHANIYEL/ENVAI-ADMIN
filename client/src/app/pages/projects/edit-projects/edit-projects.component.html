@@ -3,182 +3,180 @@
   <nav class="text-2xl font-semibold mb-6">Edit Project</nav>
 
   <form
-    #projectForm="ngForm"
-    (ngSubmit)="onSubmit()"
-    class="flex flex-col gap-5"
-  >
-    <!-- Title -->
-    <div class="form-group">
-      <label for="title" class="block text-sm font-medium text-gray-700"
-        >Title:</label
-      >
+  #projectForm="ngForm"
+  (ngSubmit)="onSubmit()"
+  class="flex flex-col gap-5"
+>
+  <!-- Title -->
+  <div class="form-group">
+    <label for="title" class="block text-sm font-medium text-gray-700">Title:</label>
+    <input
+      type="text"
+      id="title"
+      name="title"
+      class="mt-1 block border w-full rounded-md px-3 py-2 border-gray-300 shadow-sm"
+      placeholder="Enter project title"
+      [(ngModel)]="selectedProject.strTitle"
+      required
+    />
+    <div *ngIf="errorMessages.title" class="text-red-500 text-sm mt-1">
+      {{ errorMessages.title }}
+    </div>
+  </div>
+
+  <!-- Homepage Small Description -->
+  <div class="form-group">
+    <label for="smallDescription" class="block text-sm font-medium text-gray-700">Homepage Small Description:</label>
+    <textarea
+      id="smallDescription"
+      name="smallDescription"
+      rows="3"
+      class="mt-1 block border w-full rounded-md px-3 py-2 border-gray-300 shadow-sm"
+      placeholder="Enter a brief description for the homepage"
+      [(ngModel)]="selectedProject.short_Description"
+      required
+    ></textarea>
+    <div *ngIf="errorMessages.smallDescription" class="text-red-500 text-sm mt-1">
+      {{ errorMessages.smallDescription }}
+    </div>
+  </div>
+
+  <!-- Detailed Description -->
+  <div class="form-group">
+    <label for="detailedDescription" class="block text-sm font-medium text-gray-700">Detailed Description:</label>
+    <textarea
+      id="detailedDescription"
+      name="detailedDescription"
+      rows="6"
+      class="mt-1 block border w-full rounded-md px-3 py-2 border-gray-300 shadow-sm"
+      placeholder="Provide a detailed description"
+      [(ngModel)]="selectedProject.long_Description"
+      required
+    ></textarea>
+    <div *ngIf="errorMessages.detailedDescription" class="text-red-500 text-sm mt-1">
+      {{ errorMessages.detailedDescription }}
+    </div>
+  </div>
+
+  <!-- Amount -->
+  <div class="form-group flex gap-4 w-56">
+    <div class="flex-1">
+      <label class="block text-sm font-medium text-gray-700">Amount</label>
       <input
-        type="text"
-        id="title"
-        name="title"
-        class="mt-1 block border w-full rounded-md px-3 py-2 border-gray-300 shadow-sm"
-        placeholder="Enter project title"
-        [(ngModel)]="selectedProject.strTitle"
+        type="number"
+        class="flex-1 block text-center border rounded-md w-full mt-2 px-3 py-2"
+        [(ngModel)]="selectedProject.amount"
+        name="amount"
         required
+        min="0"
+        placeholder="Enter amount"
       />
+      <div *ngIf="errorMessages.amount" class="text-red-500 text-sm mt-1">
+        {{ errorMessages.amount }}
+      </div>
     </div>
+  </div>
 
-    <!-- Homepage Small Description -->
-    <div class="form-group">
-      <label
-        for="smallDescription"
-        class="block text-sm font-medium text-gray-700"
-        >Homepage Small Description:</label
-      >
-      <textarea
-        id="smallDescription"
-        name="smallDescription"
-        rows="3"
-        class="mt-1 block border w-full rounded-md px-3 py-2 border-gray-300 shadow-sm"
-        placeholder="Enter a brief description for the homepage"
-        [(ngModel)]="selectedProject.short_Description"
-        required
-      ></textarea>
-    </div>
-
-    <!-- Detailed Description -->
-    <div class="form-group">
-      <label
-        for="detailedDescription"
-        class="block text-sm font-medium text-gray-700"
-        >Detailed Description:</label
-      >
-      <textarea
-        id="detailedDescription"
-        name="detailedDescription"
-        rows="6"
-        class="mt-1 block border w-full rounded-md px-3 py-2 border-gray-300 shadow-sm"
-        placeholder="Provide a detailed description"
-        [(ngModel)]="selectedProject.long_Description"
-        required
-      ></textarea>
-    </div>
-
-    <!-- Amount -->
-    <div class="form-group flex gap-4 w-56">
-      <div class="flex-1">
-        <label class="block text-sm font-medium text-gray-700">Amount</label>
+  <div class="flex flex-wrap w-full justify-between gap-8">
+    <!-- Left Section (Project Images and Project URL) -->
+    <div class="w-full md:w-1/2">
+      <!-- Project Images Input -->
+      <div class="form-group mb-4">
+        <label for="projectImages" class="block text-sm font-medium text-gray-700">
+          Project Images:
+        </label>
         <input
-          type="number"
-          class="flex-1 block text-center border rounded-md w-full mt-2 px-3 py-2"
-          [(ngModel)]="selectedProject.amount"
-          name="amount"
-          required
-          min="0"
-          placeholder="Enter amount"
+          type="file"
+          id="projectImages"
+          name="projectImages"
+          (change)="onFileChange($event, 'project')"
+          multiple
+          accept="image/*"
+          class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
+
+      </div>
+
+      <p class="text-center font-semibold mb-4">OR</p>
+
+      <!-- Project URL Input -->
+      <div class="form-group">
+        <label for="projectUrl" class="block text-sm font-medium text-gray-700">
+          Project URL:
+        </label>
+        <input
+          type="url"
+          id="projectUrl"
+          class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          placeholder="Project URL"
+          [(ngModel)]="projectUrl"
+          name="projectUrl"
+          [disabled]="isProjectImageAdded"
+        />
+
       </div>
     </div>
 
-    <div class="flex flex-wrap w-full justify-between gap-8">
-      <!-- Left Section (Project Images and Project URL) -->
-      <div class="w-full md:w-1/2">
-        <!-- Project Images Input -->
-        <div class="form-group mb-4">
-          <label
-            for="projectImages"
-            class="block text-sm font-medium text-gray-700"
-          >
-            Project Images:
-          </label>
-          <input
-            type="file"
-            id="projectImages"
-            name="projectImages"
-            (change)="onFileChange($event, 'project')"
-            multiple
-            accept="image/*"
-            class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
+    <!-- Right Section (Icon Images and Icon URL) -->
+    <div class="w-full md:w-1/2">
+      <!-- Icon Images Input -->
+      <div class="form-group mb-4">
+        <label for="iconImages" class="block text-sm font-medium text-gray-700">
+          Icon Images:
+        </label>
+        <input
+          type="file"
+          id="iconImages"
+          name="iconImages"
+          (change)="onFileChange($event, 'icon')"
+          multiple
+          accept="image/*"
+          class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
 
-        <p class="text-center font-semibold mb-4">OR</p>
-
-        <!-- Project URL Input -->
-        <div class="form-group">
-          <label
-            for="projectUrl"
-            class="block text-sm font-medium text-gray-700"
-          >
-            Project URL:
-          </label>
-          <input
-            type="url"
-            id="projectUrl"
-            class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Project URL"
-            [(ngModel)]="projectUrl"
-            name="projectUrl"
-            [disabled]="isProjectImageAdded"
-          />
-        </div>
       </div>
 
-      <!-- Right Section (Icon Images and Icon URL) -->
-      <div class="w-full md:w-1/2">
-        <!-- Icon Images Input -->
-        <div class="form-group mb-4">
-          <label
-            for="iconImages"
-            class="block text-sm font-medium text-gray-700"
-          >
-            Icon Images:
-          </label>
-          <input
-            type="file"
-            id="iconImages"
-            name="iconImages"
-            (change)="onFileChange($event, 'icon')"
-            multiple
-            accept="image/*"
-            class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
+      <p class="text-center font-semibold mb-4">OR</p>
 
-        <p class="text-center font-semibold mb-4">OR</p>
+      <!-- Icon URL Input -->
+      <div class="form-group">
+        <label for="iconUrl" class="block text-sm font-medium text-gray-700">
+          Icon URL:
+        </label>
+        <input
+          type="url"
+          id="iconUrl"
+          class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          placeholder="Icon URL"
+          [(ngModel)]="iconUrl"
+          name="iconUrl"
+          [disabled]="isIconImageAdded"
+        />
 
-        <!-- Icon URL Input -->
-        <div class="form-group">
-          <label for="iconUrl" class="block text-sm font-medium text-gray-700">
-            Icon URL:
-          </label>
-          <input
-            type="url"
-            id="iconUrl"
-            class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Icon URL"
-            [(ngModel)]="iconUrl"
-            name="iconUrl"
-            [disabled]="isIconImageAdded"
-          />
-        </div>
       </div>
     </div>
+  </div>
 
-    <!-- Submit Button -->
-    <div class="flex justify-end">
-      <!-- Success Modal -->
-      <app-success-modal
-        *ngIf="showSuccessModal"
-        [title]="'Project Updated Successfully'"
-        [description]="
-          'Your project has been updated successfully. Click below to close and view the projects.'
-        "
-        [successButtonText]="'Close and View Projects'"
-        (close)="closeSuccessModal()"
-      ></app-success-modal>
-      <button
-        type="submit"
-        class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none"
-        [disabled]="!projectForm.valid || isSubmitting"
-      >
-        Update Project
-      </button>
-    </div>
-  </form>
+  <!-- Submit Button -->
+  <div class="flex justify-end">
+    <!-- Success Modal -->
+    <app-success-modal
+      *ngIf="showSuccessModal"
+      [title]="'Project Updated Successfully'"
+      [description]="
+        'Your project has been updated successfully. Click below to close and view the projects.'
+      "
+      [successButtonText]="'Close and View Projects'"
+      (close)="closeSuccessModal()"
+    ></app-success-modal>
+    <button
+      type="submit"
+      class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none"
+      [disabled]="isSubmitting"
+    >
+      Update Project
+    </button>
+  </div>
+</form>
+
 </div>
