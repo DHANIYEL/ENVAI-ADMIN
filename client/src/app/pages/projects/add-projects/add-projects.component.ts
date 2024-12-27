@@ -19,7 +19,6 @@ export class AddProjectsComponent {
 
   isSubmitting: boolean = false;
 
-
   iconUrl: string[] = []; // Explicitly typed as string array
   projectUrl: string[] = []; // Explicitly typed as string array
   selectedIconImages: { file: File; preview: string }[] = [];
@@ -31,7 +30,6 @@ export class AddProjectsComponent {
   @ViewChild('projectForm') projectForm!: NgForm; // ViewChild for form reference
 
   constructor(private apiService: ApiService, private router: Router) {}
-
 
   // Submit the form with all data
   onSubmit(): void {
@@ -45,9 +43,18 @@ export class AddProjectsComponent {
 
     // Append form fields (text data) with new names
     formData.append('strTitle', this.projectForm.value.title); // title renamed to strTitle
-    formData.append('short_Description', this.projectForm.value.smallDescription); // smallDescription renamed to short_Description
-    formData.append('long_Description', this.projectForm.value.detailedDescription); // detailedDescription renamed to long_Description
-    formData.append('detail_Description', this.projectForm.value.detailedDescription); // detailedDescription renamed to detail_Description
+    formData.append(
+      'short_Description',
+      this.projectForm.value.smallDescription
+    ); // smallDescription renamed to short_Description
+    formData.append(
+      'long_Description',
+      this.projectForm.value.detailedDescription
+    ); // detailedDescription renamed to long_Description
+    formData.append(
+      'detail_Description',
+      this.projectForm.value.detailedDescription
+    ); // detailedDescription renamed to detail_Description
 
     // Append selected project images to formData
     this.selectedProjectImages.forEach(({ file }) => {
@@ -91,6 +98,7 @@ export class AddProjectsComponent {
         this.router.navigate(['/projects']);
       },
       (error) => {
+        this.isSubmitting = false;
         console.error('Error adding project:', error);
         alert('Failed to add project. Please try again.');
       }
@@ -113,7 +121,9 @@ export class AddProjectsComponent {
     formData.forEach((value, key) => {
       // If the key already exists, make it an array to hold multiple values
       if (data[key]) {
-        data[key] = Array.isArray(data[key]) ? [...data[key], value] : [data[key], value];
+        data[key] = Array.isArray(data[key])
+          ? [...data[key], value]
+          : [data[key], value];
       } else {
         data[key] = value;
       }
@@ -131,17 +141,22 @@ export class AddProjectsComponent {
         reader.onload = () => {
           if (type === 'project') {
             if (!this.selectedProjectImages) this.selectedProjectImages = []; // Ensure it's initialized
-            this.selectedProjectImages.push({ file, preview: reader.result as string });
+            this.selectedProjectImages.push({
+              file,
+              preview: reader.result as string,
+            });
           } else if (type === 'icon') {
             if (!this.selectedIconImages) this.selectedIconImages = []; // Ensure it's initialized
-            this.selectedIconImages.push({ file, preview: reader.result as string });
+            this.selectedIconImages.push({
+              file,
+              preview: reader.result as string,
+            });
           }
         };
         reader.readAsDataURL(file);
       });
     }
   }
-
 
   // Remove selected image
   removeImage(type: string, index: number): void {
@@ -154,5 +169,4 @@ export class AddProjectsComponent {
   }
 
   // Remove icon image
-
 }

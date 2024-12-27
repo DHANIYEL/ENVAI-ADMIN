@@ -19,6 +19,9 @@ export class EditProjectsComponent implements OnInit {
   isProjectImageAdded: boolean = false;
   isIconImageAdded: boolean = false;
 
+  isSubmitting: boolean = false;
+
+
   projects: any[] = [];  // Define the projects array
   fkProjectId: string = '';
   projectDetails: any = {}; // Store project details
@@ -93,6 +96,12 @@ export class EditProjectsComponent implements OnInit {
     );
   }
   onSubmit(): void {
+    if (this.isSubmitting) {
+      return; // Prevent multiple submissions
+    }
+
+    this.isSubmitting = true; // Set the flag to true to disable the button
+
     if (!this.fkProjectId) {
       console.error('Project ID is missing.');
       alert('No project ID found. Cannot update the project.');
@@ -139,14 +148,43 @@ export class EditProjectsComponent implements OnInit {
     });
 
     // Call the updateProject method
-    // this.apiService.updateProject(this.fkProjectId, formData).subscribe(
-    //   (response) => {
-    //     // Handle success or failure
-    //   },
-    //   (error) => {
-    //     // Handle errors from the API call
-    //   }
-    // );
+    this.apiService.updateProject(this.fkProjectId, formData).subscribe(
+      (response) => {
+        // Check if the response indicates success
+        if (response && response.success) {
+          console.log('Project updated successfully:', response);
+          alert('Project updated successfully!');
+
+          // Update the local projects array with the new data
+          this.projects = this.projects.map((project) =>
+            project.id === this.fkProjectId ? { ...project, ...response.data } : project
+          );
+
+          // Reset the form and fields
+          this.projectForm.reset();
+          this.selectedProjectImages = [];
+          this.selectedIconImages = [];
+          this.iconUrl = '';
+          this.projectUrl = '';
+          this.amount = 0;
+
+          // Navigate to the projects page
+          this.router.navigate(['/projects']);
+        } else {
+          // Handle the case where the update was not successful
+          console.error('Failed to update project:', response || 'Unknown error');
+          alert(response?.message || 'Failed to update project. Please try again.');
+        }
+      },
+      (error) => {
+        this.isSubmitting = false;
+        // Handle errors from the API call
+        console.error('Error updating project:', error);
+        alert('Failed to update project due to a network or server error. Please try again.');
+      }
+    );
+
+
   }
 
   onFileChange(event: Event, type: string): void {
