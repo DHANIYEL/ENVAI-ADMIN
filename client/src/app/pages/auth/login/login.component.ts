@@ -14,6 +14,7 @@ export class LoginComponent {
   email: string = '';
   password: string = '';
   loginError: boolean = false;
+  loginErrorMessage: string = ''; // Error message for the frontend
   passwordVisible: boolean = false;
 
   bottomRightImg = 'assets/images/login-img1.jpg'
@@ -22,40 +23,50 @@ export class LoginComponent {
 
   onSubmit(form: NgForm) {
     if (form.valid) {
-      console.log('Form is valid, attempting login...');
       this.authService.login(this.email, this.password).subscribe(
         (response) => {
-          console.log('Login successful', response);
+          // Check if the response is successful
+          if (response && response.success === true) {
+            console.log('Login successful', response);
 
-          // Check if response has data and token
-          if (response && response.data && response.data.token) {
-            // Store the token in localStorage
-            localStorage.setItem('token', response.data.token);
-            localStorage.setItem('userId', response.data.fkAdminId); // assuming fkAdminId is userId
+            // Check if token and userId are present in the response
+            if (response.data && response.data.token) {
+              localStorage.setItem('token', response.data.token);
+              localStorage.setItem('userId', response.data.fkAdminId);
 
-            // Log to check if the token and userId are saved correctly
-            console.log('Token:', localStorage.getItem('token'));
-            console.log('UserId:', localStorage.getItem('userId'));
-
-            // Navigate to the projects page
-            this.router.navigate(['/projects']);
+              // Navigate to the projects page
+              this.router.navigate(['/projects']);
+            } else {
+              console.log('No token found in the response data');
+              this.loginError = true;
+              this.loginErrorMessage = 'Invalid response data. Please try again.';
+            }
           } else {
-            console.log('No token found in the response data');
+            // Handle unsuccessful response
+            this.loginError = true;
+            this.loginErrorMessage =
+              response && response.message ? response.message : 'Login failed. Please try again.';
+            console.error('Login unsuccessful:', response);
           }
         },
         (error) => {
           this.loginError = true;
-          console.log('Login failed:', error);
+
+          // Handle backend error response
+          if (error.error && error.error.message) {
+            this.loginErrorMessage = error.error.message; // e.g., "Invalid credentials"
+          } else {
+            this.loginErrorMessage = 'An unexpected error occurred. Please try again.';
+          }
+
+          console.error('Login failed:', error);
         }
       );
+
     } else {
       console.log('Form is invalid');
     }
   }
-
-
-
-
 
   // Toggle password visibility
   togglePasswordVisibility(): void {
