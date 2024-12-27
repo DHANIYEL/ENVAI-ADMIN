@@ -17,6 +17,9 @@ export class AddProjectsComponent {
   iconImages: File[] = [];
   selectedImageUrl: string | null = null;
 
+  isSubmitting: boolean = false;
+
+
   iconUrl: string[] = []; // Explicitly typed as string array
   projectUrl: string[] = []; // Explicitly typed as string array
   selectedIconImages: { file: File; preview: string }[] = [];
@@ -32,6 +35,12 @@ export class AddProjectsComponent {
 
   // Submit the form with all data
   onSubmit(): void {
+    if (this.isSubmitting) {
+      return; // Prevent multiple submissions
+    }
+
+    this.isSubmitting = true; // Set the flag to true to disable the button
+
     const formData = new FormData();
 
     // Append form fields (text data) with new names
