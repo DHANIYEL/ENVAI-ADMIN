@@ -19,108 +19,138 @@
         Loading projects...
       </div>
 
-      <table
-        *ngIf="!loading && projects.length > 0"
-        class="w-full text-sm text-left text-gray-700"
-      >
-        <thead class="text-xs uppercase bg-gray-300 text-gray-900">
-          <tr>
-            <th scope="col" class="px-6 py-3">ID</th>
-            <th scope="col" class="px-6 py-3">Title</th>
-            <th scope="col" class="px-6 py-3">Short Description</th>
-            <th scope="col" class="px-6 py-3">Detailed Description</th>
-            <th scope="col" class="px-6 py-3">Amount</th> <!-- New column for Amount -->
-            <th scope="col" class="px-6 py-3">Icon</th>
-            <th scope="col" class="px-6 py-3">Image</th>
-            <th scope="col" class="px-6 py-3 text-right">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            *ngFor="let project of projects; let i = index"
-            class="bg-white border-b hover:bg-gray-200"
+      <div class="w-full">
+        <!-- Table -->
+        <table
+          *ngIf="!loading && projects.length > 0"
+          class="w-full text-sm text-left text-gray-700"
+        >
+          <thead class="text-xs uppercase bg-gray-300 text-gray-900">
+            <tr>
+              <th scope="col" class="px-6 py-3">ID</th>
+              <th scope="col" class="px-6 py-3">Title</th>
+              <th scope="col" class="px-6 py-3">Short Description</th>
+              <th scope="col" class="px-6 py-3">Detailed Description</th>
+              <th scope="col" class="px-6 py-3">Amount</th>
+              <th scope="col" class="px-6 py-3">Icon</th>
+              <th scope="col" class="px-6 py-3">Image</th>
+              <th scope="col" class="px-6 py-3 text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              *ngFor="let project of displayedProjects; let i = index"
+              class="bg-white border-b hover:bg-gray-200"
             >
-            <td class="px-6 py-4 font-medium text-gray-900">
-              {{ i + 1 }}
-            </td>
-            <td class="px-6 py-4 font-medium text-gray-900">
-              {{ project.title }}
-            </td>
-            <td class="px-6 py-4">{{ project.smallDescription }}</td>
-            <td class="px-6 py-4">{{ project.detailedDescription }}</td>
-            <td class="px-6 py-4 font-semibold">{{ project.amount }}</td> <!-- Display the Amount -->
-
-            <td class="px-6 py-4">
-              <div class="flex flex-wrap gap-2">
-                <!-- Display project icons -->
-                <img
-                  *ngFor="let icon of project.iconUrls"
-                  [src]="icon"
-                  alt="Project Icon"
-                  class="w-16 h-16 rounded-md"
-                />
-              </div>
-            </td>
-
-            <td class="px-6 py-4">
-              <div class="flex flex-wrap gap-2 w-full">
-                <!-- Display project URLs as icons -->
-                <a
-                  *ngFor="let url of project.projectUrls"
-                  [href]="url"
-                  target="_blank"
-                  class="w-16 h-16 rounded-md"
-                >
+              <td class="px-6 py-4 font-medium text-gray-900">
+                {{ ((currentPage - 1) * itemsPerPage) + i + 1 }}
+              </td>
+              <td class="px-6 py-4 font-medium text-gray-900">
+                {{ project.title }}
+              </td>
+              <td class="px-6 py-4">{{ project.smallDescription }}</td>
+              <td class="px-6 py-4">{{ project.detailedDescription }}</td>
+              <td class="px-6 py-4 font-semibold">{{ project.amount }}</td>
+              <td class="px-6 py-4">
+                <div class="flex flex-wrap gap-2">
                   <img
-                    [src]="url"
-                    alt="Project URL"
+                    *ngFor="let icon of project.iconUrls"
+                    [src]="icon"
+                    alt="Project Icon"
                     class="w-16 h-16 rounded-md"
                   />
-                </a>
-              </div>
-            </td>
+                </div>
+              </td>
+              <td class="px-6 py-4">
+                <div class="flex flex-wrap gap-2 w-full">
+                  <a
+                    *ngFor="let url of project.projectUrls"
+                    [href]="url"
+                    target="_blank"
+                    class="w-16 h-16 rounded-md"
+                  >
+                    <img
+                      [src]="url"
+                      alt="Project URL"
+                      class="w-16 h-16 rounded-md"
+                    />
+                  </a>
+                </div>
+              </td>
+              <td class="px-6 py-4 text-center">
+                <div class="flex justify-center items-center gap-4">
+                  <a
+                    (click)="editProjectNavigate(project.id)"
+                    class="font-medium text-blue-600 cursor-pointer"
+                    title="Edit"
+                  >
+                    <i class="fas fa-pen"></i>
+                  </a>
+                  <a
+                    (click)="openDeleteModal(project.id)"
+                    class="font-medium text-red-600 cursor-pointer"
+                    title="Delete"
+                  >
+                    <i class="fas fa-trash-alt"></i>
+                  </a>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
 
+        <!-- Pagination Controls -->
+        <div class="mt-4 flex items-center justify-between px-6 py-3 bg-white border-t">
+          <!-- Pagination Info -->
+          <div class="text-sm text-gray-700">
+            Showing {{ ((currentPage - 1) * itemsPerPage) + 1 }} to
+            {{ Math.min(currentPage * itemsPerPage, totalItems) }} of
+            {{ totalItems }} entries
+          </div>
 
-            <td class="px-6 py-4 text-center">
-              <div class="flex justify-center items-center gap-4">
-                <!-- Edit Icon -->
-                <a
-                  (click)="editProjectNavigate(project.id)"
-                  routerLinkActive="router-link-active"
-                  class="font-medium text-blue-600"
-                  title="Edit"
-                >
-                  <i class="fas fa-pen"></i>
-                </a>
-
-                <!-- Delete Icon -->
-                <a
-                  (click)="openDeleteModal(project.id)"
-                  class="font-medium text-red-600"
-                  title="Delete"
-                >
-                  <i class="fas fa-trash-alt"></i>
-                </a>
-              </div>
-            </td>
-            <!-- Delete Confirmation Modal -->
-            <app-confirmation-modal
-              *ngIf="showDeleteModal"
-              [title]="'Confirm Deletion'"
-              [confirmButtonText]="'Delete'"
-              [description]="
-                'Are you sure you want to delete this project? This action cannot be undone.'
-              "
-              [cancelButtonText]="'Cancel'"
-              [confirmButtonColor]="'bg-red-500'"
-              [cancelButtonColor]="'bg-gray-500'"
-              (confirm)="confirmDelete()"
-              (cancel)="cancelDelete()"
+          <!-- Pagination Buttons -->
+          <div class="flex space-x-2">
+            <button
+              (click)="previousPage()"
+              [disabled]="currentPage === 1"
+              class="px-3 py-1 text-sm font-medium text-gray-700 bg-white border rounded-md hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-            </app-confirmation-modal>
-          </tr>
-        </tbody>
-      </table>
+              Previous
+            </button>
+            <ng-container *ngFor="let page of [].constructor(getTotalPages()); let i = index">
+              <button
+                (click)="goToPage(i + 1)"
+                [class.bg-blue-500]="currentPage === i + 1"
+                [class.text-white]="currentPage === i + 1"
+                class="px-3 py-1 text-sm font-medium border rounded-md hover:bg-gray-100"
+              >
+                {{ i + 1 }}
+              </button>
+            </ng-container>
+            <button
+              (click)="nextPage()"
+              [disabled]="currentPage * itemsPerPage >= totalItems"
+              class="px-3 py-1 text-sm font-medium text-gray-700 bg-white border rounded-md hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Next
+            </button>
+          </div>
+        </div>
+
+        <!-- Delete Confirmation Modal -->
+        <app-confirmation-modal
+          *ngIf="showDeleteModal"
+          [title]="'Confirm Deletion'"
+          [confirmButtonText]="'Delete'"
+          [description]="'Are you sure you want to delete this project? This action cannot be undone.'"
+          [cancelButtonText]="'Cancel'"
+          [confirmButtonColor]="'bg-red-500'"
+          [cancelButtonColor]="'bg-gray-500'"
+          (confirm)="confirmDelete()"
+          (cancel)="cancelDelete()"
+        >
+        </app-confirmation-modal>
+      </div>
 
       <!-- No Projects Found -->
       <div

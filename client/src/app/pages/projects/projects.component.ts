@@ -27,6 +27,12 @@ export class ProjectsComponent implements OnInit {
   showDeleteModal: boolean = false;
   projectToDeleteId: string | null = null;
 
+  currentPage: number = 1;
+  itemsPerPage: number = 15;
+  totalItems: number = 0;
+  displayedProjects: any[] = [];
+  Math = Math;
+
 
   constructor(private apiService: ApiService, private router: Router) {}
 
@@ -42,32 +48,62 @@ export class ProjectsComponent implements OnInit {
 
   // Fetch projects from the API
   getAllProjects(): void {
-    this.apiService.getAllProjects().subscribe(
-      (response) => {
+    this.apiService.getAllProjects().subscribe({
+      next: (response) => {
         if (response && response.data) {
-          // Map the response data to match the required fields
           this.projects = response.data.map((project: any) => ({
             title: project.strTitle,
             smallDescription: project.short_Description,
             detailedDescription: project.long_Description,
-            projectUrls: project.strProjectUrls, // Use strProjectUrls for project URLs
-            iconUrls: project.strIconUrls, // Use strIconUrls for icon URLs
-            id: project.fkProjectId, // Assuming this is the unique identifier
-            amount: project.amount // Assuming 'amount' is present in the backend response
+            projectUrls: project.strProjectUrls,
+            iconUrls: project.strIconUrls,
+            id: project.fkProjectId,
+            amount: project.amount
           }));
+          this.totalItems = this.projects.length;
+          this.updateDisplayedProjects();
         } else {
           this.projects = [];
+          this.totalItems = 0;
         }
         this.loading = false;
       },
-      (error) => {
+      error: (error) => {
         console.error('Failed to fetch projects:', error);
-        this.errorMessage = 'Could not load projects. Please try again later.'; // Set the error message
+        this.errorMessage = 'Could not load projects. Please try again later.';
         this.loading = false;
       }
-    );
+    });
+  }
+  updateDisplayedProjects(): void {
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    const endIndex = startIndex + this.itemsPerPage;
+    this.displayedProjects = this.projects.slice(startIndex, endIndex);
   }
 
+  nextPage(): void {
+    if (this.currentPage * this.itemsPerPage < this.totalItems) {
+      this.currentPage++;
+      this.updateDisplayedProjects();
+    }
+  }
+
+  previousPage(): void {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+      this.updateDisplayedProjects();
+    }
+  }
+
+  goToPage(pageNumber: number): void {
+    if (pageNumber >= 1 && pageNumber <= this.getTotalPages()) {
+      this.currentPage = pageNumber;
+      this.updateDisplayedProjects();
+    }
+  }
+  getTotalPages(): number {
+    return Math.ceil(this.totalItems / this.itemsPerPage);
+  }
   // Navigate to add project page
   addProject(): void {
     this.router.navigate(['/projects/add']);
