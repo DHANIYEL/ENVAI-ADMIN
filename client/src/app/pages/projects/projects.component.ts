@@ -81,6 +81,7 @@ export class ProjectsComponent implements OnInit {
     this.displayedProjects = this.projects.slice(startIndex, endIndex);
   }
 
+
   nextPage(): void {
     if (this.currentPage * this.itemsPerPage < this.totalItems) {
       this.currentPage++;
@@ -120,9 +121,23 @@ export class ProjectsComponent implements OnInit {
     if (this.projectToDeleteId) {
       this.apiService.deleteProject(this.projectToDeleteId).subscribe(
         () => {
+          // Remove the deleted project from the main projects array
           this.projects = this.projects.filter(
             (project) => project.id !== this.projectToDeleteId
           );
+
+          // Update the total items count
+          this.totalItems = this.projects.length;
+
+          // Recalculate displayed projects
+          this.updateDisplayedProjects();
+
+          // If the current page becomes empty, navigate to the previous page
+          if (this.displayedProjects.length === 0 && this.currentPage > 1) {
+            this.currentPage--;
+            this.updateDisplayedProjects();
+          }
+
           console.log('Project deleted successfully');
           this.showDeleteModal = false;
           this.projectToDeleteId = null;
@@ -135,6 +150,7 @@ export class ProjectsComponent implements OnInit {
       );
     }
   }
+
 
   cancelDelete(): void {
     this.showDeleteModal = false;
