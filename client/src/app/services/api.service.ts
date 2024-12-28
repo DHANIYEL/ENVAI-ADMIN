@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Observable, of, throwError } from 'rxjs';
-import { tap } from 'rxjs/operators'; // Add this import at the top of your service file
+import { catchError, tap } from 'rxjs/operators'; // Add this import at the top of your service file
+import { Router } from '@angular/router';
 
 export interface Project {
   id: string;
@@ -18,8 +19,49 @@ export interface Project {
 export class ApiService {
   private baseUrl: string = 'https://admin.envaiprojects.com/v1/api';
   private baseUrl2: string = 'https://admin.envaiprojects.com/v2/api';
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private router: Router) {}
 
+
+  private getHeaders(): HttpHeaders {
+    const token = localStorage.getItem('token');
+
+    if (!token) {
+      console.error('No token found, logging out');
+      this.logout().subscribe({
+        next: () => {
+          console.log('Logout successful');
+          this.router.navigate(['/login']); // Redirect to the login page
+        },
+        error: (logoutError) => {
+          console.error('Error during logout:', logoutError);
+          this.router.navigate(['/login']); // Redirect even if logout fails
+        },
+      });
+
+      // Throw an error to ensure no further execution in case of missing token
+      throw new Error('Unauthorized access - token missing');
+    }
+
+    return new HttpHeaders({ Authorization: `Bearer ${token}` });
+  }
+
+
+  private handleError(error: HttpErrorResponse) {
+    if (error.status === 401 || error.status === 403) {
+      console.error('Unauthorized access, logging out:', error);
+      this.logout().subscribe({
+        next: () => {
+          console.log('Logout successful');
+          this.router.navigate(['/login']); // Redirect to the login page
+        },
+        error: (logoutError) => {
+          console.error('Error during logout:', logoutError);
+          this.router.navigate(['/login']); // Redirect even if logout fails
+        },
+      });
+    }
+    return throwError(() => new Error(error.message));
+  }
 
 
 
@@ -45,13 +87,15 @@ export class ApiService {
     console.log('Retrieved Token:', token); // Log the token for debugging
     return token !== null; // Return true if token exists, false otherwise
   }
+  // Handle errors globally
+
 
   logout(): Observable<any> {
     const token = localStorage.getItem('token'); // Retrieve the token from localStorage
 
     if (!token) {
       console.log('No token found, user is not logged in');
-      return of(null);
+      return of(null); // Return an observable that emits null
     }
 
     // Create headers with the token for authorization
@@ -66,6 +110,10 @@ export class ApiService {
         // On successful logout, remove the token from localStorage
         localStorage.removeItem('token');
         console.log('Token removed, user logged out');
+      }),
+      catchError((error) => {
+        console.error('Logout failed:', error);
+        return throwError(() => new Error(error.message));
       })
     );
   }
@@ -104,7 +152,10 @@ export class ApiService {
     // Send the POST request with the form data and headers
     return this.http.post(`${this.baseUrl2}/project/add_project`, formData, {
       headers,
-    });
+    }).pipe(
+    catchError((error) => this.handleError(error))
+
+    );
   }
 
 
@@ -116,7 +167,10 @@ export class ApiService {
       strLoginUserId: strLoginUserId,
     };
 
-    return this.http.post<any>(`${this.baseUrl}/projects/get_all_projects`, body);
+    return this.http.post<any>(`${this.baseUrl}/projects/get_all_projects`, body).pipe(
+      catchError((error) => this.handleError(error))
+
+      );;
   }
 
   // Method to get user details by ID
@@ -142,6 +196,7 @@ export class ApiService {
         tap(
           (response) => {
             console.log('User data fetched successfully:', response);
+              catchError((error) => this.handleError(error))
           },
           (error) => {
             console.error('Error fetching user data:', error);
@@ -167,7 +222,10 @@ export class ApiService {
       `${this.baseUrl}/admin/update_admins`,
       userData,
       { headers }
-    );
+    ).pipe(
+      catchError((error) => this.handleError(error))
+
+      );;
   }
 
   // Check old password and reset password
@@ -194,7 +252,10 @@ export class ApiService {
       `${this.baseUrl}/admin/update_admin_passwd`,
       body,
       { headers }
-    );
+    ).pipe(
+      catchError((error) => this.handleError(error))
+
+      );;
   }
 
   // Delete a project by ID
@@ -213,7 +274,10 @@ export class ApiService {
     // Include fkProjectId in the body
     const body = { fkProjectId };
 
-    return this.http.post(`${this.baseUrl}/project/delete_project`, body, { headers });
+    return this.http.post(`${this.baseUrl}/project/delete_project`, body, { headers }).pipe(
+      catchError((error) => this.handleError(error))
+
+      );;
   }
 
   updateProject(projectId: string, projectData: FormData): Observable<any> {
@@ -234,7 +298,10 @@ export class ApiService {
       `${this.baseUrl2}/project/update_project`,
       projectData,
       { headers }
-    );
+    ).pipe(
+      catchError((error) => this.handleError(error))
+
+      );;
   }
 
 
